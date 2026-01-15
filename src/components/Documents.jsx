@@ -1,0 +1,112 @@
+import { useState, useEffect, useCallback } from 'react';
+import { ref, get, set } from 'firebase/database';
+import { database } from '../config/firebase';
+import { tiposDocumentos } from '../data/grupos';
+
+function Documents({ grupo, estudiantes }) {
+  const [documentosState, setDocumentosState] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const loadDocumentos = useCallback(async () => {
+    try {
+      const newState = {};
+      for (const estudianteId in estudiantes) {
+        const docRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/documentos`);
+        const snapshot = await get(docRef);
+        newState[estudianteId] = snapshot.val() || {};
+      }
+      setDocumentosState(newState);
+    } catch (error) {
+      console.error('Error loading documentos:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [grupo, estudiantes]);
+
+  useEffect(() => {
+    if (grupo && estudiantes) {
+      loadDocumentos();
+    }
+  }, [grupo, estudiantes, loadDocumentos]);
+
+  const handleCheckboxChange = async (estudianteId, docId) => {
+    const currentValue = documentosState[estudianteId]?.[docId] || false;
+    const newValue = !currentValue;
+
+    try {
+      // Update in Firebase
+      const docRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/documentos/${docId}`);
+      await set(docRef, newValue);
+
+      // Update local state
+      setDocumentosState(prev => ({
+        ...prev,
+        [estudianteId]: {
+          ...prev[estudianteId],
+          [docId]: newValue
+        }
+      }));
+    } catch (error) {
+      console.error('Error updating documento:', error);
+      alert('Error al actualizar el documento');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="text-gray-600">Cargando documentos...</div>
+      </div>
+    );
+  }
+
+  if (!estudiantes || Object.keys(estudiantes).length === 0) {
+    return (
+      <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
+        No hay estudiantes en este grupo.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Entrega de Documentos</h2>
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Estudiante</th>
+              {tiposDocumentos.map(doc => (
+                <th key={doc.id} className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                  {doc.nombre}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(estudiantes).map(([id, estudiante]) => (
+              <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm text-gray-800 font-medium">
+                  {estudiante.nombre}
+                </td>
+                {tiposDocumentos.map(doc => (
+                  <td key={doc.id} className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={documentosState[id]?.[doc.id] || false}
+                      onChange={() => handleCheckboxChange(id, doc.id)}
+                      className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default Documents;
