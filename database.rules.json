@@ -2,8 +2,9 @@
   "rules": {
     "grupos": {
       ".read": "auth != null",
-      ".write": "auth != null",
       "$grupoId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
         ".validate": "newData.hasChildren(['nombre', 'estudiantes'])",
         "nombre": {
           ".validate": "newData.isString()"

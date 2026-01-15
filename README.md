@@ -70,7 +70,18 @@ En Firebase Console > Realtime Database > Rules, copia el contenido del archivo 
 
 ### 4. Crear usuarios de administración
 
-En Firebase Console > Authentication > Users, crea usuarios con email y contraseña para los administradores.
+En Firebase Console > Authentication > Users, crea usuarios con email y contraseña para cada grupo:
+
+**Usuarios recomendados:**
+- ciencia@confirma.com (usa una contraseña segura)
+- piedad@confirma.com (usa una contraseña segura)
+- fortaleza@confirma.com (usa una contraseña segura)
+- consejo@confirma.com (usa una contraseña segura)
+- entendimiento@confirma.com (usa una contraseña segura)
+- sabiduria@confirma.com (usa una contraseña segura)
+- temordedios@confirma.com (usa una contraseña segura)
+
+**Nota:** Puedes usar cualquier combinación de email y contraseña que prefieras. Se recomienda usar contraseñas fuertes y únicas para cada grupo.
 
 ### 5. Importar datos iniciales
 
@@ -113,10 +124,12 @@ npm run preview
 
 ## 📋 Documentos requeridos
 
-- Partida de Bautismo
-- Fotografía
-- Carta del Párroco
-- Copia de Cédula
+- Cédula Catequizando
+- Fe de Bautismo
+- Constancia Comunión
+- Cédula Padrino
+- Fe Confirmación Padrino
+- Acta de Matrimonio
 
 ## 📅 Fechas de Asistencia
 
