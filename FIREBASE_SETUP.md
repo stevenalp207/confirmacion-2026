@@ -111,8 +111,18 @@
 
 1. En Firebase Console, ve a **Authentication** > **Users**
 2. Haz clic en "Add user" o "Agregar usuario"
-3. Ingresa un correo electrónico y contraseña
-4. Repite para cada administrador que necesites
+3. Crea un usuario para cada grupo con el siguiente formato:
+
+**Usuarios recomendados:**
+- **Email:** ciencia@confirma.com **Contraseña:** confirma2026
+- **Email:** piedad@confirma.com **Contraseña:** confirma2026
+- **Email:** fortaleza@confirma.com **Contraseña:** confirma2026
+- **Email:** consejo@confirma.com **Contraseña:** confirma2026
+- **Email:** entendimiento@confirma.com **Contraseña:** confirma2026
+- **Email:** sabiduria@confirma.com **Contraseña:** confirma2026
+- **Email:** temordedios@confirma.com **Contraseña:** confirma2026
+
+**Nota:** Puedes personalizar estos correos y contraseñas según tus necesidades. Cada catequista usará su correo de grupo para acceder a su información.
 
 ## Paso 8: Importar Datos Iniciales
 

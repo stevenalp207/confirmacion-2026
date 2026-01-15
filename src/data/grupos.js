@@ -70,15 +70,18 @@ export const gruposData = {
   }
 };
 
-// Tipos de documentos requeridos
+// Tipos de documentos requeridos según el issue
 export const tiposDocumentos = [
-  { id: 'partida_bautismo', nombre: 'Partida de Bautismo' },
-  { id: 'foto', nombre: 'Fotografía' },
-  { id: 'carta_parroco', nombre: 'Carta del Párroco' },
-  { id: 'cedula', nombre: 'Copia de Cédula' },
+  { id: 'cedula_catequizando', nombre: 'Cédula Catequizando' },
+  { id: 'fe_bautismo', nombre: 'Fe de Bautismo' },
+  { id: 'constancia_comunion', nombre: 'Constancia Comunión' },
+  { id: 'cedula_padrino', nombre: 'Cédula Padrino' },
+  { id: 'fe_confirmacion_padrino', nombre: 'Fe Confirmación Padrino' },
+  { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
 ];
 
-// Fechas de los jueves para asistencia (ejemplo)
+// Fechas de los jueves para asistencia en 2026
+// Basado en el cronograma de Confirmación 2026
 export const fechasJueves = [
   '2026-01-08',
   '2026-01-15',
@@ -88,4 +91,46 @@ export const fechasJueves = [
   '2026-02-12',
   '2026-02-19',
   '2026-02-26',
+  '2026-03-05',
+  '2026-03-12',
+  '2026-03-19',
+  '2026-03-26',
+  '2026-04-02',
+  '2026-04-09',
+  '2026-04-16',
+  '2026-04-23',
+  '2026-04-30',
+  '2026-05-07',
+  '2026-05-14',
+  '2026-05-21',
+  '2026-05-28',
+  '2026-06-04',
+  '2026-06-11',
+  '2026-06-18',
+  '2026-06-25',
+  '2026-07-02',
+  '2026-07-09',
+  '2026-07-16',
+  '2026-07-23',
+  '2026-07-30',
+  '2026-08-06',
+  '2026-08-13',
+  '2026-08-20',
+  '2026-08-27',
+  '2026-09-03',
+  '2026-09-10',
+  '2026-09-17',
+  '2026-09-24',
+  '2026-10-01',
+  '2026-10-08',
+  '2026-10-15',
+  '2026-10-22',
+  '2026-10-29',
+  '2026-11-05',
+  '2026-11-12',
+  '2026-11-19',
+  '2026-11-26',
+  '2026-12-03',
+  '2026-12-10',
+  '2026-12-17',
 ];
