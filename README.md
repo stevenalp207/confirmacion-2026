@@ -73,15 +73,15 @@ En Firebase Console > Realtime Database > Rules, copia el contenido del archivo 
 En Firebase Console > Authentication > Users, crea usuarios con email y contraseña para cada grupo:
 
 **Usuarios recomendados:**
-- ciencia@confirma.com (contraseña: confirma2026)
-- piedad@confirma.com (contraseña: confirma2026)
-- fortaleza@confirma.com (contraseña: confirma2026)
-- consejo@confirma.com (contraseña: confirma2026)
-- entendimiento@confirma.com (contraseña: confirma2026)
-- sabiduria@confirma.com (contraseña: confirma2026)
-- temordedios@confirma.com (contraseña: confirma2026)
+- ciencia@confirma.com (usa una contraseña segura)
+- piedad@confirma.com (usa una contraseña segura)
+- fortaleza@confirma.com (usa una contraseña segura)
+- consejo@confirma.com (usa una contraseña segura)
+- entendimiento@confirma.com (usa una contraseña segura)
+- sabiduria@confirma.com (usa una contraseña segura)
+- temordedios@confirma.com (usa una contraseña segura)
 
-**Nota:** Puedes usar cualquier combinación de email y contraseña que prefieras.
+**Nota:** Puedes usar cualquier combinación de email y contraseña que prefieras. Se recomienda usar contraseñas fuertes y únicas para cada grupo.
 
 ### 5. Importar datos iniciales
 

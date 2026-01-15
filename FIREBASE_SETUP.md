@@ -114,15 +114,18 @@
 3. Crea un usuario para cada grupo con el siguiente formato:
 
 **Usuarios recomendados:**
-- **Email:** ciencia@confirma.com **Contraseña:** confirma2026
-- **Email:** piedad@confirma.com **Contraseña:** confirma2026
-- **Email:** fortaleza@confirma.com **Contraseña:** confirma2026
-- **Email:** consejo@confirma.com **Contraseña:** confirma2026
-- **Email:** entendimiento@confirma.com **Contraseña:** confirma2026
-- **Email:** sabiduria@confirma.com **Contraseña:** confirma2026
-- **Email:** temordedios@confirma.com **Contraseña:** confirma2026
+- **Email:** ciencia@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** piedad@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** fortaleza@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** consejo@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** entendimiento@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** sabiduria@confirma.com **Contraseña:** (genera una contraseña segura)
+- **Email:** temordedios@confirma.com **Contraseña:** (genera una contraseña segura)
 
-**Nota:** Puedes personalizar estos correos y contraseñas según tus necesidades. Cada catequista usará su correo de grupo para acceder a su información.
+**Importante:** 
+- Usa contraseñas fuertes y únicas para cada cuenta en producción
+- Guarda las credenciales en un lugar seguro
+- Cada catequista usará su correo de grupo para acceder a su información
 
 ## Paso 8: Importar Datos Iniciales
 

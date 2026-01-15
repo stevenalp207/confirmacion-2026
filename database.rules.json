@@ -3,8 +3,8 @@
     "grupos": {
       ".read": "auth != null",
       "$grupoId": {
-        ".read": "auth != null && (auth.token.email_verified || true)",
-        ".write": "auth != null && (auth.token.email_verified || true)",
+        ".read": "auth != null",
+        ".write": "auth != null",
         ".validate": "newData.hasChildren(['nombre', 'estudiantes'])",
         "nombre": {
           ".validate": "newData.isString()"
