@@ -3,6 +3,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './config/firebase';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import ConfigWarning from './components/ConfigWarning';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,6 +36,7 @@ function App() {
 
   return (
     <>
+      <ConfigWarning />
       {user ? (
         <Dashboard user={user} onLogout={handleLogout} />
       ) : (

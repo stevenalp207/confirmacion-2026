@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ref, get, set } from 'firebase/database';
 import { database } from '../config/firebase';
 import { tiposDocumentos } from '../data/grupos';
@@ -7,13 +7,7 @@ function Documents({ grupo, estudiantes }) {
   const [documentosState, setDocumentosState] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (grupo && estudiantes) {
-      loadDocumentos();
-    }
-  }, [grupo, estudiantes]);
-
-  const loadDocumentos = async () => {
+  const loadDocumentos = useCallback(async () => {
     try {
       const newState = {};
       for (const estudianteId in estudiantes) {
@@ -27,7 +21,13 @@ function Documents({ grupo, estudiantes }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [grupo, estudiantes]);
+
+  useEffect(() => {
+    if (grupo && estudiantes) {
+      loadDocumentos();
+    }
+  }, [grupo, estudiantes, loadDocumentos]);
 
   const handleCheckboxChange = async (estudianteId, docId) => {
     const currentValue = documentosState[estudianteId]?.[docId] || false;

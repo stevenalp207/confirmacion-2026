@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { auth, isFirebaseConfigured } from '../config/firebase';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -10,6 +10,12 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!isFirebaseConfigured) {
+      setError('Firebase no está configurado. Por favor, configura Firebase siguiendo las instrucciones en FIREBASE_SETUP.md');
+      return;
+    }
+    
     setError('');
     setLoading(true);
 
@@ -64,7 +70,7 @@ function Login() {
           </div>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
