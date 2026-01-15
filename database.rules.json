@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "grupos": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$grupoId": {
+        ".validate": "newData.hasChildren(['nombre', 'estudiantes'])",
+        "nombre": {
+          ".validate": "newData.isString()"
+        },
+        "estudiantes": {
+          "$estudianteId": {
+            ".validate": "newData.hasChildren(['id', 'nombre'])",
+            "id": {
+              ".validate": "newData.isNumber()"
+            },
+            "nombre": {
+              ".validate": "newData.isString()"
+            },
+            "documentos": {
+              "$documentoId": {
+                ".validate": "newData.isBoolean()"
+              }
+            },
+            "asistencias": {
+              "$fecha": {
+                ".validate": "newData.isBoolean()"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
