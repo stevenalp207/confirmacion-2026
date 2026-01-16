@@ -189,8 +189,8 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
           )}
 
-          {/* Pagos Module - admin, logistica y financiero */}
-          {(user?.rol === 'admin' || user?.usuario === 'logistica' || user?.rol === 'financiero') && (
+          {/* Pagos Module - admin, logistica, financiero y usuarios de grupos */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica' || user?.rol === 'financiero' || ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios'].includes(user?.rol)) && (
             <div
               onClick={() => onSelectModule('pagos')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"

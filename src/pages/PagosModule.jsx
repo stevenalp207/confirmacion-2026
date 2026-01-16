@@ -10,11 +10,19 @@ function PagosModule({ onBack, user }) {
   const [catequistas, setCatequistas] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Filtrar grupos según el rol del usuario
   // admin, logística y financiero pueden ver todos los grupos
   const gruposDisponibles =
     user?.rol === "admin" || user?.usuario === "logistica" || user?.rol === "financiero"
       ? ["Catequistas", ...grupos]
-      : [];
+      : [user?.rol]; // Usuarios de grupos específicos ven solo su grupo
+
+  // Cargar automáticamente el grupo si el usuario no es admin ni logística
+  useEffect(() => {
+    if (user && user.rol !== "admin" && user.usuario !== "logistica" && user.rol !== "financiero" && !currentGroup) {
+      setCurrentGroup(user.rol);
+    }
+  }, [user, currentGroup]);
 
   useEffect(() => {
     if (currentGroup) {
@@ -22,7 +30,7 @@ function PagosModule({ onBack, user }) {
     }
   }, [currentGroup]);
 
-  const loadEstudiantes = async (grupo) => {
+  const loadEstudiantes = (grupo) => {
     setLoading(true);
     try {
       if (grupo === "Catequistas") {
