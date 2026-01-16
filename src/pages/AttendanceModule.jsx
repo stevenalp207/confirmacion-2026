@@ -47,12 +47,22 @@ function AttendanceModule({ onBack, user }) {
   };
 
   const handleStudentClick = (estudianteId) => {
-    const estudiante = estudiantes[estudianteId];
-    setSelectedStudent({
-      id: estudianteId,
-      ...estudiante,
-      grupo: currentGroup
-    });
+    // Buscar el estudiante por su ID real
+    let estudiante = null;
+    for (const key in estudiantes) {
+      if (estudiantes[key].id === estudianteId) {
+        estudiante = estudiantes[key];
+        break;
+      }
+    }
+    
+    if (estudiante) {
+      setSelectedStudent({
+        id: estudianteId,
+        ...estudiante,
+        grupo: currentGroup
+      });
+    }
   };
 
   const generarPDFAsistencia = () => {
