@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import { grupos } from '../data/grupos';
+import { nombresCatequistas } from '../data/catequistas';
 import Pagos from '../components/Pagos';
 import { gruposData } from '../data/grupos';
+import { supabase } from '../config/supabase';
 
 function PagosModule({ onBack, user }) {
   const [currentGroup, setCurrentGroup] = useState('');
   const [estudiantes, setEstudiantes] = useState(null);
+  const [catequistas, setCatequistas] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // Filtrar grupos según el rol del usuario (admin y logistica ven todos)
   const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica' 
-    ? grupos 
+    ? ['Catequistas', ...grupos]
     : [];
 
   useEffect(() => {
@@ -19,13 +22,21 @@ function PagosModule({ onBack, user }) {
     }
   }, [currentGroup]);
 
-  const loadEstudiantes = (grupo) => {
+  const loadEstudiantes = async (grupo) => {
     setLoading(true);
     try {
-      setEstudiantes(gruposData[grupo]?.estudiantes || {});
+      if (grupo === 'Catequistas') {
+        // Usar la lista de catequistas del archivo de datos
+        setCatequistas(nombresCatequistas);
+        setEstudiantes(null);
+      } else {
+        setEstudiantes(gruposData[grupo]?.estudiantes || {});
+        setCatequistas([]);
+      }
     } catch (error) {
-      console.error('Error loading estudiantes:', error);
+      console.error('Error loading data:', error);
       setEstudiantes({});
+      setCatequistas([]);
     } finally {
       setLoading(false);
     }
@@ -38,13 +49,13 @@ function PagosModule({ onBack, user }) {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <nav className="bg-indigo-600 text-white shadow-lg">
+      <nav className="bg-blue-600 text-white shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
             <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={onBack}
-                className="hover:bg-indigo-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
+                className="hover:bg-blue-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 ← Atrás
               </button>
@@ -55,7 +66,7 @@ function PagosModule({ onBack, user }) {
               <select
                 value={currentGroup}
                 onChange={(e) => handleGroupChange(e.target.value)}
-                className="w-full sm:w-auto bg-indigo-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full sm:w-auto bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
               >
                 <option value="">Seleccionar Grupo</option>
                 {gruposDisponibles.map((grupo) => (
@@ -77,7 +88,10 @@ function PagosModule({ onBack, user }) {
               Módulo de Pagos
             </h2>
             <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 text-center">
-              Selecciona un grupo para controlar los pagos del retiro (₡50.000 por estudiante)
+              Selecciona un grupo para controlar los pagos del retiro
+            </p>
+            <p className="text-xs sm:text-sm text-gray-500 text-center">
+              Estudiantes: ₡50.000 | Catequistas: ₡15.000
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -100,7 +114,9 @@ function PagosModule({ onBack, user }) {
                 Grupo: {currentGroup}
               </h1>
               <p className="text-sm sm:text-base text-gray-600">
-                Registra los pagos del retiro de los estudiantes
+                {currentGroup === 'Catequistas' 
+                  ? 'Registra los pagos del retiro de los catequistas (₡15.000 por catequista)'
+                  : 'Registra los pagos del retiro de los estudiantes (₡50.000 por estudiante)'}
               </p>
             </div>
 
@@ -110,7 +126,12 @@ function PagosModule({ onBack, user }) {
                   <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
                 </div>
               ) : (
-                <Pagos grupo={currentGroup} estudiantes={estudiantes} />
+                <Pagos 
+                  grupo={currentGroup} 
+                  estudiantes={estudiantes} 
+                  catequistas={catequistas}
+                  esCatequistas={currentGroup === 'Catequistas'}
+                />
               )}
             </div>
           </>

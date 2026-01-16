@@ -70,7 +70,7 @@ export const gruposData = {
   }
 };
 
-// Tipos de documentos requeridos según el issue
+// Tipos de documentos requeridos
 export const tiposDocumentos = [
   { id: 'cedula_catequizando', nombre: 'Cédula Catequizando' },
   { id: 'fe_bautismo', nombre: 'Fe de Bautismo' },
@@ -80,57 +80,28 @@ export const tiposDocumentos = [
   { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
 ];
 
-// Fechas de los jueves para asistencia en 2026
-// Basado en el cronograma de Confirmación 2026
-export const fechasJueves = [
-  '2026-01-08',
-  '2026-01-15',
-  '2026-01-22',
-  '2026-01-29',
-  '2026-02-05',
-  '2026-02-12',
-  '2026-02-19',
-  '2026-02-26',
-  '2026-03-05',
-  '2026-03-12',
-  '2026-03-19',
-  '2026-03-26',
-  '2026-04-02',
-  '2026-04-09',
-  '2026-04-16',
-  '2026-04-23',
-  '2026-04-30',
-  '2026-05-07',
-  '2026-05-14',
-  '2026-05-21',
-  '2026-05-28',
-  '2026-06-04',
-  '2026-06-11',
-  '2026-06-18',
-  '2026-06-25',
-  '2026-07-02',
-  '2026-07-09',
-  '2026-07-16',
-  '2026-07-23',
-  '2026-07-30',
-  '2026-08-06',
-  '2026-08-13',
-  '2026-08-20',
-  '2026-08-27',
-  '2026-09-03',
-  '2026-09-10',
-  '2026-09-17',
-  '2026-09-24',
-  '2026-10-01',
-  '2026-10-08',
-  '2026-10-15',
-  '2026-10-22',
-  '2026-10-29',
-  '2026-11-05',
-  '2026-11-12',
-  '2026-11-19',
-  '2026-11-26',
-  '2026-12-03',
-  '2026-12-10',
-  '2026-12-17',
-];
+// Número total de catequesis para Confirmación 2026 (incluye eventos especiales)
+// 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 25 sesiones
+export const numeroCatequesis = 25;
+
+// Función para obtener el label de cada catequesis
+// Índice 11: Retiro Familia (después de Catequesis 10)
+// Índice 20: Retiro Padrinos (después de Catequesis 18)
+// Índice 24: Ensayo Confirma (después de Catequesis 21)
+export const getCatequesisLabel = (index) => {
+  if (index === 11) {
+    return 'Retiro Familia';
+  } else if (index === 20) {
+    return 'Retiro Padrinos';
+  } else if (index === 24) {
+    return 'Ensayo Confirma';
+  } else if (index < 11) {
+    return `Catequesis ${index}`;
+  } else if (index < 20) {
+    return `Catequesis ${index - 1}`;
+  } else if (index < 24) {
+    return `Catequesis ${index - 2}`;
+  } else {
+    return `Catequesis ${index - 3}`;
+  }
+};

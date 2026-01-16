@@ -1,54 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fechasJueves } from '../data/grupos';
+import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
+import { catequistas, nombresCatequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
 
 function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
-  const [catequistasNombres, setCatequistasNombres] = useState([
-    'Adriana Álvarez',
-    'Amanda Cordero',
-    'Amanda Villegas',
-    'André Barboza',
-    'Andrey Corrales',
-    'Ashley Rodriguez',
-    'Brenda Jiménez',
-    'Dylan Chacón',
-    'Esteban Naranjo',
-    'Fabiola Fallas',
-    'Gabriel Valverde',
-    'Isaac Monge',
-    'Ismael Rivera',
-    'Jefferson Aguilar',
-    'Valeska Angulo',
-    'Johanna Castro',
-    'Jose Joel Vargas',
-    'Jose Pablo Castro',
-    'Josué Escorcia',
-    'Julissa Escalante',
-    'Jeaustin Fernandez',
-    'Justin Rojas',
-    'Karemy Guzmán',
-    'Krystel Narváez',
-    'Luis Ángel Sánchez',
-    'Luis Felipe Mora',
-    'María Paula Avilés',
-    'María Paula Hurtado',
-    'Mariam Astua',
-    'Mariana Segura',
-    'Mathias Calderon',
-    'Monserrat Solano',
-    'Nashamy Araya',
-    'Noelia Matarrita',
-    'Oscar Sandí',
-    'Samuel Brenes',
-    'Sebastián Araya',
-    'Sebastian Huertas',
-    'Sofia Arce',
-    'Steven Alpízar',
-    'Susseth Alan Pérez'
-  ]);
+  const [catequistasNombres, setCatequistasNombres] = useState(nombresCatequistas);
   const [nuevoNombre, setNuevoNombre] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesis-1]
+  const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
 
   const loadCatequistas = useCallback(async () => {
     try {
@@ -69,7 +31,7 @@ function CatequistasModule({ onBack, user }) {
           if (!newState[item.catequista_nombre]) {
             newState[item.catequista_nombre] = {};
           }
-          newState[item.catequista_nombre][item.fecha] = item.estado;
+          newState[item.catequista_nombre][item.catequesis_num] = item.estado;
         });
       }
 
@@ -86,8 +48,8 @@ function CatequistasModule({ onBack, user }) {
     loadCatequistas();
   }, []);
 
-  const handleEstadoChange = async (catequista, fecha) => {
-    const estadoActual = catequistasState[catequista]?.[fecha] || 'ausente';
+  const handleEstadoChange = async (catequista, catequesisNum) => {
+    const estadoActual = catequistasState[catequista]?.[catequesisNum] || 'ausente';
     
     const ciclo = {
       'ausente': 'presente',
@@ -103,7 +65,7 @@ function CatequistasModule({ onBack, user }) {
         .from('asistencia_catequistas')
         .select('id')
         .eq('catequista_nombre', catequista)
-        .eq('fecha', fecha)
+        .eq('catequesis_num', catequesisNum)
         .single();
 
       let error;
@@ -114,7 +76,7 @@ function CatequistasModule({ onBack, user }) {
           .from('asistencia_catequistas')
           .update({ estado: nuevoEstado, updated_at: new Date().toISOString() })
           .eq('catequista_nombre', catequista)
-          .eq('fecha', fecha);
+          .eq('catequesis_num', catequesisNum);
         error = result.error;
       } else {
         // Si no existe, insertar
@@ -122,7 +84,7 @@ function CatequistasModule({ onBack, user }) {
           .from('asistencia_catequistas')
           .insert({
             catequista_nombre: catequista,
-            fecha: fecha,
+            catequesis_num: catequesisNum,
             estado: nuevoEstado,
             grupo: 'General'
           });
@@ -140,7 +102,7 @@ function CatequistasModule({ onBack, user }) {
         ...prev,
         [catequista]: {
           ...prev[catequista],
-          [fecha]: nuevoEstado
+          [catequesisNum]: nuevoEstado
         }
       }));
     } catch (error) {
@@ -196,13 +158,13 @@ function CatequistasModule({ onBack, user }) {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <nav className="bg-indigo-600 text-white shadow-lg">
+      <nav className="bg-blue-600 text-white shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
             <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={onBack}
-                className="hover:bg-indigo-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
+                className="hover:bg-blue-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 ← Atrás
               </button>
@@ -236,7 +198,7 @@ function CatequistasModule({ onBack, user }) {
               />
               <button
                 onClick={agregarCatequista}
-                className="px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
+                className="px-4 py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition whitespace-nowrap"
               >
                 Agregar
               </button>
@@ -252,49 +214,51 @@ function CatequistasModule({ onBack, user }) {
             <div className="overflow-x-auto -mx-3 sm:mx-0">
               <div className="inline-block min-w-full align-middle px-3 sm:px-0">
                 <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-                  <thead className="bg-indigo-100">
+                  <thead className="bg-blue-50">
                     <tr>
-                      <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-indigo-100 z-10 shadow-sm">Catequista</th>
-                      {fechasJueves.map((fecha) => (
+                      <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-blue-50 z-10 shadow-sm">Catequista</th>
+                      <th className="px-2 sm:px-3 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 bg-blue-50">Grupo</th>
+                      {catequesisIndices.map((catequesisNum) => (
                         <th
-                          key={fecha}
-                          className="px-2 py-2 sm:py-3 text-center text-xs font-semibold text-gray-700 bg-indigo-50 whitespace-nowrap"
+                          key={catequesisNum}
+                          className="px-2 py-2 sm:py-3 text-center text-xs font-semibold text-gray-700 bg-blue-50 whitespace-nowrap"
                         >
-                          <span className="hidden sm:inline">
-                            {new Date(fecha).toLocaleDateString('es-CR', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </span>
-                          <span className="sm:hidden">
-                            {new Date(fecha).toLocaleDateString('es-CR', {
-                              month: 'numeric',
-                              day: 'numeric'
-                            })}
-                          </span>
+                          {getCatequesisLabel(catequesisNum)}
                         </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {catequistasNombres.map((catequista) => (
-                      <tr key={catequista} className="border-t border-gray-200 hover:bg-gray-50">
+                    {catequistas
+                      .sort((a, b) => {
+                        // Ordenar por grupo primero, luego por nombre
+                        if (a.grupo !== b.grupo) {
+                          return a.grupo.localeCompare(b.grupo);
+                        }
+                        return a.nombre.localeCompare(b.nombre);
+                      })
+                      .map((catequista) => (
+                      <tr key={catequista.nombre} className="border-t border-gray-200 hover:bg-gray-50">
                         <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
-                          {catequista}
+                          {catequista.nombre}
                         </td>
-                        {fechasJueves.map((fecha) => {
-                          const estado = catequistasState[catequista]?.[fecha] || 'ausente';
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-gray-600">
+                          <span className="inline-block px-2 py-1 bg-blue-50 text-blue-900 rounded-full font-medium">
+                            {catequista.grupo}
+                          </span>
+                        </td>
+                        {catequesisIndices.map((catequesisNum) => {
+                          const estado = catequistasState[catequista.nombre]?.[catequesisNum] || 'ausente';
                           const icon = getEstadoIcon(estado);
                           const colorClass = getEstadoColor(estado);
                           
                           return (
                             <td
-                              key={`${catequista}-${fecha}`}
+                              key={`${catequista.nombre}-${catequesisNum}`}
                               className="px-1 sm:px-2 py-2 sm:py-3 text-center"
                             >
                               <button
-                                onClick={() => handleEstadoChange(catequista, fecha)}
+                                onClick={() => handleEstadoChange(catequista.nombre, catequesisNum)}
                                 className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg border-2 font-bold text-xs sm:text-sm hover:shadow-md transition-all ${colorClass}`}
                               >
                                 {icon}

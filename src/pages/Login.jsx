@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 
 function Login() {
   const [usuario, setUsuario] = useState('');
@@ -28,10 +29,13 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center p-4 sm:p-6">
       <div className="bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
+          <div className="flex justify-center mb-4">
+            <img src={logo} alt="Logo Confirmación" className="h-20 sm:h-24 md:h-28 w-auto" />
+          </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             Confirmación 2026
           </h1>
@@ -83,7 +87,7 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg text-sm sm:text-base hover:from-blue-700 hover:to-indigo-700 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-900 text-white font-bold py-2 sm:py-3 px-4 rounded-lg text-sm sm:text-base hover:from-blue-500 hover:to-blue-600 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
@@ -96,7 +100,6 @@ function Login() {
           </p>
           <div className="text-xs text-gray-700 space-y-2">
             <p><strong>Acceso a grupo:</strong> usuario: consejo / contraseña: confi2026</p>
-            <p><strong>Acceso total:</strong> usuario: logistica / contraseña: logistica2026</p>
           </div>
         </div>
       </div>

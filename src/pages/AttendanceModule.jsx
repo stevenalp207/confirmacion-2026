@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { grupos } from '../data/grupos';
 import Attendance from '../components/Attendance';
+import StudentDetail from '../components/StudentDetail';
 import { gruposData } from '../data/grupos';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -9,11 +10,19 @@ function AttendanceModule({ onBack, user }) {
   const [currentGroup, setCurrentGroup] = useState('');
   const [estudiantes, setEstudiantes] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   // Filtrar grupos según el rol del usuario
-  const gruposDisponibles = user?.rol === 'admin' 
+  const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica'
     ? grupos 
     : [user?.rol];
+
+  // Cargar automáticamente el grupo si el usuario no es admin ni logística
+  useEffect(() => {
+    if (user && user.rol !== 'admin' && user.usuario !== 'logistica' && !currentGroup) {
+      setCurrentGroup(user.rol);
+    }
+  }, [user, currentGroup]);
 
   useEffect(() => {
     if (currentGroup) {
@@ -35,6 +44,15 @@ function AttendanceModule({ onBack, user }) {
 
   const handleGroupChange = (grupo) => {
     setCurrentGroup(grupo);
+  };
+
+  const handleStudentClick = (estudianteId) => {
+    const estudiante = estudiantes[estudianteId];
+    setSelectedStudent({
+      id: estudianteId,
+      ...estudiante,
+      grupo: currentGroup
+    });
   };
 
   const generarPDFAsistencia = () => {
@@ -93,6 +111,48 @@ function AttendanceModule({ onBack, user }) {
       alert('Error al generar el PDF: ' + error.message);
     }
   };
+
+  if (selectedStudent) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        {/* Navbar */}
+        <nav className="sticky top-0 z-20 bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+              <button
+                onClick={() => setSelectedStudent(null)}
+                className="hover:bg-green-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base"
+              >
+                ← Volver a asistencia
+              </button>
+              <div className="flex-1">
+                <h1 className="text-lg sm:text-xl font-bold truncate">{selectedStudent.nombre}</h1>
+                <p className="text-green-200 text-xs sm:text-sm">Grupo: {selectedStudent.grupo}</p>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Contenido */}
+        <main className="max-w-7xl mx-auto p-3 sm:p-4">
+          <StudentDetail
+            grupo={selectedStudent.grupo}
+            estudianteId={selectedStudent.id}
+            estudiante={selectedStudent}
+            user={user}
+          />
+        </main>
+
+        {/* Botón flotante de salida */}
+        <button
+          onClick={onBack}
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg text-lg sm:text-xl font-bold transition"
+        >
+          ✕
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -183,7 +243,12 @@ function AttendanceModule({ onBack, user }) {
                   <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
                 </div>
               ) : (
-                <Attendance grupo={currentGroup} estudiantes={estudiantes} user={user} />
+                <Attendance 
+                  grupo={currentGroup} 
+                  estudiantes={estudiantes} 
+                  user={user}
+                  onStudentClick={handleStudentClick}
+                />
               )}
             </div>
           </>

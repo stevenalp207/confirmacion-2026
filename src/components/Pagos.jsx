@@ -1,39 +1,71 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../config/supabase';
 
-function Pagos({ grupo, estudiantes }) {
+function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
   const [pagosState, setPagosState] = useState({});
   const [loading, setLoading] = useState(true);
+
+  // Monto requerido según el tipo
+  const montoRequerido = esCatequistas ? 15000 : 50000;
+  const tablaNombre = esCatequistas ? 'pagos_catequistas' : 'pagos_retiro';
 
   const loadPagos = useCallback(async () => {
     try {
       const newState = {};
       
-      // Inicializar pagos para todos los estudiantes
-      for (const estudianteId in estudiantes) {
-        newState[estudianteId] = {
-          monto_pagado: 0,
-          pagado: false
-        };
-      }
-
-      // Cargar pagos desde Supabase
-      const { data, error } = await supabase
-        .from('pagos_retiro')
-        .select('*')
-        .eq('grupo', grupo);
-
-      if (error) {
-        console.error('Error loading pagos:', error);
-      } else if (data) {
-        data.forEach(item => {
-          if (newState[item.estudiante_id]) {
-            newState[item.estudiante_id] = {
-              monto_pagado: item.monto_pagado,
-              pagado: item.pagado
-            };
-          }
+      if (esCatequistas) {
+        // Inicializar pagos para todos los catequistas
+        catequistas.forEach(nombre => {
+          newState[nombre] = {
+            monto_pagado: 0,
+            pagado: false
+          };
         });
+
+        // Cargar pagos desde Supabase
+        const { data, error } = await supabase
+          .from('pagos_catequistas')
+          .select('*');
+
+        if (error) {
+          console.error('Error loading pagos:', error);
+        } else if (data) {
+          data.forEach(item => {
+            if (newState[item.catequista_nombre]) {
+              newState[item.catequista_nombre] = {
+                monto_pagado: item.monto_pagado,
+                pagado: item.pagado
+              };
+            }
+          });
+        }
+      } else {
+        // Inicializar pagos para todos los estudiantes
+        for (const estudianteId in estudiantes) {
+          newState[estudianteId] = {
+            monto_pagado: 0,
+            pagado: false
+          };
+        }
+
+        // Cargar pagos desde Supabase
+        const { data, error } = await supabase
+          .from('pagos_retiro')
+          .select('*')
+          .eq('grupo', grupo);
+
+        if (error) {
+          console.error('Error loading pagos:', error);
+        } else if (data) {
+          data.forEach(item => {
+            if (newState[item.estudiante_id]) {
+              newState[item.estudiante_id] = {
+                monto_pagado: item.monto_pagado,
+                pagado: item.pagado
+              };
+            }
+          });
+        }
       }
 
       setPagosState(newState);
@@ -42,41 +74,62 @@ function Pagos({ grupo, estudiantes }) {
     } finally {
       setLoading(false);
     }
-  }, [grupo, estudiantes]);
+  }, [grupo, estudiantes, catequistas, esCatequistas]);
 
   useEffect(() => {
-    if (grupo && estudiantes) {
+    if (esCatequistas ? catequistas : (grupo && estudiantes)) {
       loadPagos();
     }
-  }, [grupo, estudiantes, loadPagos]);
+  }, [grupo, estudiantes, catequistas, esCatequistas, loadPagos]);
 
-  const handleMontoPagado = async (estudianteId, nuevoMonto) => {
-    const estudiante = estudiantes[estudianteId];
-    const pagado = nuevoMonto >= 50000;
+  const handleMontoPagado = async (id, nuevoMonto) => {
+    const pagado = nuevoMonto >= montoRequerido;
 
     try {
-      const { error } = await supabase
-        .from('pagos_retiro')
-        .upsert({
-          grupo,
-          estudiante_id: estudianteId,
-          estudiante_nombre: estudiante.nombre,
-          monto_requerido: 50000,
-          monto_pagado: nuevoMonto,
-          pagado: pagado
-        }, {
-          onConflict: 'grupo,estudiante_id'
-        });
+      if (esCatequistas) {
+        // Guardar pago de catequista
+        const { error } = await supabase
+          .from('pagos_catequistas')
+          .upsert({
+            catequista_nombre: id,
+            monto_requerido: montoRequerido,
+            monto_pagado: nuevoMonto,
+            pagado: pagado
+          }, {
+            onConflict: 'catequista_nombre'
+          });
 
-      if (error) {
-        console.error('Error updating pago:', error);
-        alert('Error al actualizar el pago');
-        return;
+        if (error) {
+          console.error('Error updating pago:', error);
+          alert('Error al actualizar el pago');
+          return;
+        }
+      } else {
+        // Guardar pago de estudiante
+        const estudiante = estudiantes[id];
+        const { error } = await supabase
+          .from('pagos_retiro')
+          .upsert({
+            grupo,
+            estudiante_id: id,
+            estudiante_nombre: estudiante.nombre,
+            monto_requerido: montoRequerido,
+            monto_pagado: nuevoMonto,
+            pagado: pagado
+          }, {
+            onConflict: 'grupo,estudiante_id'
+          });
+
+        if (error) {
+          console.error('Error updating pago:', error);
+          alert('Error al actualizar el pago');
+          return;
+        }
       }
 
       setPagosState(prev => ({
         ...prev,
-        [estudianteId]: {
+        [id]: {
           monto_pagado: nuevoMonto,
           pagado: pagado
         }
@@ -95,7 +148,7 @@ function Pagos({ grupo, estudiantes }) {
     );
   }
 
-  if (!estudiantes || Object.keys(estudiantes).length === 0) {
+  if (!esCatequistas && (!estudiantes || Object.keys(estudiantes).length === 0)) {
     return (
       <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
         No hay estudiantes en este grupo.
@@ -103,9 +156,23 @@ function Pagos({ grupo, estudiantes }) {
     );
   }
 
+  if (esCatequistas && (!catequistas || catequistas.length === 0)) {
+    return (
+      <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
+        No hay catequistas registrados.
+      </div>
+    );
+  }
+
   const totalPagado = Object.values(pagosState).reduce((sum, p) => sum + p.monto_pagado, 0);
-  const totalRequerido = Object.keys(estudiantes).length * 50000;
+  const cantidadPersonas = esCatequistas ? catequistas.length : Object.keys(estudiantes).length;
+  const totalRequerido = cantidadPersonas * montoRequerido;
   const completados = Object.values(pagosState).filter(p => p.pagado).length;
+
+  // Crear lista de personas según el tipo
+  const listaPersonas = esCatequistas 
+    ? catequistas.map(nombre => ({ id: nombre, nombre: nombre }))
+    : Object.entries(estudiantes).map(([id, est]) => ({ id, nombre: est.nombre }));
 
   return (
     <div className="space-y-6">
@@ -125,7 +192,7 @@ function Pagos({ grupo, estudiantes }) {
         <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4">
           <div className="text-sm text-gray-600">Completados</div>
           <div className="text-2xl font-bold text-purple-600">
-            {completados} / {Object.keys(estudiantes).length}
+            {completados} / {cantidadPersonas}
           </div>
         </div>
       </div>
@@ -134,21 +201,23 @@ function Pagos({ grupo, estudiantes }) {
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Estudiante</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                {esCatequistas ? 'Catequista' : 'Estudiante'}
+              </th>
               <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Monto Pagado</th>
               <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Requerido</th>
               <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Estado</th>
             </tr>
           </thead>
           <tbody>
-            {Object.entries(estudiantes).map(([id, estudiante]) => {
-              const pago = pagosState[id];
-              const falta = Math.max(0, 50000 - pago.monto_pagado);
+            {listaPersonas.map(({ id, nombre }) => {
+              const pago = pagosState[id] || { monto_pagado: 0, pagado: false };
+              const falta = Math.max(0, montoRequerido - pago.monto_pagado);
               
               return (
                 <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
                   <td className="px-4 py-3 text-sm text-gray-800 font-medium">
-                    {estudiante.nombre}
+                    {nombre}
                   </td>
                   <td className="px-4 py-3 text-center">
                     <input
@@ -160,7 +229,7 @@ function Pagos({ grupo, estudiantes }) {
                     />
                   </td>
                   <td className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                    ₡50.000
+                    ₡{montoRequerido.toLocaleString('es-CR')}
                   </td>
                   <td className="px-4 py-3 text-center">
                     {pago.pagado ? (

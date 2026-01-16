@@ -9,9 +9,16 @@ function DocumentsModule({ onBack, user }) {
   const [loading, setLoading] = useState(false);
 
   // Filtrar grupos según el rol del usuario
-  const gruposDisponibles = user?.rol === 'admin' 
+  const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica'
     ? grupos 
     : [user?.rol];
+
+  // Cargar automáticamente el grupo si el usuario no es admin ni logística
+  useEffect(() => {
+    if (user && user.rol !== 'admin' && user.usuario !== 'logistica' && !currentGroup) {
+      setCurrentGroup(user.rol);
+    }
+  }, [user, currentGroup]);
 
   useEffect(() => {
     if (currentGroup) {

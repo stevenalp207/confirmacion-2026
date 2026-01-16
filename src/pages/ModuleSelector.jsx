@@ -1,3 +1,5 @@
+import logo from '../assets/logo.png';
+
 function ModuleSelector({ onSelectModule, user, onLogout }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -5,16 +7,19 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
       <div className="bg-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Confirmación 2026</h1>
-              <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                Bienvenido: <span className="font-semibold">{user?.usuario}</span>
-                {user?.rol === 'admin' && (
-                  <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
-                    ADMIN
-                  </span>
-                )}
-              </p>
+            <div className="flex items-center gap-3 flex-1">
+              <img src={logo} alt="Logo Confirmación" className="h-10 sm:h-12 w-auto" />
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Confirmación 2026</h1>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Bienvenido: <span className="font-semibold">{user?.usuario}</span>
+                  {user?.rol === 'admin' && (
+                    <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
+                      ADMIN
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
             <button
               onClick={onLogout}
@@ -75,7 +80,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
                 <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                   Registra la asistencia de todos los catequistas
                 </p>
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold text-xl">
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 text-blue-600 font-bold text-xl">
                   →
                 </div>
               </div>
@@ -176,7 +181,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
                 <p className="text-gray-600 mb-6">
                   Controla los pagos del retiro (₡50.000 por estudiante)
                 </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 font-bold">
                   →
                 </div>
               </div>

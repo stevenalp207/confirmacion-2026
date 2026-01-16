@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fechasJueves } from '../data/grupos';
+import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import { supabase } from '../config/supabase';
 
-function Attendance({ grupo, estudiantes, user }) {
+function Attendance({ grupo, estudiantes, user, onStudentClick }) {
   const [asistenciasState, setAsistenciasState] = useState({});
   const [loading, setLoading] = useState(true);
+  
+  // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesis-1]
+  const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
 
   const loadAsistencias = useCallback(async () => {
     try {
@@ -13,8 +16,8 @@ function Attendance({ grupo, estudiantes, user }) {
       // Inicializar con estado 'ausente' por defecto
       for (const estudianteId in estudiantes) {
         newState[estudianteId] = {};
-        for (const fecha of fechasJueves) {
-          newState[estudianteId][fecha] = 'ausente';
+        for (const catequesisNum of catequesisIndices) {
+          newState[estudianteId][catequesisNum] = 'ausente';
         }
       }
 
@@ -30,7 +33,7 @@ function Attendance({ grupo, estudiantes, user }) {
         // Procesar datos de Supabase
         data.forEach(item => {
           if (newState[item.estudiante_id]) {
-            newState[item.estudiante_id][item.fecha] = item.estado;
+            newState[item.estudiante_id][item.catequesis_num] = item.estado;
           }
         });
       }
@@ -41,7 +44,7 @@ function Attendance({ grupo, estudiantes, user }) {
     } finally {
       setLoading(false);
     }
-  }, [grupo, estudiantes]);
+  }, [grupo, estudiantes, catequesisIndices]);
 
   useEffect(() => {
     if (grupo && estudiantes) {
@@ -49,8 +52,8 @@ function Attendance({ grupo, estudiantes, user }) {
     }
   }, [grupo, estudiantes, loadAsistencias]);
 
-  const handleEstadoChange = async (estudianteId, fecha) => {
-    const estadoActual = asistenciasState[estudianteId]?.[fecha] || 'ausente';
+  const handleEstadoChange = async (estudianteId, catequesisNum) => {
+    const estadoActual = asistenciasState[estudianteId]?.[catequesisNum] || 'ausente';
     
     // Ciclo: ausente -> presente -> justificado -> ausente
     const ciclo = {
@@ -70,10 +73,10 @@ function Attendance({ grupo, estudiantes, user }) {
           grupo,
           estudiante_id: estudianteId,
           estudiante_nombre: estudiante.nombre,
-          fecha,
+          catequesis_num: catequesisNum,
           estado: nuevoEstado
         }, {
-          onConflict: 'grupo,estudiante_id,fecha'
+          onConflict: 'grupo,estudiante_id,catequesis_num'
         });
 
       if (error) {
@@ -87,7 +90,7 @@ function Attendance({ grupo, estudiantes, user }) {
         ...prev,
         [estudianteId]: {
           ...prev[estudianteId],
-          [fecha]: nuevoEstado
+          [catequesisNum]: nuevoEstado
         }
       }));
     } catch (error) {
@@ -149,9 +152,9 @@ function Attendance({ grupo, estudiantes, user }) {
               <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10 shadow-sm">
                 Estudiante
               </th>
-              {fechasJueves.map(fecha => (
-                <th key={fecha} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold text-gray-700 min-w-max whitespace-nowrap">
-                  {formatFecha(fecha)}
+              {catequesisIndices.map((catequesisNum) => (
+                <th key={catequesisNum} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold text-gray-700 min-w-max whitespace-nowrap">
+                  {getCatequesisLabel(catequesisNum)}
                 </th>
               ))}
             </tr>
@@ -160,11 +163,17 @@ function Attendance({ grupo, estudiantes, user }) {
             {Object.entries(estudiantes).map(([id, estudiante]) => {
               return (
                 <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
-                    {estudiante.nombre}
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
+                    <button
+                      onClick={() => onStudentClick && onStudentClick(id)}
+                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer text-left w-full"
+                      title="Ver perfil del estudiante"
+                    >
+                      {estudiante.nombre}
+                    </button>
                   </td>
-                  {fechasJueves.map(fecha => {
-                    const estado = asistenciasState[id]?.[fecha] || 'ausente';
+                  {catequesisIndices.map(catequesisNum => {
+                    const estado = asistenciasState[id]?.[catequesisNum] || 'ausente';
                     
                     let bgColor, icon, label;
                     if (estado === 'presente') {
@@ -182,9 +191,9 @@ function Attendance({ grupo, estudiantes, user }) {
                     }
                     
                     return (
-                      <td key={fecha} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
+                      <td key={catequesisNum} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
                         <button
-                          onClick={() => handleEstadoChange(id, fecha)}
+                          onClick={() => handleEstadoChange(id, catequesisNum)}
                           className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg font-bold text-white text-base sm:text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
                           title={label}
                         >
