@@ -15,7 +15,7 @@ export const gruposData = {
   'Ciencia': {
     nombre: 'Ciencia',
     estudiantes: {
-      '1': { id: 1, nombre: 'Juan Pérez', documentos: {}, asistencias: {} },
+      '1': { id: 71903969, nombre: 'Juan Pérez', documentos: {}, asistencias: {} },
       '2': { id: 2, nombre: 'María García', documentos: {}, asistencias: {} },
       '3': { id: 3, nombre: 'Carlos López', documentos: {}, asistencias: {} },
     }

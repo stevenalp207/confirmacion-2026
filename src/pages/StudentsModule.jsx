@@ -239,7 +239,7 @@ function StudentsModule({ onBack, user }) {
                       {student.nombre}
                     </p>
                     <p className="text-sm text-gray-600 mt-1">
-                      🆔 {student.id} • 📚 {student.grupo}
+                      📞 {student.id} • 📚 {student.grupo}
                     </p>
                   </div>
                   <div className="text-3xl text-gray-300 group-hover:text-blue-500 transition">→</div>

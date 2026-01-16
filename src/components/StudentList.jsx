@@ -72,7 +72,7 @@ function StudentList({ grupo, user }) {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">{est.nombre}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">ID: {est.id}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">Tel: {est.id}</p>
                 </div>
                 <div className="text-xl sm:text-2xl flex-shrink-0">→</div>
               </div>

@@ -123,8 +123,8 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         </div>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>
-            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">ID</p>
-            <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudianteId}</p>
+            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Teléfono</p>
+            <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudiante.id || 'No registrado'}</p>
           </div>
           <div>
             <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Grupo</p>
