@@ -1,20 +1,40 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, get, set } from 'firebase/database';
-import { database } from '../config/firebase';
 import { fechasJueves } from '../data/grupos';
+import { supabase } from '../config/supabase';
 
-function Attendance({ grupo, estudiantes }) {
+function Attendance({ grupo, estudiantes, user }) {
   const [asistenciasState, setAsistenciasState] = useState({});
   const [loading, setLoading] = useState(true);
 
   const loadAsistencias = useCallback(async () => {
     try {
       const newState = {};
+      
+      // Inicializar con estado 'ausente' por defecto
       for (const estudianteId in estudiantes) {
-        const asistRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/asistencias`);
-        const snapshot = await get(asistRef);
-        newState[estudianteId] = snapshot.val() || {};
+        newState[estudianteId] = {};
+        for (const fecha of fechasJueves) {
+          newState[estudianteId][fecha] = 'ausente';
+        }
       }
+
+      // Cargar asistencias desde Supabase
+      const { data, error } = await supabase
+        .from('asistencias')
+        .select('*')
+        .eq('grupo', grupo);
+
+      if (error) {
+        console.error('Error loading asistencias:', error);
+      } else if (data) {
+        // Procesar datos de Supabase
+        data.forEach(item => {
+          if (newState[item.estudiante_id]) {
+            newState[item.estudiante_id][item.fecha] = item.estado;
+          }
+        });
+      }
+
       setAsistenciasState(newState);
     } catch (error) {
       console.error('Error loading asistencias:', error);
@@ -29,21 +49,45 @@ function Attendance({ grupo, estudiantes }) {
     }
   }, [grupo, estudiantes, loadAsistencias]);
 
-  const handleCheckboxChange = async (estudianteId, fecha) => {
-    const currentValue = asistenciasState[estudianteId]?.[fecha] || false;
-    const newValue = !currentValue;
+  const handleEstadoChange = async (estudianteId, fecha) => {
+    const estadoActual = asistenciasState[estudianteId]?.[fecha] || 'ausente';
+    
+    // Ciclo: ausente -> presente -> justificado -> ausente
+    const ciclo = {
+      'ausente': 'presente',
+      'presente': 'justificado',
+      'justificado': 'ausente'
+    };
+    
+    const nuevoEstado = ciclo[estadoActual];
+    const estudiante = estudiantes[estudianteId];
 
     try {
-      // Update in Firebase
-      const asistRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/asistencias/${fecha}`);
-      await set(asistRef, newValue);
+      // Guardar en Supabase
+      const { error } = await supabase
+        .from('asistencias')
+        .upsert({
+          grupo,
+          estudiante_id: estudianteId,
+          estudiante_nombre: estudiante.nombre,
+          fecha,
+          estado: nuevoEstado
+        }, {
+          onConflict: 'grupo,estudiante_id,fecha'
+        });
+
+      if (error) {
+        console.error('Error updating asistencia:', error);
+        alert('Error al actualizar la asistencia');
+        return;
+      }
 
       // Update local state
       setAsistenciasState(prev => ({
         ...prev,
         [estudianteId]: {
           ...prev[estudianteId],
-          [fecha]: newValue
+          [fecha]: nuevoEstado
         }
       }));
     } catch (error) {
@@ -79,7 +123,23 @@ function Attendance({ grupo, estudiantes }) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Asistencia - Jueves</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Asistencia - Jueves</h2>
+        <div className="flex gap-4 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-green-100 border-2 border-green-400 rounded text-center text-green-800 font-bold">✓</div>
+            <span>Presente</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-red-100 border-2 border-red-400 rounded text-center text-red-800 font-bold">✗</div>
+            <span>Ausente</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-yellow-100 border-2 border-yellow-400 rounded text-center text-yellow-800 font-bold">!</div>
+            <span>Justificado</span>
+          </div>
+        </div>
+      </div>
       
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
@@ -89,39 +149,49 @@ function Attendance({ grupo, estudiantes }) {
                 Estudiante
               </th>
               {fechasJueves.map(fecha => (
-                <th key={fecha} className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                <th key={fecha} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-max">
                   {formatFecha(fecha)}
                 </th>
               ))}
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                Total
-              </th>
             </tr>
           </thead>
           <tbody>
             {Object.entries(estudiantes).map(([id, estudiante]) => {
-              const asistenciasCount = fechasJueves.filter(
-                fecha => asistenciasState[id]?.[fecha]
-              ).length;
-              
               return (
                 <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-800 font-medium sticky left-0 bg-white">
+                  <td className="px-4 py-3 text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50">
                     {estudiante.nombre}
                   </td>
-                  {fechasJueves.map(fecha => (
-                    <td key={fecha} className="px-4 py-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={asistenciasState[id]?.[fecha] || false}
-                        onChange={() => handleCheckboxChange(id, fecha)}
-                        className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
-                      />
-                    </td>
-                  ))}
-                  <td className="px-4 py-3 text-center text-sm font-semibold">
-                    {asistenciasCount} / {fechasJueves.length}
-                  </td>
+                  {fechasJueves.map(fecha => {
+                    const estado = asistenciasState[id]?.[fecha] || 'ausente';
+                    
+                    let bgColor, icon, label;
+                    if (estado === 'presente') {
+                      bgColor = 'bg-green-500';
+                      icon = '✓';
+                      label = 'Presente';
+                    } else if (estado === 'justificado') {
+                      bgColor = 'bg-yellow-500';
+                      icon = '!';
+                      label = 'Justificado';
+                    } else {
+                      bgColor = 'bg-red-500';
+                      icon = '✗';
+                      label = 'Ausente';
+                    }
+                    
+                    return (
+                      <td key={fecha} className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => handleEstadoChange(id, fecha)}
+                          className={`w-10 h-10 rounded-lg font-bold text-white text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
+                          title={label}
+                        >
+                          {icon}
+                        </button>
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}

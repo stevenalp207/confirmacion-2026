@@ -1,88 +1,104 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, isFirebaseConfigured } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [usuario, setUsuario] = useState('');
+  const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!isFirebaseConfigured) {
-      setError('Firebase no está configurado. Por favor, configura Firebase siguiendo las instrucciones en FIREBASE_SETUP.md');
-      return;
-    }
-    
     setError('');
     setLoading(true);
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // User will be redirected automatically by the auth state listener
-    } catch (err) {
-      setError('Error al iniciar sesión. Verifica tus credenciales.');
-      console.error('Login error:', err);
-    } finally {
+    if (!usuario || !contraseña) {
+      setError('Por favor completa todos los campos');
+      setLoading(false);
+      return;
+    }
+
+    const result = await login(usuario, contraseña);
+    
+    if (!result.success) {
+      setError(result.error);
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-2xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full">
+        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Confirmación 2026</h1>
-          <p className="text-gray-600">Ingresa tus credenciales</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            Confirmación 2026
+          </h1>
+          <p className="text-gray-600">
+            Sistema de Control
+          </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Usuario Input */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Correo Electrónico
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Usuario
             </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="correo@ejemplo.com"
+              type="text"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+              placeholder="Ingresa tu usuario"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
+              disabled={loading}
             />
           </div>
 
+          {/* Contraseña Input */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Contraseña
             </label>
             <input
               type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="••••••••"
+              value={contraseña}
+              onChange={(e) => setContraseña(e.target.value)}
+              placeholder="Ingresa tu contraseña"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
+              disabled={loading}
             />
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-100 border-2 border-red-400 text-red-800 px-4 py-3 rounded-lg">
               {error}
             </div>
           )}
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Ingresando...' : 'Iniciar Sesión'}
+            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
+
+        {/* Demo Info */}
+        <div className="mt-8 pt-8 border-t-2 border-gray-200">
+          <p className="text-xs text-gray-600 mb-3 font-semibold">
+            Usuarios de prueba:
+          </p>
+          <div className="text-xs text-gray-700 space-y-2">
+            <p><strong>Acceso a grupo:</strong> usuario: consejo / contraseña: confi2026</p>
+            <p><strong>Acceso total:</strong> usuario: logistica / contraseña: logistica2026</p>
+          </div>
+        </div>
       </div>
     </div>
   );

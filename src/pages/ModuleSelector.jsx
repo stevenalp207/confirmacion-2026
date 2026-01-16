@@ -1,0 +1,194 @@
+function ModuleSelector({ onSelectModule, user, onLogout }) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header with User Info */}
+      <div className="bg-white shadow-md">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Confirmación 2026</h1>
+            <p className="text-sm text-gray-600">
+              Bienvenido: <span className="font-semibold">{user?.usuario}</span>
+              {user?.rol === 'admin' && (
+                <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
+                  ADMIN
+                </span>
+              )}
+            </p>
+          </div>
+          <button
+            onClick={onLogout}
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-16">
+        {/* Content Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            Selecciona un módulo
+          </h2>
+          <p className="text-xl text-gray-600">
+            {user?.rol === 'admin' 
+              ? 'Tienes acceso a todos los módulos y grupos'
+              : `Acceso limitado al grupo: ${user?.rol}`
+            }
+          </p>
+        </div>
+
+        {/* Modules Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Asistencia Module */}
+          <div
+            onClick={() => onSelectModule('asistencia')}
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl mb-4">✓</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Asistencia
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Registra la asistencia de los estudiantes en las reuniones de jueves
+              </p>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold">
+                →
+              </div>
+            </div>
+          </div>
+
+          {/* Catequistas Module - Only for admin and logistica */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+            <div
+              onClick={() => onSelectModule('catequistas')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl mb-4">👥</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Catequistas
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Registra la asistencia de todos los catequistas
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                  →
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Documentos Module */}
+          <div
+            onClick={() => onSelectModule('documentos')}
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl mb-4">📄</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Documentos
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Controla la entrega de documentos requeridos para la confirmación
+              </p>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-bold">
+                →
+              </div>
+            </div>
+          </div>
+
+          {/* Estudiantes Module */}
+          <div
+            onClick={() => onSelectModule('estudiantes')}
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl mb-4">👨‍🎓</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Estudiantes
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Consulta información y estado de todos los estudiantes
+              </p>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 text-cyan-600 font-bold">
+                →
+              </div>
+            </div>
+          </div>
+
+          {/* Sábanas Module - Only for admin and logistica */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+            <div
+              onClick={() => onSelectModule('sabanas')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl mb-4">🛏️</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Sábanas
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Registra la entrega de sábanas de los estudiantes
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 font-bold">
+                  →
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Cartas Module - Only for admin and logistica */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+            <div
+              onClick={() => onSelectModule('cartas')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl mb-4">💌</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Cartas
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Registra la entrega de cartas de los estudiantes
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 font-bold">
+                  →
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Pagos Module - Only for admin and logistica */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+            <div
+              onClick={() => onSelectModule('pagos')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl mb-4">💰</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Pagos
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Controla los pagos del retiro (₡50.000 por estudiante)
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                  →
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-16 text-gray-500 text-sm">
+          <p>Haz clic en un módulo para comenzar</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ModuleSelector;

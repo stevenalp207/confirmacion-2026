@@ -1,29 +1,32 @@
 # Confirmación 2026 - Sistema de Gestión
 
-Sistema web (SPA) desarrollado con React, Tailwind CSS y Firebase para gestionar la Confirmación 2026.
+Sistema web (SPA) desarrollado con React, Tailwind CSS y Supabase para gestionar la Confirmación 2026.
 
 ## 🚀 Características
 
-- **Autenticación segura** con Firebase Authentication
+- **Autenticación basada en roles** con sistema personalizado
 - **Gestión de 7 grupos**: Ciencia, Piedad, Fortaleza, Consejo, Entendimiento, Sabiduría, Temor de Dios
-- **Módulo de Documentos**: Control de entrega de documentos mediante checkboxes
-- **Módulo de Asistencia**: Registro de asistencia por fechas de jueves
+- **6 Módulos principales**:
+  - **Asistencia**: Registro con 3 estados (presente/ausente/justificado)
+  - **Catequistas**: Control de asistencia de catequistas (solo admin/logistica)
+  - **Documentos**: Control de entrega de documentos
+  - **Sábanas**: Registro de entrega de sábanas (solo admin/logistica)
+  - **Cartas**: Registro de entrega de cartas (solo admin/logistica)
+  - **Pagos**: Control de pagos del retiro ₡50.000 por estudiante (solo admin/logistica)
 - **Diseño Mobile-First** con Tailwind CSS
-- **Base de datos en tiempo real** con Firebase Realtime Database
+- **Base de datos en tiempo real** con Supabase PostgreSQL
 
-## 📁 Estructura de Datos
+## 📁 Estructura de Datos en Supabase
 
-```json
-grupos/
-  {nombreGrupo}/
-    nombre: string
-    estudiantes/
-      {id}/
-        id: number
-        nombre: string
-        documentos: { [tipo]: boolean }
-        asistencias: { [fecha]: boolean }
-```
+### Tablas PostgreSQL
+
+- **usuarios**: Usuarios con roles (admin, logistica, nombres de grupos)
+- **asistencias**: Asistencia de estudiantes con estados (presente/ausente/justificado)
+- **documentos_entregados**: Control de entrega de documentos por estudiante
+- **sabanas_entregadas**: Control de entrega de sábanas
+- **cartas_entregadas**: Control de entrega de cartas
+- **pagos_retiro**: Pagos del retiro (₡50.000 por estudiante)
+- **asistencia_catequistas**: Asistencia de los 41 catequistas
 
 ## 🔧 Configuración
 
@@ -33,70 +36,35 @@ grupos/
 npm install
 ```
 
-### 2. Configurar Firebase
+### 2. Configurar Supabase
 
-1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/)
-2. Habilita **Authentication** (Email/Password)
-3. Habilita **Realtime Database**
-4. Copia tu configuración de Firebase
-5. Actualiza el archivo `src/config/firebase.js` con tus credenciales:
+1. Crea un proyecto en [Supabase](https://app.supabase.com/)
+2. Ve a **Settings** > **API** y copia:
+   - **Project URL**
+   - **anon/public key**
+3. Actualiza el archivo `src/config/supabase.js` con tus credenciales:
 
 ```javascript
-const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  databaseURL: "TU_DATABASE_URL",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_STORAGE_BUCKET",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
-};
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'TU_SUPABASE_URL'
+const supabaseAnonKey = 'TU_SUPABASE_ANON_KEY'
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 ```
 
-### 3. Configurar reglas de seguridad de Firebase
+### 3. Crear las tablas en Supabase
 
-En Firebase Console > Realtime Database > Rules, copia el contenido del archivo `database.rules.json`:
-
-```json
-{
-  "rules": {
-    "grupos": {
-      ".read": "auth != null",
-      ".write": "auth != null"
-    }
-  }
-}
-```
+En Supabase > **SQL Editor**, ejecuta los scripts SQL para crear las tablas:
+- Ver `SQL_CATEQUISTAS.sql` para la tabla de catequistas
+- Las demás tablas ya deberían estar creadas
 
 ### 4. Crear usuarios de administración
 
-En Firebase Console > Authentication > Users, crea usuarios con email y contraseña para cada grupo:
-
-**Usuarios recomendados:**
-- ciencia@confirma.com (usa una contraseña segura)
-- piedad@confirma.com (usa una contraseña segura)
-- fortaleza@confirma.com (usa una contraseña segura)
-- consejo@confirma.com (usa una contraseña segura)
-- entendimiento@confirma.com (usa una contraseña segura)
-- sabiduria@confirma.com (usa una contraseña segura)
-- temordedios@confirma.com (usa una contraseña segura)
-
-**Nota:** Puedes usar cualquier combinación de email y contraseña que prefieras. Se recomienda usar contraseñas fuertes y únicas para cada grupo.
-
-### 5. Importar datos iniciales
-
-Hay dos opciones para importar datos:
-
-#### Opción A: Usar datos de ejemplo
-1. Ejecuta la aplicación: `npm run dev`
-2. Inicia sesión
-3. Abre la consola del navegador (F12)
-4. Ejecuta: `importarDatosAFirebase()`
-
-#### Opción B: Importar desde archivos personalizados
-1. Prepara tus archivos CSV/Excel con los nombres de estudiantes
-2. Modifica el archivo `src/data/grupos.js` con tus datos
-3. Ejecuta el script de importación desde la consola del navegador
+Los usuarios se crean con el sistema de login. Usuarios predefinidos:
+- **admin** (rol: admin)
+- **logistica** (rol: logistica)
+- **Ciencia**, **Piedad**, **Fortaleza**, **Consejo**, **Entendimiento**, **Sabiduría**, **Temor de Dios** (rol: nombre del grupo)
 
 ## 🏃 Ejecutar la aplicación
 

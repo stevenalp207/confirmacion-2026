@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, get, set } from 'firebase/database';
-import { database } from '../config/firebase';
 import { tiposDocumentos } from '../data/grupos';
+import { supabase } from '../config/supabase';
 
 function Documents({ grupo, estudiantes }) {
   const [documentosState, setDocumentosState] = useState({});
@@ -10,11 +9,29 @@ function Documents({ grupo, estudiantes }) {
   const loadDocumentos = useCallback(async () => {
     try {
       const newState = {};
+      
+      // Inicializar estado vacío para todos los estudiantes
       for (const estudianteId in estudiantes) {
-        const docRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/documentos`);
-        const snapshot = await get(docRef);
-        newState[estudianteId] = snapshot.val() || {};
+        newState[estudianteId] = {};
       }
+
+      // Cargar documentos desde Supabase
+      const { data, error } = await supabase
+        .from('documentos_entregados')
+        .select('*')
+        .eq('grupo', grupo);
+
+      if (error) {
+        console.error('Error loading documentos:', error);
+      } else if (data) {
+        // Procesar datos de Supabase
+        data.forEach(item => {
+          if (newState[item.estudiante_id]) {
+            newState[item.estudiante_id][item.documento_id] = item.entregado;
+          }
+        });
+      }
+
       setDocumentosState(newState);
     } catch (error) {
       console.error('Error loading documentos:', error);
@@ -32,11 +49,27 @@ function Documents({ grupo, estudiantes }) {
   const handleCheckboxChange = async (estudianteId, docId) => {
     const currentValue = documentosState[estudianteId]?.[docId] || false;
     const newValue = !currentValue;
+    const estudiante = estudiantes[estudianteId];
 
     try {
-      // Update in Firebase
-      const docRef = ref(database, `grupos/${grupo}/estudiantes/${estudianteId}/documentos/${docId}`);
-      await set(docRef, newValue);
+      // Guardar en Supabase
+      const { error } = await supabase
+        .from('documentos_entregados')
+        .upsert({
+          grupo,
+          estudiante_id: estudianteId,
+          estudiante_nombre: estudiante.nombre,
+          documento_id: docId,
+          entregado: newValue
+        }, {
+          onConflict: 'grupo,estudiante_id,documento_id'
+        });
+
+      if (error) {
+        console.error('Error updating documento:', error);
+        alert('Error al actualizar el documento');
+        return;
+      }
 
       // Update local state
       setDocumentosState(prev => ({
