@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
+import fondo from '../assets/fondo3.jpeg';
 
 function Login() {
   const [usuario, setUsuario] = useState('');
@@ -29,8 +30,9 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center p-4 sm:p-6">
-      <div className="bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-bottom" style={{ backgroundImage: `url(${fondo})`}}>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/70 to-blue-950/80"></div>
+      <div className="bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 max-w-md w-full relative z-10">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <div className="flex justify-center mb-4">
