@@ -9,6 +9,8 @@ import CartasModule from './pages/CartasModule';
 import PagosModule from './pages/PagosModule';
 import CatequistasModule from './pages/CatequistasModule';
 import StudentsModule from './pages/StudentsModule';
+import GastosModule from './pages/GastosModule';
+import IngresosModule from './pages/IngresosModule';
 import NotificationManager from './components/NotificationManager';
 
 function AppContent() {
@@ -27,7 +29,21 @@ function AppContent() {
     return <Login />;
   }
 
+  const allowedModules = (() => {
+    if (user?.rol === 'admin') {
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes'];
+    }
+    if (user?.rol === 'financiero') {
+      return ['pagos', 'gastos', 'ingresos'];
+    }
+    if (user?.usuario === 'logistica') {
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'pagos'];
+    }
+    return ['asistencia', 'documentos', 'estudiantes', 'pagos'];
+  })();
+
   const handleSelectModule = (module) => {
+    if (!allowedModules.includes(module)) return;
     setCurrentModule(module);
   };
 
@@ -54,6 +70,8 @@ function AppContent() {
       {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
       {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
       {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
+      {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
+      {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
       {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
       {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
     </>

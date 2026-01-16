@@ -7,7 +7,8 @@ import {
   BedDouble, 
   Mail, 
   DollarSign, 
-  ArrowRight 
+  ArrowRight,
+  Wallet 
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 
@@ -54,31 +55,34 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 px-4">
             {user?.rol === 'admin' 
               ? 'Tienes acceso a todos los módulos y grupos'
-              : `Acceso limitado al grupo: ${user?.rol}`
-            }
+              : user?.rol === 'financiero'
+              ? 'Acceso a pagos, ingresos y control de gastos'
+              : `Acceso limitado al grupo: ${user?.rol}`}
           </p>
         </div>
 
         {/* Modules Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {/* Asistencia Module */}
-          <div
-            onClick={() => onSelectModule('asistencia')}
-            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
-          >
-            <div className="flex flex-col items-center text-center">
-              <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-green-600 mb-3 sm:mb-4" strokeWidth={1.5} />
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
-                Asistencia
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
-                Registra la asistencia de los estudiantes en las reuniones de jueves
-              </p>
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600">
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          {user?.rol !== 'financiero' && (
+            <div
+              onClick={() => onSelectModule('asistencia')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-green-600 mb-3 sm:mb-4" strokeWidth={1.5} />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
+                  Asistencia
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
+                  Registra la asistencia de los estudiantes en las reuniones de jueves
+                </p>
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600">
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Catequistas Module - Only for admin and logistica */}
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
@@ -102,42 +106,46 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           )}
 
           {/* Documentos Module */}
-          <div
-            onClick={() => onSelectModule('documentos')}
-            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
-          >
-            <div className="flex flex-col items-center text-center">
-              <FileText className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-blue-600 mb-3 sm:mb-4" strokeWidth={1.5} />
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
-                Documentos
-              </h2>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
-                Controla la entrega de documentos requeridos para la confirmación
-              </p>
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600">
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          {user?.rol !== 'financiero' && (
+            <div
+              onClick={() => onSelectModule('documentos')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <FileText className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-blue-600 mb-3 sm:mb-4" strokeWidth={1.5} />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
+                  Documentos
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
+                  Controla la entrega de documentos requeridos para la confirmación
+                </p>
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600">
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Estudiantes Module */}
-          <div
-            onClick={() => onSelectModule('estudiantes')}
-            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
-          >
-            <div className="flex flex-col items-center text-center">
-              <GraduationCap className="w-20 h-20 text-cyan-600 mb-4" strokeWidth={1.5} />
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">
-                Estudiantes
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Consulta información y estado de todos los estudiantes
-              </p>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 text-cyan-600">
-                <ArrowRight className="w-6 h-6" />
+          {user?.rol !== 'financiero' && (
+            <div
+              onClick={() => onSelectModule('estudiantes')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <GraduationCap className="w-20 h-20 text-cyan-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Estudiantes
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Consulta información y estado de todos los estudiantes
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 text-cyan-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Sábanas Module - Only for admin and logistica */}
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
@@ -181,8 +189,8 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
           )}
 
-          {/* Pagos Module - Only for admin and logistica */}
-          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+          {/* Pagos Module - admin, logistica y financiero */}
+          {(user?.rol === 'admin' || user?.usuario === 'logistica' || user?.rol === 'financiero') && (
             <div
               onClick={() => onSelectModule('pagos')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
@@ -193,9 +201,53 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
                   Pagos
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  Controla los pagos del retiro (₡50.000 por estudiante)
+                  {user?.rol === 'financiero'
+                    ? 'Controla los pagos del retiro'
+                    : 'Controla los pagos del retiro (₡50.000 por estudiante)'}
                 </p>
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Ingresos Module - solo financiero y admin */}
+          {(user?.rol === 'admin' || user?.rol === 'financiero') && (
+            <div
+              onClick={() => onSelectModule('ingresos')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <Wallet className="w-20 h-20 text-emerald-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Ingresos
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Registra entradas y método: sinpe, efectivo o transferencia
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-50 text-emerald-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Gastos Module - solo financiero y admin */}
+          {(user?.rol === 'admin' || user?.rol === 'financiero') && (
+            <div
+              onClick={() => onSelectModule('gastos')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <FileText className="w-20 h-20 text-rose-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Gastos
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Control de gastos y reportes financieros
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600">
                   <ArrowRight className="w-6 h-6" />
                 </div>
               </div>

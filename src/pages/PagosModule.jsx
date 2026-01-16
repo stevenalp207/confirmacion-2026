@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
-import { grupos } from '../data/grupos';
-import { nombresCatequistas } from '../data/catequistas';
-import Pagos from '../components/Pagos';
-import { gruposData } from '../data/grupos';
-import { supabase } from '../config/supabase';
+import { useState, useEffect } from "react";
+import { grupos } from "../data/grupos";
+import { nombresCatequistas } from "../data/catequistas";
+import Pagos from "../components/Pagos";
+import { gruposData } from "../data/grupos";
 
 function PagosModule({ onBack, user }) {
-  const [currentGroup, setCurrentGroup] = useState('');
+  const [currentGroup, setCurrentGroup] = useState("");
   const [estudiantes, setEstudiantes] = useState(null);
   const [catequistas, setCatequistas] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Filtrar grupos según el rol del usuario (admin y logistica ven todos)
-  const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica' 
-    ? ['Catequistas', ...grupos]
-    : [];
+  // admin, logística y financiero pueden ver todos los grupos
+  const gruposDisponibles =
+    user?.rol === "admin" || user?.usuario === "logistica" || user?.rol === "financiero"
+      ? ["Catequistas", ...grupos]
+      : [];
 
   useEffect(() => {
     if (currentGroup) {
@@ -25,8 +25,7 @@ function PagosModule({ onBack, user }) {
   const loadEstudiantes = async (grupo) => {
     setLoading(true);
     try {
-      if (grupo === 'Catequistas') {
-        // Usar la lista de catequistas del archivo de datos
+      if (grupo === "Catequistas") {
         setCatequistas(nombresCatequistas);
         setEstudiantes(null);
       } else {
@@ -34,7 +33,7 @@ function PagosModule({ onBack, user }) {
         setCatequistas([]);
       }
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error("Error loading data:", error);
       setEstudiantes({});
       setCatequistas([]);
     } finally {
@@ -59,7 +58,9 @@ function PagosModule({ onBack, user }) {
               >
                 ← Atrás
               </button>
-              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Pagos del Retiro - Confirmación 2026</h1>
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold">
+                Pagos del Retiro - Confirmación 2026
+              </h1>
             </div>
 
             <div className="w-full sm:w-auto">
@@ -90,10 +91,7 @@ function PagosModule({ onBack, user }) {
             <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 text-center">
               Selecciona un grupo para controlar los pagos del retiro
             </p>
-            <p className="text-xs sm:text-sm text-gray-500 text-center">
-              Estudiantes: ₡50.000 | Catequistas: ₡15.000
-            </p>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {gruposDisponibles.map((grupo) => (
                 <button
@@ -114,9 +112,9 @@ function PagosModule({ onBack, user }) {
                 Grupo: {currentGroup}
               </h1>
               <p className="text-sm sm:text-base text-gray-600">
-                {currentGroup === 'Catequistas' 
-                  ? 'Registra los pagos del retiro de los catequistas (₡15.000 por catequista)'
-                  : 'Registra los pagos del retiro de los estudiantes (₡50.000 por estudiante)'}
+                {currentGroup === "Catequistas"
+                  ? "Registra los pagos del retiro de los catequistas (₡15.000 por catequista)"
+                  : "Registra los pagos del retiro de los estudiantes (₡50.000 por estudiante)"}
               </p>
             </div>
 
@@ -126,11 +124,11 @@ function PagosModule({ onBack, user }) {
                   <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
                 </div>
               ) : (
-                <Pagos 
-                  grupo={currentGroup} 
-                  estudiantes={estudiantes} 
+                <Pagos
+                  grupo={currentGroup}
+                  estudiantes={estudiantes}
                   catequistas={catequistas}
-                  esCatequistas={currentGroup === 'Catequistas'}
+                  esCatequistas={currentGroup === "Catequistas"}
                 />
               )}
             </div>
