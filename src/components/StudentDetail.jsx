@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../config/supabase';
+import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 
 function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [asistencias, setAsistencias] = useState({});
@@ -8,7 +9,6 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [notas, setNotas] = useState('');
   const [editandoNotas, setEditandoNotas] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-  const [fechasAsistencia, setFechasAsistencia] = useState([]);
 
   useEffect(() => {
     loadAllData();
@@ -27,16 +27,9 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
 
       if (asistenciasData) {
         const asistObj = {};
-        const fechas = [];
         asistenciasData.forEach(a => {
-          asistObj[a.fecha] = a.estado;
-          if (!fechas.includes(a.fecha)) {
-            fechas.push(a.fecha);
-          }
+          asistObj[a.catequesis_num] = a.estado;
         });
-        // Ordenar fechas
-        fechas.sort();
-        setFechasAsistencia(fechas);
         setAsistencias(asistObj);
       }
 
@@ -111,7 +104,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const asistenciaCount = Object.values(asistencias).filter(a => a === 'presente').length;
   const documentosCount = Object.values(documentos).filter(d => d === true).length;
   const pagoCuota = pagos?.monto_pagado || 0;
-  const totalJueves = fechasAsistencia.length; // Sin valor por defecto
+  const totalSesiones = numeroCatequesis; // 25 sesiones totales
 
   if (loadingData) {
     return <div className="text-gray-600">Cargando datos del estudiante...</div>;
@@ -148,21 +141,15 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
             <h3 className="font-bold text-green-800 text-base sm:text-lg">✓ Asistencia</h3>
             <div className="text-2xl sm:text-3xl">📋</div>
           </div>
-          {totalJueves > 0 ? (
-            <>
-              <p className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{asistenciaCount}</p>
-              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de {totalJueves} jueves</p>
-              <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
-                <div
-                  className="bg-gradient-to-r from-green-400 to-green-600 h-2 sm:h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${(asistenciaCount / totalJueves) * 100}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">{Math.round((asistenciaCount / totalJueves) * 100)}% completado</p>
-            </>
-          ) : (
-            <p className="text-gray-600 text-center py-4 text-sm">Sin registros</p>
-          )}
+          <p className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{asistenciaCount}</p>
+          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de {totalSesiones} catequesis</p>
+          <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
+            <div
+              className="bg-gradient-to-r from-green-400 to-green-600 h-2 sm:h-3 rounded-full transition-all duration-500"
+              style={{ width: `${(asistenciaCount / totalSesiones) * 100}%` }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">{Math.round((asistenciaCount / totalSesiones) * 100)}% completado</p>
         </div>
 
         {/* Documentos */}
@@ -208,25 +195,28 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
           📅 Historial de Asistencias
         </h3>
-        {fechasAsistencia.length > 0 ? (
+        {Object.keys(asistencias).length > 0 ? (
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            {fechasAsistencia.map(fecha => {
-              const estado = asistencias[fecha] || 'ausente';
-              const colors = {
-                'presente': { bg: 'bg-green-100', text: 'text-green-800', badge: '✓' },
-                'justificado': { bg: 'bg-blue-100', text: 'text-blue-800', badge: '⊙' },
-                'ausente': { bg: 'bg-red-100', text: 'text-red-800', badge: '✕' }
-              };
-              const color = colors[estado];
-              return (
-                <div key={fecha} className={`flex items-center justify-between p-3 rounded-lg ${color.bg} transition`}>
-                  <span className="text-sm font-medium text-gray-700">{fecha}</span>
-                  <span className={`px-4 py-1 rounded-full text-sm font-bold ${color.text} bg-white border-2`}>
-                    {color.badge} {estado.charAt(0).toUpperCase() + estado.slice(1)}
-                  </span>
-                </div>
-              );
-            })}
+            {Array.from({ length: numeroCatequesis }, (_, i) => i)
+              .filter(catequesisNum => asistencias[catequesisNum])
+              .map(catequesisNum => {
+                const estado = asistencias[catequesisNum];
+                const label = getCatequesisLabel(catequesisNum);
+                const colors = {
+                  'presente': { bg: 'bg-green-100', text: 'text-green-800', badge: '✓' },
+                  'justificado': { bg: 'bg-blue-100', text: 'text-blue-800', badge: '⊙' },
+                  'ausente': { bg: 'bg-red-100', text: 'text-red-800', badge: '✕' }
+                };
+                const color = colors[estado];
+                return (
+                  <div key={catequesisNum} className={`flex items-center justify-between p-3 rounded-lg ${color.bg} transition`}>
+                    <span className="text-sm font-medium text-gray-700">{label}</span>
+                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${color.text} bg-white border-2`}>
+                      {color.badge} {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                    </span>
+                  </div>
+                );
+              })}
           </div>
         ) : (
           <p className="text-gray-600 text-center py-8">No hay registros de asistencia aún</p>

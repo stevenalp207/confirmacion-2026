@@ -78,6 +78,7 @@ export const tiposDocumentos = [
   { id: 'cedula_padrino', nombre: 'Cédula Padrino' },
   { id: 'fe_confirmacion_padrino', nombre: 'Fe Confirmación Padrino' },
   { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
+  { id: 'permiso_retiro', nombre: 'Permiso Retiro' },
 ];
 
 // Número total de catequesis para Confirmación 2026 (incluye eventos especiales)
