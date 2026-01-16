@@ -18,14 +18,16 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const loadAllData = async () => {
     try {
       setLoadingData(true);
+      console.log('Cargando datos para estudiante:', estudianteId, 'grupo:', grupo);
 
       // Cargar asistencias
-      const { data: asistenciasData } = await supabase
+      const { data: asistenciasData, error: asistError } = await supabase
         .from('asistencias')
         .select('*')
         .eq('estudiante_id', estudianteId)
         .eq('grupo', grupo);
 
+      console.log('Asistencias response:', asistenciasData, asistError);
       if (asistenciasData) {
         const asistObj = {};
         asistenciasData.forEach(a => {
@@ -35,42 +37,51 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
       }
 
       // Cargar documentos
-      const { data: documentosData } = await supabase
+      const { data: documentosData, error: docsError } = await supabase
         .from('documentos_entregados')
         .select('*')
         .eq('estudiante_id', estudianteId)
         .eq('grupo', grupo);
 
-      if (documentosData) {
+      console.log('Documentos response:', documentosData, docsError);
+      if (documentosData && !docsError) {
         const docObj = {};
         documentosData.forEach(d => {
-          docObj[d.tipo_documento] = d.entregado;
+          docObj[d.documento_tipo] = d.entregado;
         });
         setDocumentos(docObj);
+      } else {
+        console.log('Error cargando documentos:', docsError);
+        setDocumentos({});
       }
 
       // Cargar pagos
-      const { data: pagosData } = await supabase
+      const { data: pagosData, error: pagosError } = await supabase
         .from('pagos_retiro')
         .select('*')
         .eq('estudiante_id', estudianteId)
-        .eq('grupo', grupo)
-        .single();
+        .eq('grupo', grupo);
 
-      if (pagosData) {
-        setPagos(pagosData);
+      console.log('Pagos response:', pagosData, pagosError);
+      if (pagosData && pagosData.length > 0 && !pagosError) {
+        setPagos(pagosData[0]);
+      } else {
+        // Si no existe, inicializar con valores por defecto
+        setPagos({ monto_pagado: 0, pagado: false });
       }
 
       // Cargar notas
-      const { data: notasData } = await supabase
+      const { data: notasData, error: notasError } = await supabase
         .from('notas_estudiantes')
         .select('notas')
         .eq('estudiante_id', estudianteId)
-        .eq('grupo', grupo)
-        .single();
+        .eq('grupo', grupo);
 
-      if (notasData) {
-        setNotas(notasData.notas || '');
+      console.log('Notas response:', notasData, notasError);
+      if (notasData && notasData.length > 0 && !notasError) {
+        setNotas(notasData[0].notas || '');
+      } else {
+        setNotas('');
       }
     } catch (error) {
       console.error('Error loading student data:', error);
@@ -87,6 +98,8 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
           estudiante_id: estudianteId,
           grupo: grupo,
           notas: notas
+        }, {
+          onConflict: 'grupo,estudiante_id'
         });
 
       if (error) {
@@ -206,17 +219,16 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         </h3>
         {Object.keys(asistencias).length > 0 ? (
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            {Array.from({ length: numeroCatequesis }, (_, i) => i)
-              .filter(catequesisNum => asistencias[catequesisNum])
-              .map(catequesisNum => {
-                const estado = asistencias[catequesisNum];
-                const label = getCatequesisLabel(catequesisNum);
+            {Object.entries(asistencias)
+              .sort(([numA], [numB]) => parseInt(numA) - parseInt(numB))
+              .map(([catequesisNum, estado]) => {
+                const label = getCatequesisLabel(parseInt(catequesisNum));
                 const icons = {
                   'presente': { bg: 'bg-green-100', text: 'text-green-800', Icon: Check },
                   'justificado': { bg: 'bg-blue-100', text: 'text-blue-800', Icon: AlertCircle },
                   'ausente': { bg: 'bg-red-100', text: 'text-red-800', Icon: X }
                 };
-                const config = icons[estado];
+                const config = icons[estado] || icons['ausente'];
                 const Icon = config.Icon;
                 return (
                   <div key={catequesisNum} className={`flex items-center justify-between p-3 rounded-lg ${config.bg} transition`}>

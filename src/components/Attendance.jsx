@@ -14,7 +14,9 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
       const newState = {};
       
       // Inicializar con estado 'ausente' por defecto
-      for (const estudianteId in estudiantes) {
+      // Iterar sobre los valores del objeto estudiantes para obtener los IDs reales
+      for (const key in estudiantes) {
+        const estudianteId = estudiantes[key].id; // Usar el ID real del estudiante
         newState[estudianteId] = {};
         for (const catequesisNum of catequesisIndices) {
           newState[estudianteId][catequesisNum] = 'ausente';
@@ -63,7 +65,20 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
     };
     
     const nuevoEstado = ciclo[estadoActual];
-    const estudiante = estudiantes[estudianteId];
+    
+    // Encontrar el estudiante por su ID real
+    let estudiante = null;
+    for (const key in estudiantes) {
+      if (estudiantes[key].id === estudianteId) {
+        estudiante = estudiantes[key];
+        break;
+      }
+    }
+
+    if (!estudiante) {
+      console.error('Estudiante no encontrado');
+      return;
+    }
 
     try {
       // Guardar en Supabase
@@ -72,7 +87,6 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
         .upsert({
           grupo,
           estudiante_id: estudianteId,
-          estudiante_nombre: estudiante.nombre,
           catequesis_num: catequesisNum,
           estado: nuevoEstado
         }, {
@@ -160,12 +174,13 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(estudiantes).map(([id, estudiante]) => {
+            {Object.entries(estudiantes).map(([_key, estudiante]) => {
+              const estudianteId = estudiante.id; // Usar el ID real del estudiante
               return (
-                <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
+                <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
                   <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
                     <button
-                      onClick={() => onStudentClick && onStudentClick(id)}
+                      onClick={() => onStudentClick && onStudentClick(estudianteId)}
                       className="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer text-left w-full"
                       title="Ver perfil del estudiante"
                     >
@@ -173,7 +188,7 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
                     </button>
                   </td>
                   {catequesisIndices.map(catequesisNum => {
-                    const estado = asistenciasState[id]?.[catequesisNum] || 'ausente';
+                    const estado = asistenciasState[estudianteId]?.[catequesisNum] || 'ausente';
                     
                     let bgColor, icon, label;
                     if (estado === 'presente') {
@@ -193,7 +208,7 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
                     return (
                       <td key={catequesisNum} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
                         <button
-                          onClick={() => handleEstadoChange(id, catequesisNum)}
+                          onClick={() => handleEstadoChange(estudianteId, catequesisNum)}
                           className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg font-bold text-white text-base sm:text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
                           title={label}
                         >

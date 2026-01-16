@@ -11,9 +11,8 @@ function StudentList({ grupo, user }) {
   const grupoInfo = gruposData[grupo];
   const estudiantesObj = grupoInfo?.estudiantes || {};
   
-  // Convertir a array
-  const estudiantes = Object.entries(estudiantesObj).map(([id, data]) => ({
-    id,
+  // Convertir a array - usar directamente los datos que incluyen el id real
+  const estudiantes = Object.values(estudiantesObj).map(data => ({
     ...data
   }));
 

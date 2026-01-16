@@ -11,9 +11,9 @@ function PagosModule({ onBack, user }) {
   const [loading, setLoading] = useState(false);
 
   // Filtrar grupos según el rol del usuario
-  // admin, logística y financiero pueden ver todos los grupos
+  // admin y financiero pueden ver todos los grupos
   const gruposDisponibles =
-    user?.rol === "admin" || user?.usuario === "logistica" || user?.rol === "financiero"
+    user?.rol === "admin" || user?.rol === "financiero"
       ? ["Catequistas", ...grupos]
       : [user?.rol]; // Usuarios de grupos específicos ven solo su grupo
 

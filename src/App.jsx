@@ -11,6 +11,7 @@ import CatequistasModule from './pages/CatequistasModule';
 import StudentsModule from './pages/StudentsModule';
 import GastosModule from './pages/GastosModule';
 import IngresosModule from './pages/IngresosModule';
+import FormacionModule from './pages/FormacionModule';
 import NotificationManager from './components/NotificationManager';
 
 function AppContent() {
@@ -37,7 +38,10 @@ function AppContent() {
       return ['pagos', 'gastos', 'ingresos'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'pagos'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas'];
+    }
+    if (user?.rol === 'formacion') {
+      return ['formacion', 'catequistas'];
     }
     return ['asistencia', 'documentos', 'estudiantes', 'pagos'];
   })();
@@ -72,6 +76,7 @@ function AppContent() {
       {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
       {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
       {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
+      {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
       {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
       {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
     </>

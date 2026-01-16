@@ -40,8 +40,9 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
           });
         }
       } else {
-        // Inicializar pagos para todos los estudiantes
-        for (const estudianteId in estudiantes) {
+        // Inicializar pagos para todos los estudiantes usando el ID real
+        for (const key in estudiantes) {
+          const estudianteId = estudiantes[key].id;
           newState[estudianteId] = {
             monto_pagado: 0,
             pagado: false
@@ -91,12 +92,10 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
         const { error } = await supabase
           .from('pagos_catequistas')
           .upsert({
-            catequista_nombre: id,
-            monto_requerido: montoRequerido,
-            monto_pagado: nuevoMonto,
-            pagado: pagado
+            grupo,
+            catequista_nombre: id
           }, {
-            onConflict: 'catequista_nombre'
+            onConflict: 'grupo,catequista_nombre'
           });
 
         if (error) {
@@ -106,14 +105,11 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
         }
       } else {
         // Guardar pago de estudiante
-        const estudiante = estudiantes[id];
         const { error } = await supabase
           .from('pagos_retiro')
           .upsert({
             grupo,
             estudiante_id: id,
-            estudiante_nombre: estudiante.nombre,
-            monto_requerido: montoRequerido,
             monto_pagado: nuevoMonto,
             pagado: pagado
           }, {
@@ -172,7 +168,7 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
   // Crear lista de personas según el tipo
   const listaPersonas = esCatequistas 
     ? catequistas.map(nombre => ({ id: nombre, nombre: nombre }))
-    : Object.entries(estudiantes).map(([id, est]) => ({ id, nombre: est.nombre }));
+    : Object.values(estudiantes).map(est => ({ id: est.id, nombre: est.nombre }));
 
   return (
     <div className="space-y-6">

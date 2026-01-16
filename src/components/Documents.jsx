@@ -10,8 +10,9 @@ function Documents({ grupo, estudiantes }) {
     try {
       const newState = {};
       
-      // Inicializar estado vacío para todos los estudiantes
-      for (const estudianteId in estudiantes) {
+      // Inicializar estado vacío para todos los estudiantes usando el ID real
+      for (const key in estudiantes) {
+        const estudianteId = estudiantes[key].id; // Usar el ID real del estudiante
         newState[estudianteId] = {};
       }
 
@@ -27,7 +28,7 @@ function Documents({ grupo, estudiantes }) {
         // Procesar datos de Supabase
         data.forEach(item => {
           if (newState[item.estudiante_id]) {
-            newState[item.estudiante_id][item.documento_id] = item.entregado;
+            newState[item.estudiante_id][item.documento_tipo] = item.entregado;
           }
         });
       }
@@ -46,10 +47,9 @@ function Documents({ grupo, estudiantes }) {
     }
   }, [grupo, estudiantes, loadDocumentos]);
 
-  const handleCheckboxChange = async (estudianteId, docId) => {
-    const currentValue = documentosState[estudianteId]?.[docId] || false;
+  const handleCheckboxChange = async (estudianteId, docTipo) => {
+    const currentValue = documentosState[estudianteId]?.[docTipo] || false;
     const newValue = !currentValue;
-    const estudiante = estudiantes[estudianteId];
 
     try {
       // Guardar en Supabase
@@ -58,11 +58,10 @@ function Documents({ grupo, estudiantes }) {
         .upsert({
           grupo,
           estudiante_id: estudianteId,
-          estudiante_nombre: estudiante.nombre,
-          documento_id: docId,
+          documento_tipo: docTipo,
           entregado: newValue
         }, {
-          onConflict: 'grupo,estudiante_id,documento_id'
+          onConflict: 'grupo,estudiante_id,documento_tipo'
         });
 
       if (error) {
@@ -76,7 +75,7 @@ function Documents({ grupo, estudiantes }) {
         ...prev,
         [estudianteId]: {
           ...prev[estudianteId],
-          [docId]: newValue
+          [docTipo]: newValue
         }
       }));
     } catch (error) {
@@ -120,23 +119,26 @@ function Documents({ grupo, estudiantes }) {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(estudiantes).map(([id, estudiante]) => (
-                <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
-                    {estudiante.nombre}
-                  </td>
-                  {tiposDocumentos.map(doc => (
-                    <td key={doc.id} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={documentosState[id]?.[doc.id] || false}
-                        onChange={() => handleCheckboxChange(id, doc.id)}
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
-                      />
+              {Object.entries(estudiantes).map(([_key, estudiante]) => {
+                const estudianteId = estudiante.id; // Usar el ID real del estudiante
+                return (
+                  <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
+                      {estudiante.nombre}
                     </td>
-                  ))}
-                </tr>
-              ))}
+                    {tiposDocumentos.map(doc => (
+                      <td key={doc.id} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={documentosState[estudianteId]?.[doc.id] || false}
+                          onChange={() => handleCheckboxChange(estudianteId, doc.id)}
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

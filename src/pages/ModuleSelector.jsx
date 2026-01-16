@@ -8,7 +8,8 @@ import {
   Mail, 
   DollarSign, 
   ArrowRight,
-  Wallet 
+  Wallet,
+  BookOpen
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 
@@ -57,6 +58,8 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               ? 'Tienes acceso a todos los módulos y grupos'
               : user?.rol === 'financiero'
               ? 'Acceso a pagos, ingresos y control de gastos'
+              : user?.rol === 'formacion'
+              ? 'Registra asistencia de las 15 formaciones del retiro'
               : `Acceso limitado al grupo: ${user?.rol}`}
           </p>
         </div>
@@ -64,7 +67,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
         {/* Modules Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {/* Asistencia Module */}
-          {user?.rol !== 'financiero' && (
+          {user?.rol !== 'financiero' && user?.rol !== 'formacion' && (
             <div
               onClick={() => onSelectModule('asistencia')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
@@ -85,7 +88,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           )}
 
           {/* Catequistas Module - Only for admin and logistica */}
-          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+          {(user?.rol === 'admin' || user?.usuario === 'logistica' || user?.rol === 'formacion') && (
             <div
               onClick={() => onSelectModule('catequistas')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
@@ -106,7 +109,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           )}
 
           {/* Documentos Module */}
-          {user?.rol !== 'financiero' && (
+          {user?.rol !== 'financiero' && user?.rol !== 'formacion' && (
             <div
               onClick={() => onSelectModule('documentos')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
@@ -127,7 +130,7 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           )}
 
           {/* Estudiantes Module */}
-          {user?.rol !== 'financiero' && (
+          {user?.rol !== 'financiero' && user?.rol !== 'formacion' && (
             <div
               onClick={() => onSelectModule('estudiantes')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
@@ -189,8 +192,8 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
           )}
 
-          {/* Pagos Module - admin, logistica, financiero y usuarios de grupos */}
-          {(user?.rol === 'admin' || user?.usuario === 'logistica' || user?.rol === 'financiero' || ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios'].includes(user?.rol)) && (
+          {/* Pagos Module - admin, financiero y usuarios de grupos */}
+          {(user?.rol === 'admin' || user?.rol === 'financiero' || ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios'].includes(user?.rol)) && (
             <div
               onClick={() => onSelectModule('pagos')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
@@ -248,6 +251,27 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
                   Control de gastos y reportes financieros
                 </p>
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Formacion Module - solo rol formacion */}
+          {user?.rol === 'formacion' && (
+            <div
+              onClick={() => onSelectModule('formacion')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <BookOpen className="w-20 h-20 text-indigo-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Formación
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Registra la asistencia de las 15 formaciones del retiro
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-50 text-indigo-600">
                   <ArrowRight className="w-6 h-6" />
                 </div>
               </div>

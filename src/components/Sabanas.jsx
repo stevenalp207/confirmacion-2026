@@ -9,7 +9,9 @@ function Sabanas({ grupo, estudiantes }) {
     try {
       const newState = {};
       
-      for (const estudianteId in estudiantes) {
+      // Usar el ID real del estudiante
+      for (const key in estudiantes) {
+        const estudianteId = estudiantes[key].id;
         newState[estudianteId] = false;
       }
 
@@ -23,7 +25,7 @@ function Sabanas({ grupo, estudiantes }) {
       } else if (data) {
         data.forEach(item => {
           if (newState.hasOwnProperty(item.estudiante_id)) {
-            newState[item.estudiante_id] = item.entregado;
+            newState[item.estudiante_id] = item.entregada;
           }
         });
       }
@@ -45,7 +47,6 @@ function Sabanas({ grupo, estudiantes }) {
   const handleCheckboxChange = async (estudianteId) => {
     const currentValue = sabanasState[estudianteId] || false;
     const newValue = !currentValue;
-    const estudiante = estudiantes[estudianteId];
 
     try {
       const { error } = await supabase
@@ -53,8 +54,7 @@ function Sabanas({ grupo, estudiantes }) {
         .upsert({
           grupo,
           estudiante_id: estudianteId,
-          estudiante_nombre: estudiante.nombre,
-          entregado: newValue
+          entregada: newValue
         }, {
           onConflict: 'grupo,estudiante_id'
         });
@@ -111,21 +111,24 @@ function Sabanas({ grupo, estudiantes }) {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(estudiantes).map(([id, estudiante]) => (
-              <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm text-gray-800 font-medium">
-                  {estudiante.nombre}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <input
-                    type="checkbox"
-                    checked={sabanasState[id] || false}
-                    onChange={() => handleCheckboxChange(id)}
-                    className="w-5 h-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
-                  />
-                </td>
-              </tr>
-            ))}
+            {Object.entries(estudiantes).map(([_key, estudiante]) => {
+              const estudianteId = estudiante.id;
+              return (
+                <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-gray-800 font-medium">
+                    {estudiante.nombre}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={sabanasState[estudianteId] || false}
+                      onChange={() => handleCheckboxChange(estudianteId)}
+                      className="w-5 h-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

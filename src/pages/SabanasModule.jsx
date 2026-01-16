@@ -9,7 +9,7 @@ function SabanasModule({ onBack, user }) {
   const [loading, setLoading] = useState(false);
 
   // Filtrar grupos según el rol del usuario
-  const gruposDisponibles = user?.rol === 'admin' 
+  const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica'
     ? grupos 
     : [user?.rol];
 
