@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { gruposData } from '../data/grupos';
 import StudentDetail from './StudentDetail';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 function StudentList({ grupo, user }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,9 +27,9 @@ function StudentList({ grupo, user }) {
       <div>
         <button
           onClick={() => setSelectedStudent(null)}
-          className="mb-3 sm:mb-4 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition"
+          className="mb-3 sm:mb-4 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition flex items-center gap-2"
         >
-          ← Volver a la lista
+          <ArrowLeft className="w-4 h-4" /> Volver a la lista
         </button>
         <StudentDetail
           grupo={grupo}
@@ -72,9 +73,9 @@ function StudentList({ grupo, user }) {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">{est.nombre}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">Tel: {est.id}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">ID: {est.id}</p>
                 </div>
-                <div className="text-xl sm:text-2xl flex-shrink-0">→</div>
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 shrink-0" />
               </div>
             </button>
           ))

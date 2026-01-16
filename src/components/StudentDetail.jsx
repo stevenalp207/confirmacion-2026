@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../config/supabase';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
+import { GraduationCap, Check, Circle, X, AlertCircle, Calendar, AlertTriangle, Edit, Save, ClipboardList, FileText, FolderOpen, DollarSign } from 'lucide-react';
 
 function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [asistencias, setAsistencias] = useState({});
@@ -119,7 +120,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 break-words">{estudiante.nombre}</h2>
             <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Estudiante de {grupo}</p>
           </div>
-          <div className="text-3xl sm:text-4xl lg:text-5xl flex-shrink-0">👨‍🎓</div>
+          <GraduationCap className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 text-blue-100" strokeWidth={1.5} />
         </div>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>
@@ -138,8 +139,10 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         {/* Asistencia */}
         <div className="bg-white border-2 border-green-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <h3 className="font-bold text-green-800 text-base sm:text-lg">✓ Asistencia</h3>
-            <div className="text-2xl sm:text-3xl">📋</div>
+            <h3 className="font-bold text-green-800 text-base sm:text-lg flex items-center gap-2">
+              <Check className="w-5 h-5" /> Asistencia
+            </h3>
+            <ClipboardList className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" strokeWidth={1.5} />
           </div>
           <p className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{asistenciaCount}</p>
           <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de {totalSesiones} catequesis</p>
@@ -155,17 +158,21 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         {/* Documentos */}
         <div className="bg-white border-2 border-blue-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <h3 className="font-bold text-blue-800 text-base sm:text-lg">📄 Documentos</h3>
-            <div className="text-2xl sm:text-3xl">📂</div>
+            <h3 className="font-bold text-blue-800 text-base sm:text-lg flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Documentos
+            </h3>
+            <FolderOpen className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" strokeWidth={1.5} />
           </div>
           <p className="text-3xl sm:text-4xl font-bold text-blue-600 mb-2">{documentosCount}</p>
           <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">entregados</p>
           <div className="space-y-2">
             {Object.entries(documentos).slice(0, 2).map(([tipo, entregado]) => (
               <div key={tipo} className="flex items-center gap-2 text-xs sm:text-sm">
-                <span className={entregado ? 'text-green-600 text-base sm:text-lg' : 'text-gray-400'}>
-                  {entregado ? '✓' : '○'}
-                </span>
+                {entregado ? (
+                  <Check className="w-4 h-4 text-green-600" />
+                ) : (
+                  <Circle className="w-4 h-4 text-gray-400" />
+                )}
                 <span className={entregado ? 'text-gray-800' : 'text-gray-500'}>{tipo}</span>
               </div>
             ))}
@@ -175,7 +182,9 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         {/* Pagos */}
         <div className="bg-white border-2 border-purple-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <h3 className="font-bold text-purple-800 text-base sm:text-lg">💰 Pagos</h3>
+            <h3 className="font-bold text-purple-800 text-base sm:text-lg flex items-center gap-2">
+              <DollarSign className="w-5 h-5" /> Pagos
+            </h3>
             <div className="text-2xl sm:text-3xl">₡</div>
           </div>
           <p className="text-3xl sm:text-4xl font-bold text-purple-600 mb-2">₡{pagoCuota.toLocaleString('es-CR')}</p>
@@ -193,7 +202,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
       {/* Detalles de asistencia */}
       <div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow">
         <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
-          📅 Historial de Asistencias
+          <Calendar className="w-5 h-5" /> Historial de Asistencias
         </h3>
         {Object.keys(asistencias).length > 0 ? (
           <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -202,17 +211,18 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
               .map(catequesisNum => {
                 const estado = asistencias[catequesisNum];
                 const label = getCatequesisLabel(catequesisNum);
-                const colors = {
-                  'presente': { bg: 'bg-green-100', text: 'text-green-800', badge: '✓' },
-                  'justificado': { bg: 'bg-blue-100', text: 'text-blue-800', badge: '⊙' },
-                  'ausente': { bg: 'bg-red-100', text: 'text-red-800', badge: '✕' }
+                const icons = {
+                  'presente': { bg: 'bg-green-100', text: 'text-green-800', Icon: Check },
+                  'justificado': { bg: 'bg-blue-100', text: 'text-blue-800', Icon: AlertCircle },
+                  'ausente': { bg: 'bg-red-100', text: 'text-red-800', Icon: X }
                 };
-                const color = colors[estado];
+                const config = icons[estado];
+                const Icon = config.Icon;
                 return (
-                  <div key={catequesisNum} className={`flex items-center justify-between p-3 rounded-lg ${color.bg} transition`}>
+                  <div key={catequesisNum} className={`flex items-center justify-between p-3 rounded-lg ${config.bg} transition`}>
                     <span className="text-sm font-medium text-gray-700">{label}</span>
-                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${color.text} bg-white border-2`}>
-                      {color.badge} {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${config.text} bg-white border-2 flex items-center gap-2`}>
+                      <Icon className="w-4 h-4" /> {estado.charAt(0).toUpperCase() + estado.slice(1)}
                     </span>
                   </div>
                 );
@@ -227,18 +237,26 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
       <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-yellow-900 text-lg flex items-center gap-2">
-            ⚠️ Notas Importantes
+            <AlertTriangle className="w-5 h-5" /> Notas Importantes
           </h3>
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
             <button
               onClick={() => setEditandoNotas(!editandoNotas)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-1 ${
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 ${
                 editandoNotas
                   ? 'bg-gray-600 hover:bg-gray-700 text-white'
                   : 'bg-yellow-600 hover:bg-yellow-700 text-white'
               }`}
             >
-              {editandoNotas ? '✕ Cancelar' : '✏️ Editar'}
+              {editandoNotas ? (
+                <>
+                  <X className="w-4 h-4" /> Cancelar
+                </>
+              ) : (
+                <>
+                  <Edit className="w-4 h-4" /> Editar
+                </>
+              )}
             </button>
           )}
         </div>
@@ -260,7 +278,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
               onClick={handleSaveNotas}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
             >
-              💾 Guardar Notas
+              <Save className="w-5 h-5" /> Guardar Notas
             </button>
           </div>
         ) : (

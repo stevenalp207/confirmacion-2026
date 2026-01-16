@@ -1,4 +1,14 @@
 import logo from '../assets/logo.png';
+import { 
+  CheckCircle, 
+  Users, 
+  FileText, 
+  GraduationCap, 
+  BedDouble, 
+  Mail, 
+  DollarSign, 
+  ArrowRight 
+} from 'lucide-react';
 
 function ModuleSelector({ onSelectModule, user, onLogout }) {
   return (
@@ -53,15 +63,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">✓</div>
+              <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-green-600 mb-3 sm:mb-4" strokeWidth={1.5} />
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                 Asistencia
               </h2>
               <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                 Registra la asistencia de los estudiantes en las reuniones de jueves
               </p>
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600 font-bold text-xl">
-                →
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600">
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </div>
@@ -73,15 +83,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">👥</div>
+                <Users className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-blue-600 mb-3 sm:mb-4" strokeWidth={1.5} />
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                   Catequistas
                 </h2>
                 <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                   Registra la asistencia de todos los catequistas
                 </p>
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 text-blue-600 font-bold text-xl">
-                  →
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-50 text-blue-600">
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
             </div>
@@ -93,15 +103,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">📄</div>
+              <FileText className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-blue-600 mb-3 sm:mb-4" strokeWidth={1.5} />
               <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                 Documentos
               </h2>
               <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                 Controla la entrega de documentos requeridos para la confirmación
               </p>
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600 font-bold text-xl">
-                →
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600">
+                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
             </div>
           </div>
@@ -112,15 +122,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="text-6xl mb-4">👨‍🎓</div>
+              <GraduationCap className="w-20 h-20 text-cyan-600 mb-4" strokeWidth={1.5} />
               <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 Estudiantes
               </h2>
               <p className="text-gray-600 mb-6">
                 Consulta información y estado de todos los estudiantes
               </p>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 text-cyan-600 font-bold">
-                →
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 text-cyan-600">
+                <ArrowRight className="w-6 h-6" />
               </div>
             </div>
           </div>
@@ -132,15 +142,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="text-6xl mb-4">🛏️</div>
+                <BedDouble className="w-20 h-20 text-orange-600 mb-4" strokeWidth={1.5} />
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">
                   Sábanas
                 </h2>
                 <p className="text-gray-600 mb-6">
                   Registra la entrega de sábanas de los estudiantes
                 </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 font-bold">
-                  →
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600">
+                  <ArrowRight className="w-6 h-6" />
                 </div>
               </div>
             </div>
@@ -153,15 +163,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="text-6xl mb-4">💌</div>
+                <Mail className="w-20 h-20 text-purple-600 mb-4" strokeWidth={1.5} />
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">
                   Cartas
                 </h2>
                 <p className="text-gray-600 mb-6">
                   Registra la entrega de cartas de los estudiantes
                 </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 font-bold">
-                  →
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600">
+                  <ArrowRight className="w-6 h-6" />
                 </div>
               </div>
             </div>
@@ -174,15 +184,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="text-6xl mb-4">💰</div>
+                <DollarSign className="w-20 h-20 text-blue-600 mb-4" strokeWidth={1.5} />
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">
                   Pagos
                 </h2>
                 <p className="text-gray-600 mb-6">
                   Controla los pagos del retiro (₡50.000 por estudiante)
                 </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 font-bold">
-                  →
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600">
+                  <ArrowRight className="w-6 h-6" />
                 </div>
               </div>
             </div>

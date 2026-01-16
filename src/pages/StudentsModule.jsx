@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
+import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, MailX, ArrowRight } from 'lucide-react';
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,9 +101,9 @@ function StudentsModule({ onBack, user }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <button
                 onClick={() => setSelectedStudent(null)}
-                className="hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base"
+                className="hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base flex items-center gap-2"
               >
-                ← Volver a la lista
+                <ArrowLeft className="w-4 h-4" /> Volver a la lista
               </button>
               <div className="flex-1">
                 <h1 className="text-lg sm:text-xl font-bold truncate">{selectedStudent.nombre}</h1>
@@ -125,9 +126,9 @@ function StudentsModule({ onBack, user }) {
         {/* Botón flotante de salida */}
         <button
           onClick={onBack}
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg text-lg sm:text-xl font-bold transition"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg transition"
         >
-          ✕
+          <X className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
     );
@@ -142,9 +143,9 @@ function StudentsModule({ onBack, user }) {
             <h1 className="text-xl sm:text-2xl font-bold">Gestión de Estudiantes</h1>
             <button
               onClick={onBack}
-              className="hover:bg-blue-800 px-3 sm:px-4 py-2 rounded transition font-semibold text-sm sm:text-base"
+              className="hover:bg-blue-800 px-3 sm:px-4 py-2 rounded transition font-semibold text-sm sm:text-base flex items-center gap-2"
             >
-              ← Salir
+              <ArrowLeft className="w-4 h-4" /> Salir
             </button>
           </div>
         </div>
@@ -156,20 +157,20 @@ function StudentsModule({ onBack, user }) {
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b-2 border-gray-200">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
-              🔍 Filtros y Búsqueda
+              <Search className="w-6 h-6" /> Filtros y Búsqueda
             </h2>
             <button
               onClick={generarPDFListaGeneral}
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base transition shadow-md hover:shadow-lg whitespace-nowrap"
             >
-              📋 Imprimir
+              <Printer className="w-5 h-5" /> Imprimir
             </button>
           </div>
           
           {/* Búsqueda por nombre */}
           <div className="mb-4 sm:mb-6">
-            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide">
-              🔎 Buscar por nombre
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+              <Search className="w-4 h-4" /> Buscar por nombre
             </label>
             <input
               type="text"
@@ -182,8 +183,8 @@ function StudentsModule({ onBack, user }) {
 
           {/* Filtro por grupo */}
           <div className="mb-4 sm:mb-6">
-            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide">
-              📍 Filtrar por grupo
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+              <MapPin className="w-4 h-4" /> Filtrar por grupo
             </label>
             <div className="flex flex-wrap gap-2">
               <button
@@ -217,8 +218,8 @@ function StudentsModule({ onBack, user }) {
 
           {/* Información de resultados */}
           <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-            <p className="text-gray-800 font-semibold text-lg">
-              📊 Resultados: <span className="text-blue-600 text-2xl">{filteredStudents.length}</span> estudiante(s)
+            <p className="text-gray-800 font-semibold text-lg flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-600" /> Resultados: <span className="text-blue-600 text-2xl">{filteredStudents.length}</span> estudiante(s)
               {selectedGroup !== 'Todos' && ` en ${selectedGroup}`}
             </p>
           </div>
@@ -238,18 +239,19 @@ function StudentsModule({ onBack, user }) {
                     <p className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition">
                       {student.nombre}
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      📞 {student.id} • 📚 {student.grupo}
+                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                      <Phone className="w-4 h-4" /> {student.id} • <BookOpen className="w-4 h-4" /> {student.grupo}
                     </p>
                   </div>
-                  <div className="text-3xl text-gray-300 group-hover:text-blue-500 transition">→</div>
+                  <ArrowRight className="w-8 h-8 text-gray-300 group-hover:text-blue-500 transition" />
                 </div>
               </button>
             ))
           ) : (
             <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-300">
+              <MailX className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 text-xl font-medium">
-                📭 No se encontraron estudiantes
+                No se encontraron estudiantes
               </p>
               <p className="text-gray-500 text-sm mt-2">
                 Intenta ajustando los filtros de búsqueda
@@ -262,9 +264,9 @@ function StudentsModule({ onBack, user }) {
       {/* Botón flotante de salida */}
       <button
         onClick={onBack}
-        className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg text-xl font-bold transition"
+        className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition"
       >
-        ✕
+        <X className="w-6 h-6" />
       </button>
     </div>
   );

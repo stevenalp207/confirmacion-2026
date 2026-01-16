@@ -6,7 +6,7 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
   const [loading, setLoading] = useState(true);
 
   // Monto requerido según el tipo
-  const montoRequerido = esCatequistas ? 15000 : 50000;
+  const montoRequerido = 50000;
   const tablaNombre = esCatequistas ? 'pagos_catequistas' : 'pagos_retiro';
 
   const loadPagos = useCallback(async () => {
