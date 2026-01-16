@@ -9,6 +9,7 @@ import CartasModule from './pages/CartasModule';
 import PagosModule from './pages/PagosModule';
 import CatequistasModule from './pages/CatequistasModule';
 import StudentsModule from './pages/StudentsModule';
+import NotificationManager from './components/NotificationManager';
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
@@ -55,6 +56,9 @@ function AppContent() {
       {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
       {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
       {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
+      
+      {/* Gestor de notificaciones - visible cuando hay usuario logueado */}
+      <NotificationManager />
     </>
   );
 }
