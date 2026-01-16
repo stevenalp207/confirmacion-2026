@@ -122,34 +122,35 @@ function Attendance({ grupo, estudiantes, user }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Asistencia - Jueves</h2>
-        <div className="flex gap-4 text-xs">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Asistencia - Jueves</h2>
+        <div className="flex flex-wrap gap-3 sm:gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-green-100 border-2 border-green-400 rounded text-center text-green-800 font-bold">✓</div>
-            <span>Presente</span>
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-100 border-2 border-green-400 rounded text-center text-green-800 font-bold text-xs sm:text-sm flex items-center justify-center">✓</div>
+            <span className="text-gray-700">Presente</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-red-100 border-2 border-red-400 rounded text-center text-red-800 font-bold">✗</div>
-            <span>Ausente</span>
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-red-100 border-2 border-red-400 rounded text-center text-red-800 font-bold text-xs sm:text-sm flex items-center justify-center">✗</div>
+            <span className="text-gray-700">Ausente</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-yellow-100 border-2 border-yellow-400 rounded text-center text-yellow-800 font-bold">!</div>
-            <span>Justificado</span>
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-yellow-100 border-2 border-yellow-400 rounded text-center text-yellow-800 font-bold text-xs sm:text-sm flex items-center justify-center">!</div>
+            <span className="text-gray-700">Justificado</span>
           </div>
         </div>
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+      <div className="overflow-x-auto -mx-3 sm:mx-0">
+        <div className="inline-block min-w-full align-middle px-3 sm:px-0">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100">
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10 shadow-sm">
                 Estudiante
               </th>
               {fechasJueves.map(fecha => (
-                <th key={fecha} className="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-max">
+                <th key={fecha} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold text-gray-700 min-w-max whitespace-nowrap">
                   {formatFecha(fecha)}
                 </th>
               ))}
@@ -159,7 +160,7 @@ function Attendance({ grupo, estudiantes, user }) {
             {Object.entries(estudiantes).map(([id, estudiante]) => {
               return (
                 <tr key={id} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50">
+                  <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
                     {estudiante.nombre}
                   </td>
                   {fechasJueves.map(fecha => {
@@ -181,10 +182,10 @@ function Attendance({ grupo, estudiantes, user }) {
                     }
                     
                     return (
-                      <td key={fecha} className="px-4 py-3 text-center">
+                      <td key={fecha} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
                         <button
                           onClick={() => handleEstadoChange(id, fecha)}
-                          className={`w-10 h-10 rounded-lg font-bold text-white text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
+                          className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg font-bold text-white text-base sm:text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
                           title={label}
                         >
                           {icon}
@@ -197,6 +198,7 @@ function Attendance({ grupo, estudiantes, user }) {
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

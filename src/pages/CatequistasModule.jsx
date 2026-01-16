@@ -198,45 +198,45 @@ function CatequistasModule({ onBack, user }) {
       {/* Navbar */}
       <nav className="bg-indigo-600 text-white shadow-lg">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={onBack}
-                className="hover:bg-indigo-700 px-3 py-2 rounded-lg transition-colors"
+                className="hover:bg-indigo-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 ← Atrás
               </button>
-              <h1 className="text-xl font-bold">Catequistas - Confirmación 2026</h1>
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Catequistas - Confirmación 2026</h1>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
             Asistencia de Catequistas
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
             Registra la asistencia de todos los catequistas
           </p>
 
           {/* Agregar Catequista */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-gray-700 mb-3">Agregar nuevo catequista</h3>
-            <div className="flex gap-2">
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold text-sm sm:text-base text-gray-700 mb-2 sm:mb-3">Agregar nuevo catequista</h3>
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={nuevoNombre}
                 onChange={(e) => setNuevoNombre(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && agregarCatequista()}
                 placeholder="Nombre del catequista"
-                className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                className="flex-1 px-3 py-2 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
               />
               <button
                 onClick={agregarCatequista}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                className="px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition whitespace-nowrap"
               >
                 Agregar
               </button>
@@ -246,75 +246,85 @@ function CatequistasModule({ onBack, user }) {
           {/* Tabla de Asistencia */}
           {loading ? (
             <div className="flex justify-center items-center p-8">
-              <div className="text-gray-600">Cargando datos...</div>
+              <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
-                <thead className="bg-indigo-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Catequista</th>
-                    {fechasJueves.map((fecha) => (
-                      <th
-                        key={fecha}
-                        className="px-2 py-3 text-center text-xs font-semibold text-gray-700 bg-indigo-50"
-                      >
-                        {new Date(fecha).toLocaleDateString('es-CR', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {catequistasNombres.map((catequista) => (
-                    <tr key={catequista} className="border-t border-gray-200 hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-800 sticky left-0 bg-white">
-                        {catequista}
-                      </td>
-                      {fechasJueves.map((fecha) => {
-                        const estado = catequistasState[catequista]?.[fecha] || 'ausente';
-                        const icon = getEstadoIcon(estado);
-                        const colorClass = getEstadoColor(estado);
-                        
-                        return (
-                          <td
-                            key={`${catequista}-${fecha}`}
-                            className="px-2 py-3 text-center"
-                          >
-                            <button
-                              onClick={() => handleEstadoChange(catequista, fecha)}
-                              className={`w-10 h-10 rounded-lg border-2 font-bold text-sm hover:shadow-md transition-all ${colorClass}`}
-                            >
-                              {icon}
-                            </button>
-                          </td>
-                        );
-                      })}
+            <div className="overflow-x-auto -mx-3 sm:mx-0">
+              <div className="inline-block min-w-full align-middle px-3 sm:px-0">
+                <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                  <thead className="bg-indigo-100">
+                    <tr>
+                      <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-indigo-100 z-10 shadow-sm">Catequista</th>
+                      {fechasJueves.map((fecha) => (
+                        <th
+                          key={fecha}
+                          className="px-2 py-2 sm:py-3 text-center text-xs font-semibold text-gray-700 bg-indigo-50 whitespace-nowrap"
+                        >
+                          <span className="hidden sm:inline">
+                            {new Date(fecha).toLocaleDateString('es-CR', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </span>
+                          <span className="sm:hidden">
+                            {new Date(fecha).toLocaleDateString('es-CR', {
+                              month: 'numeric',
+                              day: 'numeric'
+                            })}
+                          </span>
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {catequistasNombres.map((catequista) => (
+                      <tr key={catequista} className="border-t border-gray-200 hover:bg-gray-50">
+                        <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
+                          {catequista}
+                        </td>
+                        {fechasJueves.map((fecha) => {
+                          const estado = catequistasState[catequista]?.[fecha] || 'ausente';
+                          const icon = getEstadoIcon(estado);
+                          const colorClass = getEstadoColor(estado);
+                          
+                          return (
+                            <td
+                              key={`${catequista}-${fecha}`}
+                              className="px-1 sm:px-2 py-2 sm:py-3 text-center"
+                            >
+                              <button
+                                onClick={() => handleEstadoChange(catequista, fecha)}
+                                className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg border-2 font-bold text-xs sm:text-sm hover:shadow-md transition-all ${colorClass}`}
+                              >
+                                {icon}
+                              </button>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
           {/* Leyenda */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-700 mb-2">Leyenda:</h4>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-sm sm:text-base text-gray-700 mb-2">Leyenda:</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-green-100 text-green-800 border-2 border-green-400 rounded font-bold flex items-center justify-center">✓</div>
-                <span className="text-sm text-gray-600">Presente</span>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-green-100 text-green-800 border-2 border-green-400 rounded font-bold flex items-center justify-center text-sm sm:text-base">✓</div>
+                <span className="text-xs sm:text-sm text-gray-600">Presente</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-100 text-blue-800 border-2 border-blue-400 rounded font-bold flex items-center justify-center">J</div>
-                <span className="text-sm text-gray-600">Justificado</span>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 text-blue-800 border-2 border-blue-400 rounded font-bold flex items-center justify-center text-sm sm:text-base">J</div>
+                <span className="text-xs sm:text-sm text-gray-600">Justificado</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-red-100 text-red-800 border-2 border-red-400 rounded font-bold flex items-center justify-center">✗</div>
-                <span className="text-sm text-gray-600">Ausente</span>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-red-100 text-red-800 border-2 border-red-400 rounded font-bold flex items-center justify-center text-sm sm:text-base">✗</div>
+                <span className="text-xs sm:text-sm text-gray-600">Ausente</span>
               </div>
             </div>
           </div>

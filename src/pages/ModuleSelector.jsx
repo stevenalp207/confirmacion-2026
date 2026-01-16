@@ -3,34 +3,36 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header with User Info */}
       <div className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Confirmación 2026</h1>
-            <p className="text-sm text-gray-600">
-              Bienvenido: <span className="font-semibold">{user?.usuario}</span>
-              {user?.rol === 'admin' && (
-                <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
-                  ADMIN
-                </span>
-              )}
-            </p>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Confirmación 2026</h1>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                Bienvenido: <span className="font-semibold">{user?.usuario}</span>
+                {user?.rol === 'admin' && (
+                  <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
+                    ADMIN
+                  </span>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={onLogout}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
+            >
+              Cerrar Sesión
+            </button>
           </div>
-          <button
-            onClick={onLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition"
-          >
-            Cerrar Sesión
-          </button>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
         {/* Content Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 px-2">
             Selecciona un módulo
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 px-4">
             {user?.rol === 'admin' 
               ? 'Tienes acceso a todos los módulos y grupos'
               : `Acceso limitado al grupo: ${user?.rol}`
@@ -39,21 +41,21 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
         </div>
 
         {/* Modules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {/* Asistencia Module */}
           <div
             onClick={() => onSelectModule('asistencia')}
-            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="text-6xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">✓</div>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                 Asistencia
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                 Registra la asistencia de los estudiantes en las reuniones de jueves
               </p>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold">
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 text-green-600 font-bold text-xl">
                 →
               </div>
             </div>
@@ -63,17 +65,17 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
             <div
               onClick={() => onSelectModule('catequistas')}
-              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="text-6xl mb-4">👥</div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">👥</div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                   Catequistas
                 </h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                   Registra la asistencia de todos los catequistas
                 </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold text-xl">
                   →
                 </div>
               </div>
@@ -83,17 +85,17 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
           {/* Documentos Module */}
           <div
             onClick={() => onSelectModule('documentos')}
-            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-4 sm:p-6 lg:p-8"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="text-6xl mb-4">📄</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">📄</div>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
                 Documentos
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
                 Controla la entrega de documentos requeridos para la confirmación
               </p>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-bold">
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600 font-bold text-xl">
                 →
               </div>
             </div>

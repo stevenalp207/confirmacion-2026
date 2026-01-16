@@ -96,21 +96,24 @@ function StudentsModule({ onBack, user }) {
       <div className="min-h-screen bg-gray-100">
         {/* Navbar */}
         <nav className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <button
                 onClick={() => setSelectedStudent(null)}
-                className="hover:bg-blue-800 px-4 py-2 rounded transition"
+                className="hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base"
               >
-                ← Volver
+                ← Volver a la lista
               </button>
-              <h1 className="text-2xl font-bold">Perfil del Estudiante</h1>
+              <div className="flex-1">
+                <h1 className="text-lg sm:text-xl font-bold truncate">{selectedStudent.nombre}</h1>
+                <p className="text-blue-200 text-xs sm:text-sm">Grupo: {selectedStudent.grupo}</p>
+              </div>
             </div>
           </div>
         </nav>
 
         {/* Contenido */}
-        <main className="max-w-7xl mx-auto p-4">
+        <main className="max-w-7xl mx-auto p-3 sm:p-4">
           <StudentDetail
             grupo={selectedStudent.grupo}
             estudianteId={selectedStudent.id}
@@ -122,7 +125,7 @@ function StudentsModule({ onBack, user }) {
         {/* Botón flotante de salida */}
         <button
           onClick={onBack}
-          className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg text-xl font-bold transition"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg text-lg sm:text-xl font-bold transition"
         >
           ✕
         </button>
@@ -134,36 +137,38 @@ function StudentsModule({ onBack, user }) {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Gestión de Estudiantes</h1>
-          <button
-            onClick={onBack}
-            className="hover:bg-blue-800 px-4 py-2 rounded transition font-semibold"
-          >
-            ← Salir
-          </button>
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold">Gestión de Estudiantes</h1>
+            <button
+              onClick={onBack}
+              className="hover:bg-blue-800 px-3 sm:px-4 py-2 rounded transition font-semibold text-sm sm:text-base"
+            >
+              ← Salir
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* Contenido */}
-      <main className="max-w-7xl mx-auto p-4">
+      <main className="max-w-7xl mx-auto p-3 sm:p-4">
         {/* Filtros */}
-        <div className="bg-white rounded-xl shadow-md p-8 mb-6">
-          <div className="flex items-center justify-between mb-6 pb-6 border-b-2 border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b-2 border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
               🔍 Filtros y Búsqueda
             </h2>
             <button
               onClick={generarPDFListaGeneral}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-5 rounded-lg transition shadow-md hover:shadow-lg"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base transition shadow-md hover:shadow-lg whitespace-nowrap"
             >
               📋 Imprimir
             </button>
           </div>
           
           {/* Búsqueda por nombre */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide">
               🔎 Buscar por nombre
             </label>
             <input
@@ -171,19 +176,19 @@ function StudentsModule({ onBack, user }) {
               placeholder="Escribe el nombre del estudiante..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-lg"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base lg:text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
             />
           </div>
 
           {/* Filtro por grupo */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide">
               📍 Filtrar por grupo
             </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedGroup('Todos')}
-                className={`px-4 py-2 rounded-lg font-bold transition ${
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
                   selectedGroup === 'Todos'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'

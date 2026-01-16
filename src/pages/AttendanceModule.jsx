@@ -99,22 +99,22 @@ function AttendanceModule({ onBack, user }) {
       {/* Navbar */}
       <nav className="bg-green-600 text-white shadow-lg">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={onBack}
-                className="hover:bg-green-700 px-3 py-2 rounded-lg transition-colors"
+                className="hover:bg-green-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 ← Atrás
               </button>
-              <h1 className="text-xl font-bold">Asistencia - Confirmación 2026</h1>
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Asistencia - Confirmación 2026</h1>
             </div>
 
-            <div>
+            <div className="w-full sm:w-auto">
               <select
                 value={currentGroup}
                 onChange={(e) => handleGroupChange(e.target.value)}
-                className="bg-green-700 text-white px-4 py-2 rounded-lg border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+                className="w-full sm:w-auto bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
               >
                 <option value="">Seleccionar Grupo</option>
                 {gruposDisponibles.map((grupo) => (
@@ -129,57 +129,58 @@ function AttendanceModule({ onBack, user }) {
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
         {!currentGroup ? (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">
               Módulo de Asistencia
             </h2>
-            <p className="text-gray-600 mb-8 text-center">
+            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 text-center">
               Selecciona un grupo para registrar asistencias
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {gruposDisponibles.map((grupo) => (
                 <button
                   key={grupo}
                   onClick={() => handleGroupChange(grupo)}
-                  className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-lg hover:border-green-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
+                  className="p-3 sm:p-4 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-lg hover:border-green-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
                 >
-                  <div className="font-semibold text-gray-800 text-lg">{grupo}</div>
-                  <div className="text-sm text-gray-600 mt-1">Click para acceder</div>
+                  <div className="font-semibold text-gray-800 text-base sm:text-lg">{grupo}</div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Click para acceder</div>
                 </button>
               ))}
             </div>
           </div>
         ) : (
           <>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex items-center justify-between">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
                     Grupo: {currentGroup}
                   </h1>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Registra la asistencia de los estudiantes
                   </p>
                 </div>
                 <button
                   onClick={generarPDFAsistencia}
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md"
+                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
                   </svg>
-                  Imprimir Lista PDF
+                  <span className="hidden sm:inline">Imprimir Lista PDF</span>
+                  <span className="sm:hidden">PDF</span>
                 </button>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
               {loading ? (
                 <div className="flex justify-center items-center p-8">
-                  <div className="text-gray-600">Cargando datos...</div>
+                  <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
                 </div>
               ) : (
                 <Attendance grupo={currentGroup} estudiantes={estudiantes} user={user} />

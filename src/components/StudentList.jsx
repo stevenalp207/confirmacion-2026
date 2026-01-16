@@ -26,7 +26,7 @@ function StudentList({ grupo, user }) {
       <div>
         <button
           onClick={() => setSelectedStudent(null)}
-          className="mb-4 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition"
+          className="mb-3 sm:mb-4 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition"
         >
           ← Volver a la lista
         </button>
@@ -41,7 +41,7 @@ function StudentList({ grupo, user }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Búsqueda */}
       <div>
         <input
@@ -49,13 +49,13 @@ function StudentList({ grupo, user }) {
           placeholder="Buscar estudiante por nombre..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
         />
       </div>
 
       {/* Información */}
       <div className="bg-blue-50 p-3 rounded-lg">
-        <p className="text-gray-800">
+        <p className="text-gray-800 text-sm sm:text-base">
           <strong>Total de estudiantes:</strong> {filteredEstudiantes.length} / {estudiantes.length}
         </p>
       </div>
@@ -67,19 +67,19 @@ function StudentList({ grupo, user }) {
             <button
               key={est.id}
               onClick={() => setSelectedStudent(est)}
-              className="w-full p-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:shadow-lg transition text-left"
+              className="w-full p-3 sm:p-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:shadow-lg transition text-left"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-gray-800">{est.nombre}</p>
-                  <p className="text-sm text-gray-600">ID: {est.id}</p>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">{est.nombre}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">ID: {est.id}</p>
                 </div>
-                <div className="text-2xl">→</div>
+                <div className="text-xl sm:text-2xl flex-shrink-0">→</div>
               </div>
             </button>
           ))
         ) : (
-          <p className="text-gray-600 text-center py-8">No se encontraron estudiantes</p>
+          <p className="text-gray-600 text-center py-6 sm:py-8 text-sm sm:text-base">No se encontraron estudiantes</p>
         )}
       </div>
     </div>

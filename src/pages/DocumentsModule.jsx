@@ -40,22 +40,22 @@ function DocumentsModule({ onBack, user }) {
       {/* Navbar */}
       <nav className="bg-blue-600 text-white shadow-lg">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={onBack}
-                className="hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
+                className="hover:bg-blue-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 ← Atrás
               </button>
-              <h1 className="text-xl font-bold">Documentos - Confirmación 2026</h1>
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Documentos - Confirmación 2026</h1>
             </div>
 
-            <div>
+            <div className="w-full sm:w-auto">
               <select
                 value={currentGroup}
                 onChange={(e) => handleGroupChange(e.target.value)}
-                className="bg-blue-700 text-white px-4 py-2 rounded-lg border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full sm:w-auto bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
               >
                 <option value="">Seleccionar Grupo</option>
                 {gruposDisponibles.map((grupo) => (
@@ -70,44 +70,44 @@ function DocumentsModule({ onBack, user }) {
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
         {!currentGroup ? (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">
               Módulo de Documentos
             </h2>
-            <p className="text-gray-600 mb-8 text-center">
+            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 text-center">
               Selecciona un grupo para controlar documentos
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {gruposDisponibles.map((grupo) => (
                 <button
                   key={grupo}
                   onClick={() => handleGroupChange(grupo)}
-                  className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg hover:border-blue-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
+                  className="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg hover:border-blue-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
                 >
-                  <div className="font-semibold text-gray-800 text-lg">{grupo}</div>
-                  <div className="text-sm text-gray-600 mt-1">Click para acceder</div>
+                  <div className="font-semibold text-gray-800 text-base sm:text-lg">{grupo}</div>
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Click para acceder</div>
                 </button>
               ))}
             </div>
           </div>
         ) : (
           <>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
                 Grupo: {currentGroup}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Gestiona la entrega de documentos de los estudiantes
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
               {loading ? (
                 <div className="flex justify-center items-center p-8">
-                  <div className="text-gray-600">Cargando datos...</div>
+                  <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>
                 </div>
               ) : (
                 <Documents grupo={currentGroup} estudiantes={estudiantes} user={user} />

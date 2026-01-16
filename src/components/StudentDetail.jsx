@@ -120,63 +120,63 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   return (
     <div className="space-y-6">
       {/* Información del estudiante */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-8 shadow-lg">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h2 className="text-4xl font-bold mb-2">{estudiante.nombre}</h2>
-            <p className="text-blue-100 text-lg">Estudiante de {grupo}</p>
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg">
+        <div className="flex items-start justify-between mb-3 sm:mb-4 gap-3">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 break-words">{estudiante.nombre}</h2>
+            <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Estudiante de {grupo}</p>
           </div>
-          <div className="text-5xl">👨‍🎓</div>
+          <div className="text-3xl sm:text-4xl lg:text-5xl flex-shrink-0">👨‍🎓</div>
         </div>
-        <div className="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-blue-400">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>
-            <p className="text-blue-100 text-sm uppercase tracking-wide">ID</p>
-            <p className="text-2xl font-bold">{estudianteId}</p>
+            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">ID</p>
+            <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudianteId}</p>
           </div>
           <div>
-            <p className="text-blue-100 text-sm uppercase tracking-wide">Grupo</p>
-            <p className="text-2xl font-bold">{grupo}</p>
+            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Grupo</p>
+            <p className="text-lg sm:text-xl lg:text-2xl font-bold">{grupo}</p>
           </div>
         </div>
       </div>
 
       {/* Resumen de estado */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Asistencia */}
-        <div className="bg-white border-2 border-green-200 rounded-xl p-6 shadow hover:shadow-lg transition">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-green-800 text-lg">✓ Asistencia</h3>
-            <div className="text-3xl">📋</div>
+        <div className="bg-white border-2 border-green-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <h3 className="font-bold text-green-800 text-base sm:text-lg">✓ Asistencia</h3>
+            <div className="text-2xl sm:text-3xl">📋</div>
           </div>
           {totalJueves > 0 ? (
             <>
-              <p className="text-4xl font-bold text-green-600 mb-2">{asistenciaCount}</p>
-              <p className="text-sm text-gray-600 mb-4">de {totalJueves} jueves</p>
-              <div className="w-full bg-gray-200 rounded-full h-3">
+              <p className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{asistenciaCount}</p>
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de {totalJueves} jueves</p>
+              <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
                 <div
-                  className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-green-400 to-green-600 h-2 sm:h-3 rounded-full transition-all duration-500"
                   style={{ width: `${(asistenciaCount / totalJueves) * 100}%` }}
                 ></div>
               </div>
               <p className="text-xs text-gray-500 mt-2">{Math.round((asistenciaCount / totalJueves) * 100)}% completado</p>
             </>
           ) : (
-            <p className="text-gray-600 text-center py-4">Sin registros</p>
+            <p className="text-gray-600 text-center py-4 text-sm">Sin registros</p>
           )}
         </div>
 
         {/* Documentos */}
-        <div className="bg-white border-2 border-blue-200 rounded-xl p-6 shadow hover:shadow-lg transition">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-blue-800 text-lg">📄 Documentos</h3>
-            <div className="text-3xl">📂</div>
+        <div className="bg-white border-2 border-blue-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <h3 className="font-bold text-blue-800 text-base sm:text-lg">📄 Documentos</h3>
+            <div className="text-2xl sm:text-3xl">📂</div>
           </div>
-          <p className="text-4xl font-bold text-blue-600 mb-2">{documentosCount}</p>
-          <p className="text-sm text-gray-600 mb-4">entregados</p>
+          <p className="text-3xl sm:text-4xl font-bold text-blue-600 mb-2">{documentosCount}</p>
+          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">entregados</p>
           <div className="space-y-2">
             {Object.entries(documentos).slice(0, 2).map(([tipo, entregado]) => (
-              <div key={tipo} className="flex items-center gap-2 text-sm">
-                <span className={entregado ? 'text-green-600 text-lg' : 'text-gray-400'}>
+              <div key={tipo} className="flex items-center gap-2 text-xs sm:text-sm">
+                <span className={entregado ? 'text-green-600 text-base sm:text-lg' : 'text-gray-400'}>
                   {entregado ? '✓' : '○'}
                 </span>
                 <span className={entregado ? 'text-gray-800' : 'text-gray-500'}>{tipo}</span>
@@ -186,16 +186,16 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         </div>
 
         {/* Pagos */}
-        <div className="bg-white border-2 border-purple-200 rounded-xl p-6 shadow hover:shadow-lg transition">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-purple-800 text-lg">💰 Pagos</h3>
-            <div className="text-3xl">₡</div>
+        <div className="bg-white border-2 border-purple-200 rounded-xl p-4 sm:p-5 lg:p-6 shadow hover:shadow-lg transition">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <h3 className="font-bold text-purple-800 text-base sm:text-lg">💰 Pagos</h3>
+            <div className="text-2xl sm:text-3xl">₡</div>
           </div>
-          <p className="text-4xl font-bold text-purple-600 mb-2">₡{pagoCuota.toLocaleString('es-CR')}</p>
-          <p className="text-sm text-gray-600 mb-4">de ₡50.000</p>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <p className="text-3xl sm:text-4xl font-bold text-purple-600 mb-2">₡{pagoCuota.toLocaleString('es-CR')}</p>
+          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de ₡50.000</p>
+          <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
             <div
-              className="bg-gradient-to-r from-purple-400 to-purple-600 h-3 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-purple-400 to-purple-600 h-2 sm:h-3 rounded-full transition-all duration-500"
               style={{ width: `${Math.min((pagoCuota / 50000) * 100, 100)}%` }}
             ></div>
           </div>
