@@ -56,9 +56,6 @@ function AppContent() {
       {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
       {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
       {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
-      
-      {/* Gestor de notificaciones - visible cuando hay usuario logueado */}
-      <NotificationManager />
     </>
   );
 }

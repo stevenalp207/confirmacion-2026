@@ -9,6 +9,7 @@ import {
   DollarSign, 
   ArrowRight 
 } from 'lucide-react';
+import NotificationManager from '../components/NotificationManager';
 
 function ModuleSelector({ onSelectModule, user, onLogout }) {
   return (
@@ -31,12 +32,15 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
                 </p>
               </div>
             </div>
-            <button
-              onClick={onLogout}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
-            >
-              Cerrar Sesión
-            </button>
+            <div className="flex items-center gap-3">
+              <NotificationManager />
+              <button
+                onClick={onLogout}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         </div>
       </div>

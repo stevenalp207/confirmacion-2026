@@ -132,52 +132,62 @@ const NotificationManager = () => {
 
   // Botón de prueba (solo para desarrollo)
   const testNotification = async () => {
-    if (permission !== 'granted') {
-      const granted = await requestPermission();
-      if (!granted) {
-        alert('Por favor, permite las notificaciones.');
-        return;
+    try {
+      console.log('Iniciando prueba de notificación...');
+      console.log('Permiso actual:', permission);
+      
+      if (permission !== 'granted') {
+        console.log('Solicitando permiso...');
+        const granted = await requestPermission();
+        if (!granted) {
+          alert('❌ Por favor, permite las notificaciones en tu navegador.');
+          return;
+        }
       }
+      
+      console.log('Mostrando notificación de prueba...');
+      await showNotification();
+      console.log('✅ Notificación enviada');
+      
+      // Feedback visual
+      alert('✅ Notificación de prueba enviada! Revisa tus notificaciones.');
+    } catch (error) {
+      console.error('Error en prueba de notificación:', error);
+      alert('❌ Error al enviar notificación: ' + error.message);
     }
-    
-    await showNotification();
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <div className="flex flex-col gap-2 items-end">
-        <button
-          onClick={toggleNotifications}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg transition-all ${
-            isEnabled
-              ? 'bg-green-500 hover:bg-green-600 text-white'
-              : 'bg-gray-600 hover:bg-gray-700 text-white'
-          }`}
-          title={isEnabled ? 'Notificaciones activas' : 'Activar notificaciones'}
-        >
-          {isEnabled ? (
-            <>
-              <Bell size={20} />
-              <span className="text-sm font-medium">Notificaciones ON</span>
-            </>
-          ) : (
-            <>
-              <BellOff size={20} />
-              <span className="text-sm font-medium">Notificaciones OFF</span>
-            </>
-          )}
-        </button>
-        
-        {/* Botón de prueba - ocultar en producción */}
-        {isEnabled && import.meta.env.DEV && (
-          <button
-            onClick={testNotification}
-            className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
-          >
-            Probar notificación
-          </button>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={toggleNotifications}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+          isEnabled
+            ? 'bg-green-500 hover:bg-green-600 text-white'
+            : 'bg-gray-600 hover:bg-gray-700 text-white'
+        }`}
+        title={isEnabled ? 'Notificaciones activas - Click para desactivar' : 'Activar recordatorio semanal'}
+      >
+        {isEnabled ? (
+          <Bell size={18} />
+        ) : (
+          <BellOff size={18} />
         )}
-      </div>
+        <span className="text-xs sm:text-sm font-medium hidden sm:inline">
+          {isEnabled ? 'ON' : 'OFF'}
+        </span>
+      </button>
+      
+      {/* Botón de prueba - ocultar en producción */}
+      {isEnabled && import.meta.env.DEV && (
+        <button
+          onClick={testNotification}
+          className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded"
+          title="Probar notificación ahora"
+        >
+          Test
+        </button>
+      )}
     </div>
   );
 };
