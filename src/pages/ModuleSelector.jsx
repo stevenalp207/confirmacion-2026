@@ -257,8 +257,8 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
           )}
 
-          {/* Formacion Module - solo rol formacion */}
-          {user?.rol === 'formacion' && (
+          {/* Formacion Module - admin y rol formacion */}
+          {(user?.rol === 'admin' || user?.rol === 'formacion') && (
             <div
               onClick={() => onSelectModule('formacion')}
               className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
