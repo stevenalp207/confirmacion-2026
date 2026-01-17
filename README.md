@@ -134,3 +134,38 @@ Para problemas o preguntas, contacta al administrador del sistema.
 ## 📄 Licencia
 
 Este proyecto es privado y está destinado únicamente para uso interno.
+
+## 🧰 Utilidades agregadas
+
+Se añadieron utilidades reutilizables en `src/utils` para acelerar el trabajo en los módulos:
+
+- `format.js`: Formateo de fechas (`formatDate`), horas (`formatTime`), nombres (`capitalizeName`) y moneda CRC (`formatCurrency`).
+- `validation.js`: Validaciones comunes (`required`, `isEmail`, `isPhoneCR`, `isCedulaCR`, `isPositiveAmount`).
+- `permissions.js`: Reglas básicas de acceso por rol (`canAccess`, `requireAccess`, `isAdmin`).
+- `storage.js`: Hooks de almacenamiento (`useLocalStorage`, `useSessionStorage`) y cache con TTL (`createCache`).
+- `export.js`: Exportación a CSV (`toCSV`) y descarga (`downloadCSV`).
+- `analytics.js`: Métricas de asistencia y finanzas (`attendanceRate`, `monthlyTotals`, `outstandingPayments`, `groupStats`).
+
+### Ejemplos rápidos
+
+```javascript
+import { formatCurrency, attendanceRate, toCSV, downloadCSV } from '@/utils'
+
+// Formatear montos
+formatCurrency(50000) // ➜ "₡50.000"
+
+// Tasa de asistencia
+attendanceRate([{estado: 'presente'}, {estado: 'ausente'}]) // ➜ 50
+
+// Exportar a CSV
+const csv = toCSV([
+  { nombre: 'Ana', grupo: 'Ciencia' },
+  { nombre: 'Luis', grupo: 'Piedad' },
+], [
+  { key: 'nombre', header: 'Nombre' },
+  { key: 'grupo', header: 'Grupo' },
+])
+downloadCSV('estudiantes.csv', csv)
+```
+
+> Importación abreviada: todos los helpers se re-exportan desde `src/utils/index.js`, por lo que puedes usar `import { ... } from '@/utils'`.
