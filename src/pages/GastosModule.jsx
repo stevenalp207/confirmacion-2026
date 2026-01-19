@@ -30,21 +30,21 @@ function GastosModule({ onBack, user }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
       {/* Navbar */}
-      <nav className="bg-rose-600 text-white shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
-            <div className="flex items-center space-x-2 sm:space-x-4">
+      <nav className="bg-rose-600 text-white shadow-lg sticky top-0 z-10">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 py-2 sm:py-0 sm:h-16">
+            <div className="flex items-center gap-1 sm:gap-4">
               <button
                 onClick={onBack}
-                className="hover:bg-rose-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
+                className="hover:bg-rose-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-xs sm:text-sm font-medium"
               >
                 ← Atrás
               </button>
-              <h1 className="text-base sm:text-lg lg:text-xl font-bold">
+              <h1 className="text-sm sm:text-base lg:text-lg font-bold truncate">
                 Control de Gastos - Confirmación 2026
               </h1>
             </div>
-            <div className="text-sm sm:text-base text-rose-100">
+            <div className="text-xs sm:text-sm text-rose-100 self-end sm:self-auto">
               Rol: <span className="font-semibold">{user?.rol}</span>
             </div>
           </div>
@@ -52,8 +52,8 @@ function GastosModule({ onBack, user }) {
       </nav>
 
       {/* Main content */}
-      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
-        <div className="bg-white/80 backdrop-blur rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 border border-rose-100">
+      <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 lg:py-6">
+        <div className="bg-white/80 backdrop-blur rounded-xl shadow-lg p-3 sm:p-6 lg:p-8 border border-rose-100">
           <GastosFinancieros user={user} />
         </div>
       </div>
