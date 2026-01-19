@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
-import { catequistas, nombresCatequistas } from '../data/catequistas';
+import { catequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
 
 function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
-  const [catequistasNombres, setCatequistasNombres] = useState(nombresCatequistas);
-  const [nuevoNombre, setNuevoNombre] = useState('');
   const [loading, setLoading] = useState(true);
   
   // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesis-1]
@@ -15,7 +13,6 @@ function CatequistasModule({ onBack, user }) {
   const loadCatequistas = useCallback(async () => {
     try {
       const newState = {};
-      const nombres = new Set(catequistasNombres);
 
       // Cargar TODOS los catequistas sin filtrar por grupo
       const { data, error } = await supabase
@@ -27,7 +24,6 @@ function CatequistasModule({ onBack, user }) {
         console.error('Error loading catequistas:', error);
       } else if (data) {
         data.forEach(item => {
-          nombres.add(item.catequista_nombre);
           if (!newState[item.catequista_nombre]) {
             newState[item.catequista_nombre] = {};
           }
@@ -35,14 +31,13 @@ function CatequistasModule({ onBack, user }) {
         });
       }
 
-      setCatequistasNombres(Array.from(nombres));
       setCatequistasState(newState);
     } catch (error) {
       console.error('Error loading catequistas:', error);
     } finally {
       setLoading(false);
     }
-  }, [catequistasNombres]);
+  }, []);
 
   useEffect(() => {
     loadCatequistas();
@@ -137,23 +132,7 @@ function CatequistasModule({ onBack, user }) {
     }
   };
 
-  const agregarCatequista = async () => {
-    if (!nuevoNombre.trim()) return;
-
-    const nombreLimpio = nuevoNombre.trim();
-    if (catequistasNombres.includes(nombreLimpio)) {
-      alert('Este catequista ya existe');
-      setNuevoNombre('');
-      return;
-    }
-
-    setCatequistasNombres(prev => [...prev, nombreLimpio]);
-    setCatequistasState(prev => ({
-      ...prev,
-      [nombreLimpio]: {}
-    }));
-    setNuevoNombre('');
-  };
+  // Se quitó la funcionalidad de agregar catequista
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -184,26 +163,7 @@ function CatequistasModule({ onBack, user }) {
             Registra la asistencia de todos los catequistas
           </p>
 
-          {/* Agregar Catequista */}
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-sm sm:text-base text-gray-700 mb-2 sm:mb-3">Agregar nuevo catequista</h3>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="text"
-                value={nuevoNombre}
-                onChange={(e) => setNuevoNombre(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && agregarCatequista()}
-                placeholder="Nombre del catequista"
-                className="flex-1 px-3 py-2 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-              />
-              <button
-                onClick={agregarCatequista}
-                className="px-4 py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition whitespace-nowrap"
-              >
-                Agregar
-              </button>
-            </div>
-          </div>
+          {/* Se removió el bloque para agregar catequista */}
 
           {/* Tabla de Asistencia */}
           {loading ? (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../assets/logo.png';
 import { 
   CheckCircle, 
@@ -21,6 +21,23 @@ import NotificationManager from '../components/NotificationManager';
 
 function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccount }) {
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [sheetVisible, setSheetVisible] = useState(false);
+
+  useEffect(() => {
+    if (showSwitcher) {
+      // start enter animation on mount
+      const id = requestAnimationFrame(() => setSheetVisible(true));
+      return () => cancelAnimationFrame(id);
+    } else {
+      setSheetVisible(false);
+    }
+  }, [showSwitcher]);
+
+  const closeSwitcher = () => {
+    // play exit animation then unmount
+    setSheetVisible(false);
+    setTimeout(() => setShowSwitcher(false), 200);
+  };
 
   const handleSwitch = (usuario) => {
     onSwitchAccount(usuario);
@@ -51,7 +68,7 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
               <NotificationManager />
               <div className="relative">
                 <button
-                  onClick={() => setShowSwitcher((prev) => !prev)}
+                  onClick={() => (showSwitcher ? closeSwitcher() : setShowSwitcher(true))}
                   className="bg-white border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base flex items-center gap-2 whitespace-nowrap"
                 >
                   <User className="w-4 h-4" />
@@ -59,47 +76,107 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
                 </button>
 
                 {showSwitcher && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-xl z-20">
-                    <div className="p-3 border-b border-gray-100 flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">Cuentas guardadas</span>
-                      <button
-                        onClick={() => setShowSwitcher(false)}
-                        className="text-gray-400 hover:text-gray-600"
-                        aria-label="Cerrar selector"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="p-3 space-y-2 max-h-64 overflow-y-auto">
-                      {savedAccounts?.length ? (
-                        savedAccounts.map((account) => (
-                          <div key={account.usuario} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
-                            <div>
-                              <p className="text-sm font-semibold text-gray-800">{account.usuario}</p>
-                              <p className="text-xs text-gray-500 uppercase tracking-wide">{account.rol}</p>
+                  <>
+                    {/* Desktop dropdown */}
+                    <div className="hidden sm:block absolute top-full mt-2 right-0 w-80 bg-white border border-gray-200 rounded-lg shadow-2xl z-50">
+                      <div className="p-3 border-b border-gray-100 flex items-center justify-between">
+                        <span className="text-sm font-semibold text-gray-700">Cuentas guardadas</span>
+                        <button
+                          onClick={closeSwitcher}
+                          className="text-gray-400 hover:text-gray-600"
+                          aria-label="Cerrar selector"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div className="p-3 space-y-2 max-h-80 overflow-y-auto">
+                        {savedAccounts?.length ? (
+                          savedAccounts.map((account) => (
+                            <div key={account.usuario} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
+                              <div>
+                                <p className="text-sm font-semibold text-gray-800">{account.usuario}</p>
+                                <p className="text-xs text-gray-500 uppercase tracking-wide">{account.rol}</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleSwitch(account.usuario)}
+                                  className="text-blue-600 text-xs font-semibold hover:underline"
+                                >
+                                  Usar
+                                </button>
+                                <button
+                                  onClick={() => onRemoveAccount(account.usuario)}
+                                  className="text-gray-400 hover:text-gray-600"
+                                  aria-label={`Quitar ${account.usuario}`}
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
+                          ))
+                        ) : (
+                          <p className="text-sm text-gray-500">No hay cuentas guardadas.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile bottom sheet */}
+                    <div className="sm:hidden fixed inset-0 z-50">
+                      {/* Backdrop */}
+                      <div
+                        className={`absolute inset-0 bg-black/40 transition-opacity duration-200 ${sheetVisible ? 'opacity-100' : 'opacity-0'}`}
+                        onClick={closeSwitcher}
+                        aria-hidden="true"
+                      />
+                      {/* Sheet */}
+                      <div className={`absolute inset-x-0 bottom-0 bg-white rounded-t-2xl shadow-2xl transform transition-transform duration-200 ${sheetVisible ? 'translate-y-0' : 'translate-y-full'}`}>
+                        <div className="pt-3 pb-2 flex justify-center">
+                          <div className="h-1.5 w-10 bg-gray-300 rounded-full" />
+                        </div>
+                        <div className="px-4 pb-2 border-b border-gray-100 flex items-center justify-between">
+                          <span className="text-base font-semibold text-gray-800">Cuentas guardadas</span>
+                          <button
+                            onClick={closeSwitcher}
+                            className="text-gray-400 hover:text-gray-600"
+                            aria-label="Cerrar"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                        <div className="p-4 space-y-2 max-h-[60vh] overflow-y-auto">
+                          {savedAccounts?.length ? (
+                            savedAccounts.map((account) => (
                               <button
+                                key={account.usuario}
                                 onClick={() => handleSwitch(account.usuario)}
-                                className="text-blue-600 text-xs font-semibold hover:underline"
+                                className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-3"
                               >
-                                Usar
+                                <div className="text-left">
+                                  <p className="text-sm font-semibold text-gray-800">{account.usuario}</p>
+                                  <p className="text-xs text-gray-500 uppercase tracking-wide">{account.rol}</p>
+                                </div>
+                                <X
+                                  onClick={(e) => { e.stopPropagation(); onRemoveAccount(account.usuario); }}
+                                  className="w-4 h-4 text-gray-400 hover:text-gray-600"
+                                  aria-label={`Quitar ${account.usuario}`}
+                                />
                               </button>
-                              <button
-                                onClick={() => onRemoveAccount(account.usuario)}
-                                className="text-gray-400 hover:text-gray-600"
-                                aria-label={`Quitar ${account.usuario}`}
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-gray-500">No hay cuentas guardadas.</p>
-                      )}
+                            ))
+                          ) : (
+                            <p className="text-sm text-gray-500">No hay cuentas guardadas.</p>
+                          )}
+                        </div>
+                        <div className="p-4 border-t border-gray-100">
+                          <button
+                            onClick={closeSwitcher}
+                            className="w-full py-3 bg-gray-100 text-gray-800 font-semibold rounded-lg"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
               <button
