@@ -346,6 +346,26 @@ export function exportarAsignacion(resultado) {
   return lineas.join('\n')
 }
 
+  // Exporta en formato Excel (HTML table) compatible con .xls
+  export function exportarAsignacionExcel(resultado) {
+    let html = '<table border="1"><tr><th>Grupo</th><th>Nombre</th><th>Especialidad</th><th>Grado</th><th>Número</th></tr>'
+
+    resultado.grupos.forEach(grupo => {
+      grupo.integrantes.forEach(est => {
+        html += '<tr>'
+        html += `<td>${grupo.nombre || ''}</td>`
+        html += `<td>${est.nombre || ''}</td>`
+        html += `<td>${est.especialidad || ''}</td>`
+        html += `<td>${est.ano || est.grado || ''}</td>`
+        html += `<td>${est.cedula || est.numero || ''}</td>`
+        html += '</tr>'
+      })
+    })
+
+    html += '</table>'
+    return '\ufeff' + html // BOM para compatibilidad en Excel
+  }
+
 export function generarReporte(resultado) {
   let reporte = '=== ASIGNACIÓN DE GRUPOS ===\n\n'
   
@@ -363,7 +383,7 @@ export function generarReporte(resultado) {
     
     reporte += 'Integrantes:\n'
     grupo.integrantes.forEach((est, idx) => {
-      reporte += `  ${idx + 1}. ${est.nombre}${est.especialidad ? ` - ${est.especialidad}` : ''}\n`
+      reporte += `  ${idx + 1}. ${est.nombre} - ${est.especialidad} - ${est.ano} - ${est.cedula}\n`
     })
     reporte += '\n'
   }

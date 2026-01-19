@@ -15,8 +15,6 @@ import FormacionModule from './pages/FormacionModule';
 import BoletasModule from './pages/BoletasModule';
 import CalendarioModule from './pages/CalendarioModule';
 import GroupAssignmentModule from './pages/GroupAssignmentModule';
-import NotificationManager from './components/NotificationManager';
-import FAB from './components/FAB';
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
@@ -86,9 +84,7 @@ function AppContent() {
       {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
       {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
       {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
-        {currentModule && currentModule !== 'calendario' && (
-          <FAB onClick={() => setCurrentModule('calendario')} />
-        )}
+
     </>
   );
 }

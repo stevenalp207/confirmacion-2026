@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { asignarGruposEquilibrados, exportarAsignacion, generarReporte } from '../utils/groupAssignment'
+import { asignarGruposEquilibrados, exportarAsignacionExcel, generarReporte } from '../utils/groupAssignment'
+import { Trash2, Plus, Download, FileText, Users, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function GroupAssignmentTool() {
   const [tipoImportacion, setTipoImportacion] = useState('nombres')
@@ -15,7 +16,7 @@ export default function GroupAssignmentTool() {
   const [resultado, setResultado] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const gruposDisponibles = ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios', 'Formación']
+  const gruposDisponibles = ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
 
   const handleProcesarNombres = () => {
     if (!listaNombres.trim()) return
@@ -112,13 +113,13 @@ export default function GroupAssignmentTool() {
     }
   }
 
-  const handleDescargarCSV = () => {
+  const handleDescargarExcel = () => {
     if (!resultado) return
-    const csv = exportarAsignacion(resultado)
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const xls = exportarAsignacionExcel(resultado)
+    const blob = new Blob([xls], { type: 'application/vnd.ms-excel' })
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
-    link.download = 'asignacion_grupos.csv'
+    link.download = 'asignacion_grupos.xls'
     link.click()
   }
 
@@ -133,42 +134,49 @@ export default function GroupAssignmentTool() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Asignación Automática de Grupos</h1>
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      {/* Tabs de Importación */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Panel 1: Importación de Estudiantes */}
+        <div className="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-blue-600" />
+            Estudiantes
+          </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Panel Izquierdo: Entrada de datos */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="flex gap-2 border-b mb-4">
+          {/* Tabs */}
+          <div className="flex gap-2 mb-4 border-b">
             <button
               onClick={() => setTipoImportacion('nombres')}
-              className={`flex-1 py-2 font-semibold border-b-2 transition ${
+              className={`flex-1 py-2 px-3 text-sm font-semibold border-b-2 transition ${
                 tipoImportacion === 'nombres'
                   ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
             >
-              📝 Lista
+              📋 Pegar
             </button>
             <button
               onClick={() => setTipoImportacion('manual')}
-              className={`flex-1 py-2 font-semibold border-b-2 transition ${
+              className={`flex-1 py-2 px-3 text-sm font-semibold border-b-2 transition ${
                 tipoImportacion === 'manual'
                   ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
             >
-              ➕ Manual
+              ➕ Agregar
             </button>
           </div>
 
           {tipoImportacion === 'nombres' ? (
             <div className="space-y-3">
               <div>
-                <label className="block font-semibold mb-2 text-sm">Pega datos (Nombre | Cédula | Género | Año | Especialidad):</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  Datos TSV (Nombre | Cédula | Género | Año | Especialidad)
+                </label>
                 <textarea
-                  className="w-full h-32 p-3 border rounded-lg text-sm font-mono text-xs"
-                  placeholder="Alaina Soto Alfaro	84307847	Femenino	Décimo	Diseño Gráfico&#10;Alejandro de Jesús Vargas Méndez	72429663	Masculino	Undécimo	Desarrollo Web&#10;..."
+                  className="w-full h-32 p-3 border rounded-lg text-xs font-mono resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Alaina Soto Alfaro	84307847	Femenino	Décimo	Diseño Gráfico&#10;Alejandro Vargas	72429663	Masculino	Undécimo	Desarrollo Web"
                   value={listaNombres}
                   onChange={(e) => setListaNombres(e.target.value)}
                 />
@@ -176,96 +184,104 @@ export default function GroupAssignmentTool() {
               <button
                 onClick={handleProcesarNombres}
                 disabled={!listaNombres || loading}
-                className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 text-sm"
+                className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition text-sm"
               >
-                📥 Importar Nombres
+                📥 Importar
               </button>
             </div>
           ) : (
             <div className="space-y-3">
-              <div>
-                <label className="block font-semibold mb-2 text-sm">Nombre:</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded text-sm"
-                  placeholder="Ej: Juan Pérez"
-                  value={nuevoEstudiante.nombre}
-                  onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, nombre: e.target.value })}
-                  onKeyPress={(e) => e.key === 'Enter' && handleAgregarEstudiante()}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-semibold mb-1 text-xs">Género:</label>
-                  <select
-                    className="w-full p-2 border rounded text-sm"
-                    value={nuevoEstudiante.genero}
-                    onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, genero: e.target.value })}
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1 text-xs">Especialidad:</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border rounded text-sm"
-                    placeholder="Ej: Diseño"
-                    value={nuevoEstudiante.especialidad}
-                    onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, especialidad: e.target.value })}
-                  />
-                </div>
-              </div>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nombre"
+                value={nuevoEstudiante.nombre}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, nombre: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Cédula"
+                value={nuevoEstudiante.cedula}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, cedula: e.target.value })}
+              />
+              <select
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={nuevoEstudiante.genero}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, genero: e.target.value })}
+              >
+                <option value="">Género</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Año (Ej: Décimo)"
+                value={nuevoEstudiante.ano}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, ano: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Especialidad"
+                value={nuevoEstudiante.especialidad}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, especialidad: e.target.value })}
+              />
               <button
                 onClick={handleAgregarEstudiante}
-                className="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 text-sm"
+                className="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition text-sm flex items-center justify-center gap-2"
               >
-                ➕ Agregar
+                <Plus className="w-4 h-4" /> Agregar
               </button>
             </div>
           )}
 
+          {/* Lista de Estudiantes */}
           {estudiantes.length > 0 && (
-            <div className="bg-blue-50 rounded-lg p-3">
-              <h3 className="font-semibold mb-2 text-sm">📊 Estudiantes: {estudiantes.length}</h3>
-              <div className="space-y-1 max-h-32 overflow-y-auto text-xs">
+            <div className="mt-4 pt-4 border-t">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-800 text-sm">Importados</h3>
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">
+                  {estudiantes.length}
+                </span>
+              </div>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
                 {estudiantes.map((est, idx) => (
-                  <div key={idx} className="flex justify-between items-center bg-white p-1 rounded">
-                    <span>{est.nombre}</span>
+                  <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded text-xs hover:bg-gray-100 transition">
+                    <span className="truncate">{est.nombre}</span>
                     <button
                       onClick={() => handleEliminarEstudiante(idx)}
-                      className="text-red-600 hover:text-red-800 font-bold"
+                      className="text-red-600 hover:text-red-800 ml-2"
                     >
-                      ✕
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
-          <button
-            onClick={handleAsignar}
-            disabled={estudiantes.length === 0 || loading}
-            className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
-          >
-            {loading ? '⏳ Asignando...' : '✨ Asignar Grupos'}
-          </button>
         </div>
 
-        {/* Panel Centro: Restricciones */}
-        <div className="lg:col-span-1 space-y-4">
-          <div>
-            <h3 className="font-semibold mb-2 text-red-800">⚠️ Problemáticos:</h3>
+        {/* Panel 2: Restricciones */}
+        <div className="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+            Restricciones
+          </h2>
+
+          {/* Problemáticos */}
+          <div className="mb-5">
+            <label className="block text-xs font-semibold text-gray-700 mb-2 text-red-800">
+              🔴 Problemáticos (no pueden estar juntos)
+            </label>
             <div className="flex gap-2 mb-2">
               <select
-                className="flex-1 p-2 border rounded text-sm"
+                className="flex-1 p-2 border rounded-lg text-xs focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 value={nuevoProblematico}
                 onChange={(e) => setNuevoProblematico(e.target.value)}
               >
-                <option value="">Seleccionar estudiante...</option>
+                <option value="">Seleccionar...</option>
                 {estudiantes.map((est, idx) => (
                   <option key={idx} value={est.nombre}>
                     {est.nombre}
@@ -275,94 +291,132 @@ export default function GroupAssignmentTool() {
               <button
                 onClick={handleAgregarProblematico}
                 disabled={!nuevoProblematico}
-                className="px-3 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:bg-gray-400"
+                className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition"
               >
-                +
+                <Plus className="w-4 h-4" />
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
               {restricciones.problematicos.map((nombre, idx) => (
-                <div key={idx} className="flex items-center gap-1 bg-red-100 px-2 py-1 rounded-full text-sm">
-                  <span>{nombre}</span>
-                  <button onClick={() => handleEliminarProblematico(idx)} className="text-red-600 font-bold">✕</button>
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 bg-red-100 text-red-900 px-2 py-1 rounded-full text-xs"
+                >
+                  <span>{nombre.substring(0, 15)}</span>
+                  <button
+                    onClick={() => handleEliminarProblematico(idx)}
+                    className="text-red-600 hover:text-red-800 font-bold"
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Grupos Amigos */}
           <div>
-            <h3 className="font-semibold mb-2 text-amber-800">👥 Grupos Amigos / Parejas:</h3>
+            <label className="block text-xs font-semibold text-gray-700 mb-2 text-cyan-800">
+              🔵 Grupos Amigos (separarlos)
+            </label>
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 placeholder="Nombres separados por coma"
-                className="flex-1 p-2 border rounded text-sm"
+                className="flex-1 p-2 border rounded-lg text-xs focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                 value={nuevoGrupoAmigos}
                 onChange={(e) => setNuevoGrupoAmigos(e.target.value)}
               />
               <button
                 onClick={handleAgregarGrupoAmigos}
-                className="px-3 py-2 bg-amber-600 text-white rounded text-sm hover:bg-amber-700"
+                className="px-3 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition"
               >
-                +
+                <Plus className="w-4 h-4" />
               </button>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {restricciones.gruposAmigos.map((grupo, idx) => (
-                <div key={idx} className="flex items-center gap-2 bg-amber-100 p-1 rounded text-sm">
-                  <span className="flex-1">{grupo.join(', ')}</span>
-                  <button onClick={() => handleEliminarGrupoAmigos(idx)} className="text-amber-600 font-bold">✕</button>
+                <div
+                  key={idx}
+                  className="flex items-center justify-between bg-cyan-100 text-cyan-900 p-2 rounded text-xs hover:bg-cyan-200 transition"
+                >
+                  <span className="truncate">{grupo.join(', ')}</span>
+                  <button
+                    onClick={() => handleEliminarGrupoAmigos(idx)}
+                    className="text-cyan-600 hover:text-cyan-800 ml-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Panel Derecho: Resultados */}
-        <div className="lg:col-span-1">
+        {/* Panel 3: Acción y Resultados */}
+        <div className="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            Asignación
+          </h2>
+
+          {/* Resumen */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <div className="bg-blue-50 p-3 rounded text-center border-l-4 border-blue-600">
+              <div className="text-lg font-bold text-blue-600">{estudiantes.length}</div>
+              <div className="text-xs text-gray-600">Estudiantes</div>
+            </div>
+            <div className="bg-red-50 p-3 rounded text-center border-l-4 border-red-600">
+              <div className="text-lg font-bold text-red-600">{restricciones.problematicos.length}</div>
+              <div className="text-xs text-gray-600">Problemáticos</div>
+            </div>
+            <div className="bg-cyan-50 p-3 rounded text-center border-l-4 border-cyan-600">
+              <div className="text-lg font-bold text-cyan-600">{restricciones.gruposAmigos.length}</div>
+              <div className="text-xs text-gray-600">Grupos</div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleAsignar}
+            disabled={estudiantes.length === 0 || loading}
+            className="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold rounded-lg hover:from-green-700 hover:to-green-800 disabled:bg-gray-400 transition mb-4 text-sm shadow-md hover:shadow-lg"
+          >
+            {loading ? '⏳ Procesando...' : '✨ Asignar Grupos'}
+          </button>
+
           {resultado && (
-            <div className="space-y-4">
-              <div className="flex gap-2">
+            <>
+              <div className="bg-green-50 border-l-4 border-green-500 p-3 mb-4 rounded text-sm">
+                <p className="text-green-800 font-semibold">✓ Asignación completada</p>
+                <p className="text-green-700 text-xs mt-1">{resultado.grupos.length} grupos creados</p>
+              </div>
+
+              <div className="flex gap-2 mb-4">
                 <button
-                  onClick={handleDescargarCSV}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-semibold"
+                  onClick={handleDescargarExcel}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-semibold shadow-md"
                 >
-                  📥 CSV
+                  <Download className="w-4 h-4" /> Excel
                 </button>
                 <button
                   onClick={handleDescargarReporte}
-                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm font-semibold"
+                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-xs font-semibold shadow-md"
                 >
-                  📄 Reporte
+                  <FileText className="w-4 h-4" /> Reporte
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-blue-50 p-2 rounded">
-                  <div className="text-lg font-bold">{resultado.estadisticas.totalEstudiantes}</div>
-                  <div className="text-xs">Total</div>
-                </div>
-                <div className="bg-green-50 p-2 rounded">
-                  <div className="text-lg font-bold">{resultado.estadisticas.totalHombres}</div>
-                  <div className="text-xs">♂️</div>
-                </div>
-                <div className="bg-pink-50 p-2 rounded">
-                  <div className="text-lg font-bold">{resultado.estadisticas.totalMujeres}</div>
-                  <div className="text-xs">♀️</div>
-                </div>
-              </div>
-
               {resultado.advertencias.length > 0 && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
-                  <h4 className="font-semibold text-yellow-800 text-sm mb-1">⚠️ Advertencias:</h4>
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded p-3">
+                  <p className="text-yellow-800 font-semibold text-xs mb-2">⚠️ Advertencias</p>
                   <div className="space-y-1 text-xs text-yellow-700">
-                    {resultado.advertencias.map((adv, i) => (
+                    {resultado.advertencias.slice(0, 3).map((adv, i) => (
                       <div key={i}>• {adv.mensaje}</div>
                     ))}
                   </div>
                 </div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -370,39 +424,48 @@ export default function GroupAssignmentTool() {
       {/* Resultados: Grupos */}
       {resultado && (
         <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">📊 Grupos Asignados</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <Users className="w-6 h-6 text-blue-600" /> Grupos Asignados
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {resultado.grupos.map((grupo, idx) => (
-              <div key={idx} className="border rounded-lg p-3 bg-white shadow">
-                <h3 className="font-bold mb-1 text-sm">{grupo.nombre}</h3>
-                <div className="text-xs text-gray-600 mb-2">
-                  {grupo.integrantes.length} | ♂️{grupo.hombres} ♀️{grupo.mujeres}
+              <div key={idx} className="border-2 border-gray-200 rounded-lg p-4 bg-white hover:shadow-lg transition hover:border-blue-400">
+                <h3 className="font-bold text-lg mb-2 text-gray-800 border-b pb-2 text-blue-600">{grupo.nombre}</h3>
+                <div className="text-xs text-gray-600 mb-3 space-y-1">
+                  <div>👥 <span className="font-semibold">{grupo.integrantes.length}</span> personas</div>
+                  <div>♂️ <span className="font-semibold">{grupo.hombres}</span> | ♀️ <span className="font-semibold">{grupo.mujeres}</span></div>
                 </div>
-                
+
                 {Object.keys(grupo.especialidades).length > 0 && (
-                  <div className="text-xs bg-gray-50 p-1 rounded mb-2">
+                  <div className="text-xs bg-gray-50 p-2 rounded mb-3">
                     {Object.entries(grupo.especialidades).map(([esp, count]) => (
-                      <div key={esp} className="text-gray-700">{esp.substring(0, 15)}: {count}</div>
+                      <div key={esp} className="text-gray-700">
+                        {esp.substring(0, 12)}: <span className="font-bold text-blue-600">{count}</span>
+                      </div>
                     ))}
                   </div>
                 )}
 
-                <div className="space-y-0.5 text-xs">
+                <div className="space-y-1 border-t pt-2">
                   {grupo.integrantes.map((est, i) => {
                     let bgColor = 'bg-white'
                     let textColor = 'text-gray-900'
-                    
+                    let borderColor = 'border-gray-200'
+
                     if (restricciones.problematicos.includes(est.nombre)) {
                       bgColor = 'bg-red-100'
                       textColor = 'text-red-900'
+                      borderColor = 'border-red-300'
                     } else if (restricciones.gruposAmigos.some(g => g.includes(est.nombre))) {
                       bgColor = 'bg-cyan-100'
                       textColor = 'text-cyan-900'
+                      borderColor = 'border-cyan-300'
                     }
-                    
+
                     return (
-                      <div key={i} className={`py-0.5 px-1 border-b last:border-b-0 ${bgColor} ${textColor}`}>
-                        {est.nombre} - {est.especialidad} - {est.ano} - {est.cedula}
+                      <div key={i} className={`py-1.5 px-2 rounded text-xs ${bgColor} ${textColor} border ${borderColor}`}>
+                        <div className="font-semibold">{est.nombre}</div>
+                        <div className="text-xs opacity-75 mt-0.5">{est.especialidad} • {est.ano} • {est.cedula}</div>
                       </div>
                     )
                   })}
