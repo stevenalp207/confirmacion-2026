@@ -16,6 +16,8 @@ const MODULE_ACCESS = {
   ingresos: ADMIN_ROLES,
   gastos: ADMIN_ROLES,
   students: [...ADMIN_ROLES, 'grupo'],
+    boletas: ['admin'], // only admin
+    calendario: [...ADMIN_ROLES, 'grupo'], // visible para todos los roles (grupos y admins)
 }
 
 export function canAccess(module, role) {

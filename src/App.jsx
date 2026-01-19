@@ -12,7 +12,10 @@ import StudentsModule from './pages/StudentsModule';
 import GastosModule from './pages/GastosModule';
 import IngresosModule from './pages/IngresosModule';
 import FormacionModule from './pages/FormacionModule';
+import BoletasModule from './pages/BoletasModule';
+import CalendarioModule from './pages/CalendarioModule';
 import NotificationManager from './components/NotificationManager';
+import FAB from './components/FAB';
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
@@ -32,18 +35,18 @@ function AppContent() {
 
   const allowedModules = (() => {
     if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion'];
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario'];
     }
     if (user?.rol === 'financiero') {
-      return ['pagos', 'gastos', 'ingresos'];
+      return ['pagos', 'gastos', 'ingresos', 'calendario'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario'];
     }
     if (user?.rol === 'formacion') {
-      return ['formacion', 'catequistas'];
+      return ['formacion', 'catequistas', 'calendario'];
     }
-    return ['asistencia', 'documentos', 'estudiantes', 'pagos'];
+    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario'];
   })();
 
   const handleSelectModule = (module) => {
@@ -79,6 +82,11 @@ function AppContent() {
       {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
       {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
       {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
+      {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
+        {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
+        {currentModule && currentModule !== 'calendario' && (
+          <FAB onClick={() => setCurrentModule('calendario')} />
+        )}
     </>
   );
 }

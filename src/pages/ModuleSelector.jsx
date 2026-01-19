@@ -9,7 +9,9 @@ import {
   DollarSign, 
   ArrowRight,
   Wallet,
-  BookOpen
+  BookOpen,
+    FileCheck,
+    Calendar
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 
@@ -277,6 +279,46 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               </div>
             </div>
           )}
+
+          {/* Boletas Module - solo admin */}
+          {user?.rol === 'admin' && (
+            <div
+              onClick={() => onSelectModule('boletas')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <FileCheck className="w-20 h-20 text-teal-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Boletas
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Genera boletas de confirmación en formato Word
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-teal-50 text-teal-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          )}
+
+            {/* Calendario Module - visible para todos los roles */}
+            <div
+              onClick={() => onSelectModule('calendario')}
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+            >
+              <div className="flex flex-col items-center text-center">
+                <Calendar className="w-20 h-20 text-violet-600 mb-4" strokeWidth={1.5} />
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                  Calendario
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Cronograma completo de eventos, catequesis y actividades 2026
+                </p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-violet-50 text-violet-600">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
         </div>
 
         {/* Footer */}
