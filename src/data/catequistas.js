@@ -36,7 +36,8 @@ export const catequistas = [
   { nombre: 'Amanda Cordero Trejos', grupo: 'Temor de Dios' },
   
   { nombre: 'Dylan Chacón Sandoval', grupo: 'Formación' },
-  { nombre: 'Mariana Segura Piedra', grupo: 'Formación' }
+  { nombre: 'Mariana Segura Piedra', grupo: 'Formación' },
+  { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'Formación' }
 ];
 
 // Obtener solo los nombres de catequistas
