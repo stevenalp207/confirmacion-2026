@@ -153,6 +153,25 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
           )}
 
+          {/* Calendario Module - visible para todos los roles */}
+          <div
+            onClick={() => onSelectModule('calendario')}
+            className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
+          >
+            <div className="flex flex-col items-center text-center">
+              <Calendar className="w-20 h-20 text-violet-600 mb-4" strokeWidth={1.5} />
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                Calendario
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Cronograma completo de eventos, catequesis y actividades 2026
+              </p>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-violet-50 text-violet-600">
+                <ArrowRight className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
+
           {/* Sábanas Module - Only for admin and logistica */}
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
             <div
@@ -301,25 +320,6 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
               </div>
             </div>
           )}
-
-            {/* Calendario Module - visible para todos los roles */}
-            <div
-              onClick={() => onSelectModule('calendario')}
-              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer p-8"
-            >
-              <div className="flex flex-col items-center text-center">
-                <Calendar className="w-20 h-20 text-violet-600 mb-4" strokeWidth={1.5} />
-                <h2 className="text-2xl font-bold text-gray-800 mb-3">
-                  Calendario
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Cronograma completo de eventos, catequesis y actividades 2026
-                </p>
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-violet-50 text-violet-600">
-                  <ArrowRight className="w-6 h-6" />
-                </div>
-              </div>
-            </div>
 
           {/* Group Assignment Module - para logistica */}
           {user?.usuario === 'logistica' && (
