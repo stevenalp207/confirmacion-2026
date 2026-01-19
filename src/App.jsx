@@ -40,7 +40,7 @@ function AppContent() {
       return ['pagos', 'gastos', 'ingresos', 'calendario'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos'];
     }
     if (user?.rol === 'formacion') {
       return ['formacion', 'catequistas', 'calendario'];
