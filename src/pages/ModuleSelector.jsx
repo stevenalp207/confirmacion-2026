@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import logo from '../assets/logo.png';
 import { 
   CheckCircle, 
@@ -12,11 +13,20 @@ import {
   BookOpen,
   FileCheck,
   Calendar,
-  Shuffle
+  Shuffle,
+  User,
+  X
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 
-function ModuleSelector({ onSelectModule, user, onLogout }) {
+function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccount }) {
+  const [showSwitcher, setShowSwitcher] = useState(false);
+
+  const handleSwitch = (usuario) => {
+    onSwitchAccount(usuario);
+    setShowSwitcher(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header with User Info */}
@@ -39,6 +49,59 @@ function ModuleSelector({ onSelectModule, user, onLogout }) {
             </div>
             <div className="flex items-center gap-3">
               <NotificationManager />
+              <div className="relative">
+                <button
+                  onClick={() => setShowSwitcher((prev) => !prev)}
+                  className="bg-white border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base flex items-center gap-2 whitespace-nowrap"
+                >
+                  <User className="w-4 h-4" />
+                  Cambiar cuenta
+                </button>
+
+                {showSwitcher && (
+                  <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-xl z-20">
+                    <div className="p-3 border-b border-gray-100 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-700">Cuentas guardadas</span>
+                      <button
+                        onClick={() => setShowSwitcher(false)}
+                        className="text-gray-400 hover:text-gray-600"
+                        aria-label="Cerrar selector"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="p-3 space-y-2 max-h-64 overflow-y-auto">
+                      {savedAccounts?.length ? (
+                        savedAccounts.map((account) => (
+                          <div key={account.usuario} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
+                            <div>
+                              <p className="text-sm font-semibold text-gray-800">{account.usuario}</p>
+                              <p className="text-xs text-gray-500 uppercase tracking-wide">{account.rol}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleSwitch(account.usuario)}
+                                className="text-blue-600 text-xs font-semibold hover:underline"
+                              >
+                                Usar
+                              </button>
+                              <button
+                                onClick={() => onRemoveAccount(account.usuario)}
+                                className="text-gray-400 hover:text-gray-600"
+                                aria-label={`Quitar ${account.usuario}`}
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500">No hay cuentas guardadas.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={onLogout}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm sm:text-base whitespace-nowrap"

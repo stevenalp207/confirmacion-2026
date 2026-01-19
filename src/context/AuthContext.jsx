@@ -6,13 +6,21 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [savedAccounts, setSavedAccounts] = useState([]);
 
   useEffect(() => {
-    // Restaurar sesión al cargar
+    // Restaurar sesión y cuentas guardadas al cargar
     const storedUser = localStorage.getItem('user');
+    const storedAccounts = localStorage.getItem('savedAccounts');
+
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    if (storedAccounts) {
+      setSavedAccounts(JSON.parse(storedAccounts));
+    }
+
     setLoading(false);
   }, []);
 
@@ -37,6 +45,16 @@ export function AuthProvider({ children }) {
 
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
+
+      setSavedAccounts((prev) => {
+        const updated = prev.some((account) => account.id === userData.id)
+          ? prev.map((account) => (account.id === userData.id ? userData : account))
+          : [...prev, userData];
+
+        localStorage.setItem('savedAccounts', JSON.stringify(updated));
+        return updated;
+      });
+
       return { success: true };
     } catch (error) {
       console.error('Error en login:', error);
@@ -49,8 +67,28 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('user');
   };
 
+  const switchAccount = (usuario) => {
+    const account = savedAccounts.find((item) => item.usuario === usuario);
+
+    if (!account) {
+      return { success: false, error: 'Cuenta no encontrada' };
+    }
+
+    setUser(account);
+    localStorage.setItem('user', JSON.stringify(account));
+    return { success: true };
+  };
+
+  const removeSavedAccount = (usuario) => {
+    setSavedAccounts((prev) => {
+      const updated = prev.filter((item) => item.usuario !== usuario);
+      localStorage.setItem('savedAccounts', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, savedAccounts, switchAccount, removeSavedAccount }}>
       {children}
     </AuthContext.Provider>
   );

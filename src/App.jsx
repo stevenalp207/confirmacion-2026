@@ -18,7 +18,7 @@ import GroupAssignmentModule from './pages/GroupAssignmentModule';
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
 
   if (loading) {
     return (
@@ -62,6 +62,13 @@ function AppContent() {
     setCurrentModule(null);
   };
 
+  const handleSwitchAccount = (usuario) => {
+    const result = switchAccount(usuario);
+    if (result.success) {
+      setCurrentModule(null);
+    }
+  };
+
   return (
     <>
       {!currentModule && (
@@ -69,6 +76,9 @@ function AppContent() {
           onSelectModule={handleSelectModule} 
           user={user}
           onLogout={handleLogout}
+          savedAccounts={savedAccounts}
+          onSwitchAccount={handleSwitchAccount}
+          onRemoveAccount={removeSavedAccount}
         />
       )}
       {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}

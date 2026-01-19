@@ -8,7 +8,7 @@ function Login() {
   const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,6 +29,16 @@ function Login() {
     }
   };
 
+  const handleQuickSwitch = (usuarioSeleccionado) => {
+    setError('');
+    setLoading(true);
+    const result = switchAccount(usuarioSeleccionado);
+    if (!result.success) {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-bottom" style={{ backgroundImage: `url(${fondo})`}}>
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/70 to-blue-950/80"></div>
@@ -45,6 +55,38 @@ function Login() {
             Sistema de Control
           </p>
         </div>
+
+        {savedAccounts?.length > 0 && (
+          <div className="mb-6 sm:mb-8 bg-blue-50 border border-blue-100 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm sm:text-base font-semibold text-blue-800">Cambiar rápido de cuenta</p>
+              <span className="text-xs text-blue-700">Guardadas en este dispositivo</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {savedAccounts.map((account) => (
+                <div key={account.usuario} className="flex items-center gap-2 bg-white border border-blue-100 rounded-full px-3 py-2 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickSwitch(account.usuario)}
+                    className="text-sm font-semibold text-blue-800 hover:underline"
+                    disabled={loading}
+                  >
+                    {account.usuario} ({account.rol})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeSavedAccount(account.usuario)}
+                    className="text-gray-400 hover:text-gray-600 text-xs"
+                    aria-label={`Eliminar ${account.usuario}`}
+                    disabled={loading}
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
