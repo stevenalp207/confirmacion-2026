@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../config/supabase';
 
 function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
@@ -160,15 +160,32 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
     );
   }
 
-  const totalPagado = Object.values(pagosState).reduce((sum, p) => sum + p.monto_pagado, 0);
-  const cantidadPersonas = esCatequistas ? catequistas.length : Object.keys(estudiantes).length;
-  const totalRequerido = cantidadPersonas * montoRequerido;
-  const completados = Object.values(pagosState).filter(p => p.pagado).length;
+  const totalPagado = useMemo(() => 
+    Object.values(pagosState).reduce((sum, p) => sum + p.monto_pagado, 0),
+    [pagosState]
+  );
 
-  // Crear lista de personas según el tipo
-  const listaPersonas = esCatequistas 
-    ? catequistas.map(nombre => ({ id: nombre, nombre: nombre }))
-    : Object.values(estudiantes).map(est => ({ id: est.id, nombre: est.nombre }));
+  const cantidadPersonas = useMemo(() => 
+    esCatequistas ? catequistas.length : Object.keys(estudiantes).length,
+    [esCatequistas, catequistas, estudiantes]
+  );
+
+  const totalRequerido = useMemo(() => 
+    cantidadPersonas * montoRequerido,
+    [cantidadPersonas, montoRequerido]
+  );
+
+  const completados = useMemo(() => 
+    Object.values(pagosState).filter(p => p.pagado).length,
+    [pagosState]
+  );
+
+  const listaPersonas = useMemo(() => 
+    esCatequistas 
+      ? catequistas.map(nombre => ({ id: nombre, nombre: nombre }))
+      : Object.values(estudiantes).map(est => ({ id: est.id, nombre: est.nombre })),
+    [esCatequistas, catequistas, estudiantes]
+  );
 
   return (
     <div className="space-y-6">

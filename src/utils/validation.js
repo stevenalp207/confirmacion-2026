@@ -35,3 +35,72 @@ export function maxLength(value, max) {
   if (typeof value !== 'string') return false
   return value.length <= max
 }
+// Reglas de validación reutilizables
+export const validationRules = {
+  required: (value, fieldName) => {
+    if (!value || value.toString().trim() === '') {
+      return `${fieldName} es requerido`;
+    }
+    return null;
+  },
+
+  email: (value) => {
+    if (!value) return null;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return !emailRegex.test(value) ? 'Email no válido' : null;
+  },
+
+  phone: (value) => {
+    if (!value) return null;
+    const phoneRegex = /^[0-9]{7,15}$/;
+    return !phoneRegex.test(value.replace(/[^0-9]/g, '')) ? 'Teléfono no válido' : null;
+  },
+
+  minLength: (value, min, fieldName) => {
+    if (!value) return null;
+    return value.toString().length < min ? `${fieldName} debe tener al menos ${min} caracteres` : null;
+  },
+
+  maxLength: (value, max, fieldName) => {
+    if (!value) return null;
+    return value.toString().length > max ? `${fieldName} no puede exceder ${max} caracteres` : null;
+  },
+
+  number: (value) => {
+    if (!value) return null;
+    return isNaN(value) ? 'Debe ser un número' : null;
+  },
+
+  positiveNumber: (value) => {
+    if (!value) return null;
+    const num = parseFloat(value);
+    return isNaN(num) || num <= 0 ? 'Debe ser un número positivo' : null;
+  },
+
+  currency: (value) => {
+    if (!value) return null;
+    const num = parseFloat(value);
+    return isNaN(num) || num < 0 ? 'Cantidad no válida' : null;
+  }
+};
+
+export function validateForm(data, rules) {
+  const errors = {};
+
+  for (const field in rules) {
+    const fieldRules = rules[field];
+    for (const rule of fieldRules) {
+      const error = rule(data[field]);
+      if (error) {
+        errors[field] = error;
+        break;
+      }
+    }
+  }
+
+  return errors;
+}
+
+export function hasErrors(errors) {
+  return Object.keys(errors).length > 0;
+}

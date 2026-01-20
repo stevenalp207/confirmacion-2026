@@ -1,6 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, Wallet, Calendar, FileText, Link as LinkIcon } from 'lucide-react';
+
+const metodos = [
+  { value: 'efectivo', label: 'Efectivo' },
+  { value: 'sinpe', label: 'SINPE' },
+  { value: 'transferencia', label: 'Transferencia' }
+];
 
 function IngresosFinancieros({ user }) {
   const [ingresos, setIngresos] = useState([]);
@@ -19,17 +25,7 @@ function IngresosFinancieros({ user }) {
     comprobante_url: ''
   });
 
-  const metodos = [
-    { value: 'efectivo', label: 'Efectivo' },
-    { value: 'sinpe', label: 'SINPE' },
-    { value: 'transferencia', label: 'Transferencia' }
-  ];
-
-  useEffect(() => {
-    loadIngresos();
-  }, []);
-
-  const loadIngresos = async () => {
+  const loadIngresos = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -45,9 +41,13 @@ function IngresosFinancieros({ user }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const resetForm = () => {
+  useEffect(() => {
+    loadIngresos();
+  }, [loadIngresos]);
+
+  const resetForm = useCallback(() => {
     setFormData({
       origen: '',
       monto: '',
@@ -60,9 +60,9 @@ function IngresosFinancieros({ user }) {
     setEditingId(null);
     setShowForm(false);
     setFile(null);
-  };
+  }, [user]);
 
-  const uploadComprobante = async (selectedFile) => {
+  const uploadComprobante = useCallback(async (selectedFile) => {
     if (!selectedFile) return formData.comprobante_url || '';
     const fileExt = selectedFile.name.split('.').pop();
     const fileName = `ingreso-${Date.now()}.${fileExt}`;
@@ -76,9 +76,9 @@ function IngresosFinancieros({ user }) {
 
     const { data } = supabase.storage.from('ingresos_comprobantes').getPublicUrl(filePath);
     return data?.publicUrl || '';
-  };
+  }, [formData.comprobante_url, user]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     if (!formData.origen || !formData.monto) {
       alert('Completa el origen y el monto');
@@ -120,9 +120,9 @@ function IngresosFinancieros({ user }) {
       alert('❌ Error al guardar el ingreso');
       setUploading(false);
     }
-  };
+  }, [editingId, file, formData, loadIngresos, resetForm, uploadComprobante]);
 
-  const handleEdit = (ingreso) => {
+  const handleEdit = useCallback((ingreso) => {
     setFormData({
       origen: ingreso.origen,
       monto: ingreso.monto.toString(),
@@ -135,9 +135,9 @@ function IngresosFinancieros({ user }) {
     setEditingId(ingreso.id);
     setShowForm(true);
     setFile(null);
-  };
+  }, [user]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = useCallback(async (id) => {
     if (!confirm('¿Eliminar este ingreso?')) return;
     try {
       const { error } = await supabase
@@ -151,16 +151,22 @@ function IngresosFinancieros({ user }) {
       console.error('Error eliminando ingreso:', error);
       alert('❌ Error al eliminar el ingreso');
     }
-  };
+  }, [loadIngresos]);
 
-  const totalIngresos = ingresos.reduce((sum, ingreso) => sum + (ingreso.monto || 0), 0);
+  const totalIngresos = useMemo(() => 
+    ingresos.reduce((sum, ingreso) => sum + (ingreso.monto || 0), 0),
+    [ingresos]
+  );
 
-  const ingresosPorMetodo = metodos.map((m) => ({
-    ...m,
-    total: ingresos
-      .filter((i) => i.metodo === m.value)
-      .reduce((sum, i) => sum + i.monto, 0)
-  }));
+  const ingresosPorMetodo = useMemo(() => 
+    metodos.map((m) => ({
+      ...m,
+      total: ingresos
+        .filter((i) => i.metodo === m.value)
+        .reduce((sum, i) => sum + i.monto, 0)
+    })),
+    [ingresos]
+  );
 
   if (loading) {
     return (

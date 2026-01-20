@@ -2,13 +2,21 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 import fondo from '../assets/fondo3.jpeg';
+import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 
 function Login() {
   const [usuario, setUsuario] = useState('');
   const [contraseña, setContraseña] = useState('');
+  const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [usuarioValido, setUsuarioValido] = useState(false);
   const { login, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
+
+  const validarUsuario = (valor) => {
+    setUsuario(valor);
+    setUsuarioValido(valor.trim().length > 0);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,46 +49,54 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-bottom" style={{ backgroundImage: `url(${fondo})`}}>
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/70 to-blue-950/80"></div>
-      <div className="bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 max-w-md w-full relative z-10">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
+      <div className="absolute inset-0 bg-linear-to-br from-blue-900/70 to-blue-950/80"></div>
+      <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 md:p-10 max-w-md w-full relative z-10 transform transition-all duration-300 hover:shadow-3xl">
+        {/* Header con animación */}
+        <div className="text-center mb-6 sm:mb-8 animate-fade-in">
           <div className="flex justify-center mb-4">
-            <img src={logo} alt="Logo Confirmación" className="h-20 sm:h-24 md:h-28 w-auto" />
+            <img src={logo} alt="Logo Confirmación" className="h-20 sm:h-24 md:h-28 w-auto drop-shadow-lg" />
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             Confirmación 2026
           </h1>
           <p className="text-sm sm:text-base text-gray-600">
-            Sistema de Control
+            Sistema de Control Integral
           </p>
         </div>
 
+        {/* Cuentas guardadas mejoradas */}
         {savedAccounts?.length > 0 && (
-          <div className="mb-6 sm:mb-8 bg-blue-50 border border-blue-100 rounded-lg p-4">
+          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm sm:text-base font-semibold text-blue-800">Cambiar rápido de cuenta</p>
-              <span className="text-xs text-blue-700">Guardadas en este dispositivo</span>
+              <p className="text-sm sm:text-base font-bold text-blue-900">Acceso Rápido</p>
+              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Dispositivo</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {savedAccounts.map((account) => (
-                <div key={account.usuario} className="flex items-center gap-2 bg-white border border-blue-100 rounded-full px-3 py-2 shadow-sm">
+                <div 
+                  key={account.usuario} 
+                  className="flex items-center gap-2 bg-white border-2 border-blue-200 rounded-full px-3 py-2 shadow-md hover:shadow-lg hover:border-blue-400 transition-all duration-200 group"
+                >
                   <button
                     type="button"
                     onClick={() => handleQuickSwitch(account.usuario)}
-                    className="text-sm font-semibold text-blue-800 hover:underline"
+                    className="text-xs sm:text-sm font-semibold text-blue-700 hover:text-blue-900 transition"
                     disabled={loading}
+                    title={`Inicia sesión como ${account.usuario}`}
                   >
-                    {account.usuario} ({account.rol})
+                    {account.usuario}
                   </button>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">{account.rol}</span>
                   <button
                     type="button"
                     onClick={() => removeSavedAccount(account.usuario)}
-                    className="text-gray-400 hover:text-gray-600 text-xs"
+                    className="text-gray-300 hover:text-red-500 text-lg font-bold transition duration-200 ml-1 opacity-0 group-hover:opacity-100"
                     aria-label={`Eliminar ${account.usuario}`}
                     disabled={loading}
+                    title="Eliminar cuenta guardada"
                   >
-                    x
+                    ×
                   </button>
                 </div>
               ))}
@@ -88,65 +104,107 @@ function Login() {
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        {/* Form mejorado */}
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
           {/* Usuario Input */}
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
-              Usuario
+          <div className="group">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 group-focus-within:text-blue-600 transition">
+              👤 Usuario
             </label>
-            <input
-              type="text"
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-              placeholder="Ingresa tu usuario"
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={usuario}
+                onChange={(e) => validarUsuario(e.target.value)}
+                placeholder="ej: admin"
+                className="w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-300 bg-white"
+                disabled={loading}
+                autoComplete="username"
+              />
+              {usuarioValido && (
+                <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500 animate-fade-in" />
+              )}
+            </div>
           </div>
 
           {/* Contraseña Input */}
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
-              Contraseña
+          <div className="group">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 group-focus-within:text-blue-600 transition">
+              🔐 Contraseña
             </label>
-            <input
-              type="password"
-              value={contraseña}
-              onChange={(e) => setContraseña(e.target.value)}
-              placeholder="Ingresa tu contraseña"
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition"
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                type={mostrarContraseña ? "text" : "password"}
+                value={contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
+                placeholder="Ingresa tu contraseña"
+                className="w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-300 bg-white pr-12"
+                disabled={loading}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarContraseña(!mostrarContraseña)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition duration-200 p-1"
+                aria-label={mostrarContraseña ? "Ocultar contraseña" : "Mostrar contraseña"}
+                disabled={loading}
+              >
+                {mostrarContraseña ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
 
-          {/* Error Message */}
+          {/* Error Message mejorado */}
           {error && (
-            <div className="bg-red-100 border-2 border-red-400 text-red-800 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-xs sm:text-sm">
-              {error}
+            <div className="bg-red-50 border-2 border-red-300 text-red-800 px-4 sm:px-5 py-3 rounded-lg text-xs sm:text-sm flex items-start gap-3 animate-fade-in shadow-sm">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <span className="font-medium">{error}</span>
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit Button mejorado */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-900 text-white font-bold py-2 sm:py-3 px-4 rounded-lg text-sm sm:text-base hover:from-blue-500 hover:to-blue-600 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading || !usuario || !contraseña}
+            className="w-full bg-linear-to-r from-blue-600 to-blue-700 text-white font-bold py-3 sm:py-3.5 px-4 rounded-lg text-sm sm:text-base hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
           >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            {loading ? (
+              <>
+                <span className="animate-spin">⏳</span>
+                Iniciando sesión...
+              </>
+            ) : (
+              <>
+                ✨ Iniciar Sesión
+              </>
+            )}
           </button>
         </form>
 
-        {/* Demo Info */}
+        {/* Demo Info mejorada */}
         <div className="mt-8 pt-8 border-t-2 border-gray-200">
-          <p className="text-xs text-gray-600 mb-3 font-semibold">
-            Usuarios de prueba:
-          </p>
-          <div className="text-xs text-gray-700 space-y-2">
-            <p><strong>Acceso a grupo:</strong> usuario: consejo / contraseña: confi2026</p>
-          </div>
+          <details className="cursor-pointer group">
+            <summary className="text-xs sm:text-sm font-bold text-gray-700 hover:text-blue-600 transition select-none flex items-center gap-2">
+              <span className="group-open:rotate-90 transition duration-300">▶</span>
+              ℹ️ Usuarios de Prueba
+            </summary>
+            <div className="text-xs sm:text-sm text-gray-700 space-y-3 mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+              <div className="bg-white p-2 rounded border-l-4 border-green-500">
+                <p className="font-semibold text-gray-800">Grupo:</p>
+                <p><code className="bg-gray-100 px-2 py-1 rounded text-green-700">consejo</code> / <code className="bg-gray-100 px-2 py-1 rounded text-green-700">confi2026</code></p>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+      `}</style>
     </div>
   );
 }

@@ -1,6 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText } from 'lucide-react';
+
+const categorias = [
+  { value: 'transporte', label: 'Transporte', color: 'blue' },
+  { value: 'alimentacion', label: 'Alimentación', color: 'green' },
+  { value: 'materiales', label: 'Materiales', color: 'purple' },
+  { value: 'hospedaje', label: 'Hospedaje', color: 'orange' },
+  { value: 'servicios', label: 'Servicios', color: 'red' },
+  { value: 'otros', label: 'Otros', color: 'gray' }
+];
 
 function GastosFinancieros({ user }) {
   const [gastos, setGastos] = useState([]);
@@ -16,20 +25,7 @@ function GastosFinancieros({ user }) {
     pagado_por: user?.usuario || ''
   });
 
-  const categorias = [
-    { value: 'transporte', label: 'Transporte', color: 'blue' },
-    { value: 'alimentacion', label: 'Alimentación', color: 'green' },
-    { value: 'materiales', label: 'Materiales', color: 'purple' },
-    { value: 'hospedaje', label: 'Hospedaje', color: 'orange' },
-    { value: 'servicios', label: 'Servicios', color: 'red' },
-    { value: 'otros', label: 'Otros', color: 'gray' }
-  ];
-
-  useEffect(() => {
-    loadGastos();
-  }, []);
-
-  const loadGastos = async () => {
+  const loadGastos = useCallback(async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -45,9 +41,13 @@ function GastosFinancieros({ user }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    loadGastos();
+  }, [loadGastos]);
+
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     
     if (!formData.concepto || !formData.monto) {
@@ -87,9 +87,9 @@ function GastosFinancieros({ user }) {
       console.error('Error guardando gasto:', error);
       alert('❌ Error al guardar el gasto');
     }
-  };
+  }, [editingId, formData, loadGastos]);
 
-  const handleEdit = (gasto) => {
+  const handleEdit = useCallback((gasto) => {
     setFormData({
       concepto: gasto.concepto,
       monto: gasto.monto.toString(),
@@ -100,9 +100,9 @@ function GastosFinancieros({ user }) {
     });
     setEditingId(gasto.id);
     setShowForm(true);
-  };
+  }, [user]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = useCallback(async (id) => {
     if (!confirm('¿Estás seguro de eliminar este gasto?')) return;
 
     try {
@@ -118,9 +118,9 @@ function GastosFinancieros({ user }) {
       console.error('Error eliminando gasto:', error);
       alert('❌ Error al eliminar el gasto');
     }
-  };
+  }, [loadGastos]);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData({
       concepto: '',
       monto: '',
@@ -131,21 +131,27 @@ function GastosFinancieros({ user }) {
     });
     setEditingId(null);
     setShowForm(false);
-  };
+  }, [user]);
 
-  const totalGastos = gastos.reduce((sum, gasto) => sum + (gasto.monto || 0), 0);
+  const totalGastos = useMemo(() => 
+    gastos.reduce((sum, gasto) => sum + (gasto.monto || 0), 0),
+    [gastos]
+  );
 
-  const gastosPorCategoria = categorias.map(cat => ({
-    ...cat,
-    total: gastos
-      .filter(g => g.categoria === cat.value)
-      .reduce((sum, g) => sum + g.monto, 0)
-  }));
+  const gastosPorCategoria = useMemo(() => 
+    categorias.map(cat => ({
+      ...cat,
+      total: gastos
+        .filter(g => g.categoria === cat.value)
+        .reduce((sum, g) => sum + g.monto, 0)
+    })),
+    [gastos]
+  );
 
-  const getCategoriaColor = (categoria) => {
+  const getCategoriaColor = useCallback((categoria) => {
     const cat = categorias.find(c => c.value === categoria);
     return cat?.color || 'gray';
-  };
+  }, []);
 
   if (loading) {
     return (
