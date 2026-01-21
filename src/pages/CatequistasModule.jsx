@@ -2,13 +2,19 @@ import { useState, useEffect, useCallback } from 'react';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import { catequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
+import { Search, Filter, MapPin } from 'lucide-react';
 
-function CatequistasModule({ onBack, user }) {
+function CatequistasModule({ onBack }) {
   const [catequistasState, setCatequistasState] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGroups, setSelectedGroups] = useState([]);
   
   // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesis-1]
   const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
+
+  // Obtener grupos únicos de catequistas
+  const uniqueGroups = [...new Set(catequistas.map(c => c.grupo))];
 
   const loadCatequistas = useCallback(async () => {
     try {
@@ -106,6 +112,27 @@ function CatequistasModule({ onBack, user }) {
     }
   };
 
+  // Función para filtrar catequistas
+  const filteredCatequistas = catequistas.filter(catequista => {
+    const matchesSearch = catequista.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGroup = selectedGroups.length === 0 || selectedGroups.includes(catequista.grupo);
+    return matchesSearch && matchesGroup;
+  }).sort((a, b) => {
+    if (a.grupo !== b.grupo) {
+      return a.grupo.localeCompare(b.grupo);
+    }
+    return a.nombre.localeCompare(b.nombre);
+  });
+
+  // Función para alternar selección de grupo
+  const toggleGroup = (grupo) => {
+    setSelectedGroups(prev =>
+      prev.includes(grupo)
+        ? prev.filter(g => g !== grupo)
+        : [...prev, grupo]
+    );
+  };
+
   const getEstadoColor = (estado) => {
     switch(estado) {
       case 'presente':
@@ -163,7 +190,65 @@ function CatequistasModule({ onBack, user }) {
             Registra la asistencia de todos los catequistas
           </p>
 
-          {/* Se removió el bloque para agregar catequista */}
+          {/* Sección de Filtros */}
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            {/* Búsqueda por nombre */}
+            <div className="mb-4">
+              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                <Search className="w-4 h-4" /> Buscar catequista por nombre
+              </label>
+              <input
+                type="text"
+                placeholder="Escribe el nombre del catequista..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              />
+            </div>
+
+            {/* Filtro por grupo */}
+            <div>
+              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                <MapPin className="w-4 h-4" /> Filtrar por grupo
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedGroups([])}
+                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                    selectedGroups.length === 0
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  }`}
+                >
+                  Todos ({catequistas.length})
+                </button>
+                {uniqueGroups.map(grupo => {
+                  const count = catequistas.filter(c => c.grupo === grupo).length;
+                  const isSelected = selectedGroups.includes(grupo);
+                  return (
+                    <button
+                      key={grupo}
+                      onClick={() => toggleGroup(grupo)}
+                      className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                        isSelected
+                          ? 'bg-purple-600 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      }`}
+                    >
+                      {grupo} <span className="text-xs bg-gray-300 px-2 py-1 rounded ml-1">({count})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Información de resultados */}
+            <div className="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-lg">
+              <p className="text-sm sm:text-base text-blue-900 font-semibold flex items-center gap-2">
+                <Filter className="w-4 h-4" /> Mostrando: <span className="font-bold text-blue-600">{filteredCatequistas.length}</span> de {catequistas.length} catequistas
+              </p>
+            </div>
+          </div>
 
           {/* Tabla de Asistencia */}
           {loading ? (
@@ -189,45 +274,45 @@ function CatequistasModule({ onBack, user }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {catequistas
-                      .sort((a, b) => {
-                        // Ordenar por grupo primero, luego por nombre
-                        if (a.grupo !== b.grupo) {
-                          return a.grupo.localeCompare(b.grupo);
-                        }
-                        return a.nombre.localeCompare(b.nombre);
-                      })
-                      .map((catequista) => (
-                      <tr key={catequista.nombre} className="border-t border-gray-200 hover:bg-gray-50">
-                        <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
-                          {catequista.nombre}
-                        </td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-gray-600">
-                          <span className="inline-block px-2 py-1 bg-blue-50 text-blue-900 rounded-full font-medium">
-                            {catequista.grupo}
-                          </span>
-                        </td>
-                        {catequesisIndices.map((catequesisNum) => {
-                          const estado = catequistasState[catequista.nombre]?.[catequesisNum] || 'ausente';
-                          const icon = getEstadoIcon(estado);
-                          const colorClass = getEstadoColor(estado);
-                          
-                          return (
-                            <td
-                              key={`${catequista.nombre}-${catequesisNum}`}
-                              className="px-1 sm:px-2 py-2 sm:py-3 text-center"
-                            >
-                              <button
-                                onClick={() => handleEstadoChange(catequista.nombre, catequesisNum)}
-                                className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg border-2 font-bold text-xs sm:text-sm hover:shadow-md transition-all ${colorClass}`}
+                    {filteredCatequistas.length > 0 ? (
+                      filteredCatequistas.map((catequista) => (
+                        <tr key={catequista.nombre} className="border-t border-gray-200 hover:bg-gray-50">
+                          <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-800 sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
+                            {catequista.nombre}
+                          </td>
+                          <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-gray-600">
+                            <span className="inline-block px-2 py-1 bg-blue-50 text-blue-900 rounded-full font-medium">
+                              {catequista.grupo}
+                            </span>
+                          </td>
+                          {catequesisIndices.map((catequesisNum) => {
+                            const estado = catequistasState[catequista.nombre]?.[catequesisNum] || 'ausente';
+                            const icon = getEstadoIcon(estado);
+                            const colorClass = getEstadoColor(estado);
+                            
+                            return (
+                              <td
+                                key={`${catequista.nombre}-${catequesisNum}`}
+                                className="px-1 sm:px-2 py-2 sm:py-3 text-center"
                               >
-                                {icon}
-                              </button>
-                            </td>
-                          );
-                        })}
+                                <button
+                                  onClick={() => handleEstadoChange(catequista.nombre, catequesisNum)}
+                                  className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg border-2 font-bold text-xs sm:text-sm hover:shadow-md transition-all ${colorClass}`}
+                                >
+                                  {icon}
+                                </button>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={catequesisIndices.length + 2} className="px-4 py-8 text-center text-gray-500">
+                          <p className="font-medium">No se encontraron catequistas con los filtros aplicados</p>
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

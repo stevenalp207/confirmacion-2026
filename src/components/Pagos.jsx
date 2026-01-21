@@ -7,7 +7,6 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
 
   // Monto requerido según el tipo
   const montoRequerido = 50000;
-  const tablaNombre = esCatequistas ? 'pagos_catequistas' : 'pagos_retiro';
 
   const loadPagos = useCallback(async () => {
     try {
@@ -82,6 +81,34 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
       loadPagos();
     }
   }, [grupo, estudiantes, catequistas, esCatequistas, loadPagos]);
+
+  // Memoized calculations - MUST be before any conditional returns
+  const totalPagado = useMemo(() => 
+    Object.values(pagosState).reduce((sum, p) => sum + p.monto_pagado, 0),
+    [pagosState]
+  );
+
+  const cantidadPersonas = useMemo(() => 
+    esCatequistas ? catequistas?.length || 0 : Object.keys(estudiantes || {}).length,
+    [esCatequistas, catequistas, estudiantes]
+  );
+
+  const totalRequerido = useMemo(() => 
+    cantidadPersonas * montoRequerido,
+    [cantidadPersonas, montoRequerido]
+  );
+
+  const completados = useMemo(() => 
+    Object.values(pagosState).filter(p => p.pagado).length,
+    [pagosState]
+  );
+
+  const listaPersonas = useMemo(() => {
+    if (esCatequistas) {
+      return (catequistas || []).map(nombre => ({ id: nombre, nombre: nombre }));
+    }
+    return Object.values(estudiantes || {}).map(est => ({ id: est.id, nombre: est.nombre }));
+  }, [esCatequistas, catequistas, estudiantes]);
 
   const handleMontoPagado = async (id, nuevoMonto) => {
     const pagado = nuevoMonto >= montoRequerido;
@@ -159,33 +186,6 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
       </div>
     );
   }
-
-  const totalPagado = useMemo(() => 
-    Object.values(pagosState).reduce((sum, p) => sum + p.monto_pagado, 0),
-    [pagosState]
-  );
-
-  const cantidadPersonas = useMemo(() => 
-    esCatequistas ? catequistas.length : Object.keys(estudiantes).length,
-    [esCatequistas, catequistas, estudiantes]
-  );
-
-  const totalRequerido = useMemo(() => 
-    cantidadPersonas * montoRequerido,
-    [cantidadPersonas, montoRequerido]
-  );
-
-  const completados = useMemo(() => 
-    Object.values(pagosState).filter(p => p.pagado).length,
-    [pagosState]
-  );
-
-  const listaPersonas = useMemo(() => 
-    esCatequistas 
-      ? catequistas.map(nombre => ({ id: nombre, nombre: nombre }))
-      : Object.values(estudiantes).map(est => ({ id: est.id, nombre: est.nombre })),
-    [esCatequistas, catequistas, estudiantes]
-  );
 
   return (
     <div className="space-y-6">

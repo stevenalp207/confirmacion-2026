@@ -3,12 +3,13 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
-import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, MailX, ArrowRight } from 'lucide-react';
+import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, MailX, ArrowRight, Filter } from 'lucide-react';
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('Todos');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('todos'); // todos, documentos-pendientes, documentos-completos
 
   // Cargar todos los estudiantes de todos los grupos
   const allStudents = [];
@@ -24,11 +25,26 @@ function StudentsModule({ onBack, user }) {
     });
   });
 
-  // Filtrar por grupo y búsqueda
+  // Función para contar documentos entregados
+  const countDocumentosEntregados = (student) => {
+    return Object.values(student.documentos || {}).filter(Boolean).length;
+  };
+
+  const totalDocumentos = 6; // Total de documentos requeridos
+
+  // Filtrar por grupo, búsqueda y estado de documentos
   const filteredStudents = allStudents.filter(student => {
     const matchesGroup = selectedGroup === 'Todos' || student.grupo === selectedGroup;
     const matchesSearch = student.nombre.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesGroup && matchesSearch;
+    
+    let matchesStatus = true;
+    if (filterStatus === 'documentos-pendientes') {
+      matchesStatus = countDocumentosEntregados(student) < totalDocumentos;
+    } else if (filterStatus === 'documentos-completos') {
+      matchesStatus = countDocumentosEntregados(student) === totalDocumentos;
+    }
+    
+    return matchesGroup && matchesSearch && matchesStatus;
   });
 
   const generarPDFListaGeneral = () => {
@@ -216,11 +232,51 @@ function StudentsModule({ onBack, user }) {
             </div>
           </div>
 
+          {/* Filtro por estado de documentos */}
+          <div className="mb-4 sm:mb-6">
+            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+              <Filter className="w-4 h-4" /> Filtrar por documentos
+            </label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setFilterStatus('todos')}
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                  filterStatus === 'todos'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                onClick={() => setFilterStatus('documentos-completos')}
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                  filterStatus === 'documentos-completos'
+                    ? 'bg-green-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                }`}
+              >
+                ✓ Documentos Completos
+              </button>
+              <button
+                onClick={() => setFilterStatus('documentos-pendientes')}
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                  filterStatus === 'documentos-pendientes'
+                    ? 'bg-orange-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                }`}
+              >
+                ⚠ Documentos Pendientes
+              </button>
+            </div>
+          </div>
+
           {/* Información de resultados */}
           <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
             <p className="text-gray-800 font-semibold text-lg flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-blue-600" /> Resultados: <span className="text-blue-600 text-2xl">{filteredStudents.length}</span> estudiante(s)
               {selectedGroup !== 'Todos' && ` en ${selectedGroup}`}
+              {filterStatus !== 'todos' && ` - ${filterStatus === 'documentos-completos' ? 'Documentos Completos' : 'Documentos Pendientes'}`}
             </p>
           </div>
         </div>
@@ -228,25 +284,47 @@ function StudentsModule({ onBack, user }) {
         {/* Lista de estudiantes */}
         <div className="space-y-3">
           {filteredStudents.length > 0 ? (
-            filteredStudents.map(student => (
-              <button
-                key={`${student.grupo}-${student.id}`}
-                onClick={() => setSelectedStudent(student)}
-                className="w-full p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition text-left group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition">
-                      {student.nombre}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
-                      <Phone className="w-4 h-4" /> {student.id} • <BookOpen className="w-4 h-4" /> {student.grupo}
-                    </p>
+            filteredStudents.map(student => {
+              const docCount = countDocumentosEntregados(student);
+              const isComplete = docCount === totalDocumentos;
+              
+              return (
+                <button
+                  key={`${student.grupo}-${student.id}`}
+                  onClick={() => setSelectedStudent(student)}
+                  className="w-full p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition text-left group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition">
+                        {student.nombre}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                        <Phone className="w-4 h-4" /> {student.id} • <BookOpen className="w-4 h-4" /> {student.grupo}
+                      </p>
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full transition-all ${
+                              isComplete ? 'bg-green-500' : 'bg-orange-500'
+                            }`}
+                            style={{ width: `${(docCount / totalDocumentos) * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className={`text-xs font-bold px-2 py-1 rounded ${
+                          isComplete
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {docCount}/{totalDocumentos}
+                        </span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-8 h-8 text-gray-300 group-hover:text-blue-500 transition ml-4 flex-shrink-0" />
                   </div>
-                  <ArrowRight className="w-8 h-8 text-gray-300 group-hover:text-blue-500 transition" />
-                </div>
-              </button>
-            ))
+                </button>
+              );
+            })
           ) : (
             <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-300">
               <MailX className="w-16 h-16 text-gray-400 mx-auto mb-4" />

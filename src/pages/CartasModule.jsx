@@ -13,6 +13,30 @@ function CartasModule({ onBack, user }) {
     ? grupos 
     : [user?.rol];
 
+  // Manejar navegación del historial para grupos
+  useEffect(() => {
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state?.group && gruposDisponibles.includes(state.group)) {
+        setCurrentGroup(state.group);
+      } else if (state?.module === 'cartas' && !state?.group) {
+        setCurrentGroup('');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Restaurar grupo del historial si existe
+    const currentState = window.history.state;
+    if (currentState?.group && gruposDisponibles.includes(currentState.group)) {
+      setCurrentGroup(currentState.group);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [user, gruposDisponibles]);
+
   useEffect(() => {
     if (currentGroup) {
       loadEstudiantes(currentGroup);
@@ -33,6 +57,13 @@ function CartasModule({ onBack, user }) {
 
   const handleGroupChange = (grupo) => {
     setCurrentGroup(grupo);
+    
+    // Agregar cambio de grupo al historial
+    window.history.pushState(
+      { module: 'cartas', group: grupo },
+      '',
+      `#cartas`
+    );
   };
 
   return (

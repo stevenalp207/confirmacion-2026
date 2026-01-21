@@ -1,24 +1,70 @@
-import { useState } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import ModuleSelector from './pages/ModuleSelector';
-import AttendanceModule from './pages/AttendanceModule';
-import DocumentsModule from './pages/DocumentsModule';
-import SabanasModule from './pages/SabanasModule';
-import CartasModule from './pages/CartasModule';
-import PagosModule from './pages/PagosModule';
-import CatequistasModule from './pages/CatequistasModule';
-import StudentsModule from './pages/StudentsModule';
-import GastosModule from './pages/GastosModule';
-import IngresosModule from './pages/IngresosModule';
-import FormacionModule from './pages/FormacionModule';
-import BoletasModule from './pages/BoletasModule';
-import CalendarioModule from './pages/CalendarioModule';
-import GroupAssignmentModule from './pages/GroupAssignmentModule';
+
+// Lazy load all modules for better performance
+const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
+const DocumentsModule = lazy(() => import('./pages/DocumentsModule'));
+const SabanasModule = lazy(() => import('./pages/SabanasModule'));
+const CartasModule = lazy(() => import('./pages/CartasModule'));
+const PagosModule = lazy(() => import('./pages/PagosModule'));
+const CatequistasModule = lazy(() => import('./pages/CatequistasModule'));
+const StudentsModule = lazy(() => import('./pages/StudentsModule'));
+const GastosModule = lazy(() => import('./pages/GastosModule'));
+const IngresosModule = lazy(() => import('./pages/IngresosModule'));
+const FormacionModule = lazy(() => import('./pages/FormacionModule'));
+const BoletasModule = lazy(() => import('./pages/BoletasModule'));
+const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
+const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
+
+// Loading component
+function ModuleLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 border-r-blue-600 animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-indigo-600 animate-spin" style={{animationDirection: 'reverse', animationDuration: '1s'}}></div>
+        </div>
+        <div className="text-center">
+          <p className="text-gray-700 font-semibold text-lg">Cargando módulo</p>
+          <p className="text-gray-500 text-sm mt-2">Por favor espera...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
   const { user, loading, logout, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
+
+  // Manejar navegación del navegador (botón atrás/adelante)
+  useEffect(() => {
+    // Función para manejar cambios en el historial
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state?.module) {
+        setCurrentModule(state.module);
+      } else {
+        setCurrentModule(null);
+      }
+    };
+
+    // Escuchar eventos de navegación
+    window.addEventListener('popstate', handlePopState);
+
+    // Establecer estado inicial si hay módulo en la URL
+    const initialState = window.history.state;
+    if (initialState?.module) {
+      setCurrentModule(initialState.module);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -51,10 +97,22 @@ function AppContent() {
   const handleSelectModule = (module) => {
     if (!allowedModules.includes(module)) return;
     setCurrentModule(module);
+    
+    // Agregar al historial del navegador
+    window.history.pushState(
+      { module }, 
+      '', 
+      `#${module}`
+    );
   };
 
   const handleBack = () => {
     setCurrentModule(null);
+    
+    // Agregar al historial para que el botón atrás funcione
+    if (window.history.state?.module) {
+      window.history.pushState(null, '', '#');
+    }
   };
 
   const handleLogout = () => {
@@ -81,20 +139,21 @@ function AppContent() {
           onRemoveAccount={removeSavedAccount}
         />
       )}
-      {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}
-      {currentModule === 'documentos' && <DocumentsModule onBack={handleBack} user={user} />}
-      {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
-      {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
-      {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
-      {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
-      {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
-      {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
-      {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
-      {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
-      {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
-      {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
-      {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
-
+      <Suspense fallback={<ModuleLoader />}>
+        {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}
+        {currentModule === 'documentos' && <DocumentsModule onBack={handleBack} user={user} />}
+        {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
+        {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
+        {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
+        {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
+        {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
+        {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
+        {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
+        {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
+        {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
+        {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
+        {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
+      </Suspense>
     </>
   );
 }

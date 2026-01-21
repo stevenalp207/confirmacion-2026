@@ -17,10 +17,48 @@ function AttendanceModule({ onBack, user }) {
     ? grupos 
     : [user?.rol];
 
+  // Manejar navegación del historial para grupos
+  useEffect(() => {
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state?.group && gruposDisponibles.includes(state.group)) {
+        setCurrentGroup(state.group);
+      } else if (state?.module === 'asistencia' && !state?.group) {
+        // Si volvemos al módulo sin grupo específico
+        const defaultGroup = user?.rol !== 'admin' && user?.usuario !== 'logistica' 
+          ? user?.rol 
+          : '';
+        setCurrentGroup(defaultGroup);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Restaurar grupo del historial si existe
+    const currentState = window.history.state;
+    if (currentState?.group && gruposDisponibles.includes(currentState.group)) {
+      setCurrentGroup(currentState.group);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [user, gruposDisponibles]);
+
   // Cargar automáticamente el grupo si el usuario no es admin ni logística
   useEffect(() => {
     if (user && user.rol !== 'admin' && user.usuario !== 'logistica' && !currentGroup) {
-      setCurrentGroup(user.rol);
+      const defaultGroup = user.rol;
+      setCurrentGroup(defaultGroup);
+      
+      // Actualizar historial con el grupo predeterminado
+      if (window.history.state?.module === 'asistencia') {
+        window.history.replaceState(
+          { module: 'asistencia', group: defaultGroup },
+          '',
+          '#asistencia'
+        );
+      }
     }
   }, [user, currentGroup]);
 
@@ -44,6 +82,13 @@ function AttendanceModule({ onBack, user }) {
 
   const handleGroupChange = (grupo) => {
     setCurrentGroup(grupo);
+    
+    // Agregar cambio de grupo al historial
+    window.history.pushState(
+      { module: 'asistencia', group: grupo },
+      '',
+      `#asistencia`
+    );
   };
 
   const handleStudentClick = (estudianteId) => {
