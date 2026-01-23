@@ -18,10 +18,15 @@ import {
   X
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
+import OnboardingTutorial from '../components/OnboardingTutorial';
+import { useOnboarding } from '../hooks/useOnboarding';
 
 function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccount }) {
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
+  
+  // Onboarding tutorial
+  const { shouldShowOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
 
   useEffect(() => {
     if (showSwitcher) {
@@ -514,6 +519,14 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
           <p>Haz clic en un módulo para comenzar</p>
         </div>
       </div>
+
+      {/* Onboarding Tutorial */}
+      {shouldShowOnboarding && (
+        <OnboardingTutorial
+          onComplete={completeOnboarding}
+          onSkip={skipOnboarding}
+        />
+      )}
     </div>
   );
 }

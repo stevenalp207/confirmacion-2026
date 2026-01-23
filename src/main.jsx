@@ -5,6 +5,11 @@ import './styles/animations.css'
 import App from './App.jsx'
 import { initNotifications } from './utils/notifications'
 
+// Cargar helpers de desarrollo en modo dev
+if (import.meta.env.DEV) {
+  import('./utils/devHelpers.js').catch(() => {});
+}
+
 // Inicializar servicio de notificaciones al cargar la app
 initNotifications().then(() => {
   console.log('✅ Servicio de notificaciones inicializado');

@@ -297,10 +297,24 @@ const NotificationSettings = ({ onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50">
+        <div className="border-t border-gray-200 p-4 bg-gray-50 space-y-2">
           <p className="text-xs text-gray-500 text-center">
             Las notificaciones se enviarán según tu horario local (Costa Rica)
           </p>
+          
+          {/* Botón para volver a ver el tutorial */}
+          <div className="text-center">
+            <button
+              onClick={() => {
+                localStorage.removeItem('confirmacion2026_onboarding_completed');
+                localStorage.removeItem('notifications_pulse_shown');
+                window.location.reload();
+              }}
+              className="text-xs text-blue-600 hover:text-blue-700 underline"
+            >
+              Ver tutorial de nuevo
+            </button>
+          </div>
         </div>
       </div>
     </div>
