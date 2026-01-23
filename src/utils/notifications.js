@@ -139,20 +139,23 @@ class NotificationService {
       vibrate: [200, 100, 200],
       tag: type,
       requireInteraction: options.requireInteraction || false,
+      renotify: false,
+      silent: false,
       data: {
         type,
         timestamp: Date.now(),
         url: options.url || '/',
+        dateCreated: new Date().toISOString(),
         ...options.data
       },
       actions: [
         {
           action: 'open',
-          title: '👁️ Ver'
+          title: 'Ver'
         },
         {
           action: 'close',
-          title: '✕ Cerrar'
+          title: 'Cerrar'
         }
       ],
       ...options
@@ -233,18 +236,31 @@ class NotificationService {
    */
   async sendScheduledNotification(type) {
     const messages = {
-      [NOTIFICATION_TYPES.ATTENDANCE_REMINDER]: 
-        '📋 Es hora de pasar asistencia. No olvides registrar a todos los estudiantes.',
-      [NOTIFICATION_TYPES.PAYMENT_REMINDER]: 
-        '💵 Revisa los pagos pendientes del retiro. Hay familias por contactar.',
-      [NOTIFICATION_TYPES.DOCUMENT_REMINDER]: 
-        '📑 Verifica los documentos pendientes de entrega.',
-      [NOTIFICATION_TYPES.CATECHIST_REMINDER]: 
-        '👨‍🏫 Recuerda registrar la asistencia de los catequistas antes de la sesión.'
+      [NOTIFICATION_TYPES.ATTENDANCE_REMINDER]: {
+        message: '📋 Es hora de pasar asistencia. No olvides registrar a todos los estudiantes.',
+        url: '/?module=asistencia'
+      },
+      [NOTIFICATION_TYPES.PAYMENT_REMINDER]: {
+        message: '💵 Revisa los pagos pendientes del retiro. Hay familias por contactar.',
+        url: '/?module=pagos'
+      },
+      [NOTIFICATION_TYPES.DOCUMENT_REMINDER]: {
+        message: '📑 Verifica los documentos pendientes de entrega.',
+        url: '/?module=documentos'
+      },
+      [NOTIFICATION_TYPES.CATECHIST_REMINDER]: {
+        message: '👨‍🏫 Recuerda registrar la asistencia de los catequistas antes de la sesión.',
+        url: '/?module=catequistas'
+      }
     };
 
-    const message = messages[type] || 'Tienes tareas pendientes';
-    await this.show(type, message, { requireInteraction: true });
+    const config = messages[type];
+    if (!config) return;
+
+    await this.show(type, config.message, { 
+      requireInteraction: true,
+      url: config.url
+    });
   }
 
   /**

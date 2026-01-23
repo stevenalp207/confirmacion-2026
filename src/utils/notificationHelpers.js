@@ -30,6 +30,7 @@ export async function checkAndNotifyLowAttendance(estudianteId, grupo) {
         `⚠️ Estudiante con ${porcentaje.toFixed(0)}% de asistencia en ${grupo}. Requiere seguimiento.`,
         { 
           requireInteraction: true,
+          url: '/?module=asistencia',
           data: { estudianteId, grupo, porcentaje }
         }
       );
@@ -60,6 +61,7 @@ export async function checkAndNotifyPendingPayments() {
       `💰 Hay ${total} pago${total !== 1 ? 's' : ''} pendiente${total !== 1 ? 's' : ''} en ${grupos.length} grupo${grupos.length !== 1 ? 's' : ''}.`,
       {
         requireInteraction: true,
+        url: '/?module=pagos',
         data: { total, grupos }
       }
     );
@@ -87,6 +89,7 @@ export async function checkAndNotifyPendingDocuments() {
       NOTIFICATION_TYPES.DOCUMENT_REMINDER,
       `📄 Faltan ${total} documento${total !== 1 ? 's' : ''} por entregar.`,
       {
+        url: '/?module=documentos',
         data: { total }
       }
     );
@@ -106,6 +109,7 @@ export async function notifyUpcomingEvent(evento) {
     `📅 Mañana: ${titulo}${descripcion ? ' - ' + descripcion : ''}`,
     {
       requireInteraction: true,
+      url: '/?module=calendario',
       data: { fecha, titulo }
     }
   );

@@ -77,6 +77,9 @@ self.addEventListener('notificationclick', (event) => {
   const action = event.action;
   const data = notification.data || {};
 
+  console.log('Notification clicked:', { action, data });
+
+  // Cerrar la notificación
   notification.close();
 
   // Si presionó cerrar, no hacer nada más
@@ -84,34 +87,51 @@ self.addEventListener('notificationclick', (event) => {
     return;
   }
 
+  // Determinar URL de destino
+  const urlToOpen = data.url || '/';
+  const fullUrl = new URL(urlToOpen, self.location.origin).href;
+
   // Abrir o enfocar la app
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(clientList => {
-        const url = data.url || '/';
+    clients.matchAll({ 
+      type: 'window', 
+      includeUncontrolled: true 
+    }).then(clientList => {
+      console.log('Clientes encontrados:', clientList.length);
+      
+      // Buscar si ya hay una ventana abierta de la app
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i];
+        console.log('Cliente URL:', client.url);
         
-        // Buscar si ya hay una ventana abierta
-        for (let client of clientList) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            return client.focus().then(client => {
-              // Enviar mensaje a la app para navegar si es necesario
-              if (url !== '/') {
-                client.postMessage({
-                  type: 'NOTIFICATION_CLICK',
-                  url: url,
-                  data: data
-                });
-              }
-              return client;
+        // Verificar si es una ventana de nuestra app
+        if (client.url.startsWith(self.location.origin) && 'focus' in client) {
+          console.log('Enfocando ventana existente');
+          
+          // Enfocar la ventana existente
+          return client.focus().then(focusedClient => {
+            console.log('Ventana enfocada, enviando mensaje');
+            
+            // Enviar mensaje para navegar si es necesario
+            focusedClient.postMessage({
+              type: 'NOTIFICATION_CLICK',
+              url: urlToOpen,
+              data: data
             });
-          }
+            
+            return focusedClient;
+          });
         }
-        
-        // Si no hay ventana abierta, abrir una nueva
-        if (clients.openWindow) {
-          return clients.openWindow(url);
-        }
-      })
+      }
+      
+      // Si no hay ventana abierta, abrir una nueva
+      console.log('Abriendo nueva ventana:', fullUrl);
+      if (clients.openWindow) {
+        return clients.openWindow(fullUrl);
+      }
+    }).catch(err => {
+      console.error('Error manejando click de notificación:', err);
+    })
   );
 });
 

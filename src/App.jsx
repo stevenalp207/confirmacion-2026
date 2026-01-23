@@ -40,6 +40,43 @@ function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
   const { user, loading, logout, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
 
+  // Escuchar mensajes del Service Worker (clicks en notificaciones)
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      const handleMessage = (event) => {
+        console.log('Mensaje recibido del SW:', event.data);
+        
+        if (event.data && event.data.type === 'NOTIFICATION_CLICK') {
+          const { url, data } = event.data;
+          console.log('Click en notificación, navegando a:', url);
+          
+          // Extraer el módulo de la URL si existe
+          if (url && url !== '/') {
+            const match = url.match(/module=(\w+)/);
+            if (match && match[1]) {
+              const module = match[1];
+              console.log('Navegando a módulo:', module);
+              setCurrentModule(module);
+              
+              // Actualizar historial
+              window.history.pushState(
+                { module }, 
+                '', 
+                `#${module}`
+              );
+            }
+          }
+        }
+      };
+
+      navigator.serviceWorker.addEventListener('message', handleMessage);
+
+      return () => {
+        navigator.serviceWorker.removeEventListener('message', handleMessage);
+      };
+    }
+  }, []);
+
   // Manejar navegación del navegador (botón atrás/adelante)
   useEffect(() => {
     // Función para manejar cambios en el historial
