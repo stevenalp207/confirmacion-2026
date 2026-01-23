@@ -6,9 +6,6 @@
 // Tipos de notificaciones disponibles
 export const NOTIFICATION_TYPES = {
   ATTENDANCE_REMINDER: 'attendance_reminder',
-  PAYMENT_REMINDER: 'payment_reminder',
-  DOCUMENT_REMINDER: 'document_reminder',
-  LOW_ATTENDANCE_ALERT: 'low_attendance_alert',
   UPCOMING_EVENT: 'upcoming_event',
   CATECHIST_REMINDER: 'catechist_reminder',
   GENERAL: 'general'
@@ -21,24 +18,6 @@ export const NOTIFICATION_CONFIGS = {
     icon: '✅',
     color: '#10b981',
     schedule: { day: 4, hour: 17, minute: 5 } // Jueves 5:05 PM
-  },
-  [NOTIFICATION_TYPES.PAYMENT_REMINDER]: {
-    title: 'Recordatorio de Pagos',
-    icon: '💰',
-    color: '#f59e0b',
-    schedule: { day: 1, hour: 9, minute: 0 } // Lunes 9:00 AM
-  },
-  [NOTIFICATION_TYPES.DOCUMENT_REMINDER]: {
-    title: 'Documentos Pendientes',
-    icon: '📄',
-    color: '#3b82f6',
-    schedule: { day: 3, hour: 10, minute: 0 } // Miércoles 10:00 AM
-  },
-  [NOTIFICATION_TYPES.LOW_ATTENDANCE_ALERT]: {
-    title: 'Alerta de Asistencia Baja',
-    icon: '⚠️',
-    color: '#ef4444',
-    priority: 'high'
   },
   [NOTIFICATION_TYPES.UPCOMING_EVENT]: {
     title: 'Evento Próximo',
@@ -239,14 +218,6 @@ class NotificationService {
       [NOTIFICATION_TYPES.ATTENDANCE_REMINDER]: {
         message: '📋 Es hora de pasar asistencia. No olvides registrar a todos los estudiantes.',
         url: '/?module=asistencia'
-      },
-      [NOTIFICATION_TYPES.PAYMENT_REMINDER]: {
-        message: '💵 Revisa los pagos pendientes del retiro. Hay familias por contactar.',
-        url: '/?module=pagos'
-      },
-      [NOTIFICATION_TYPES.DOCUMENT_REMINDER]: {
-        message: '📑 Verifica los documentos pendientes de entrega.',
-        url: '/?module=documentos'
       },
       [NOTIFICATION_TYPES.CATECHIST_REMINDER]: {
         message: '👨‍🏫 Recuerda registrar la asistencia de los catequistas antes de la sesión.',

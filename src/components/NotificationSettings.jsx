@@ -44,27 +44,6 @@ const NotificationSettings = ({ onClose }) => {
       color: 'text-green-600'
     },
     {
-      type: NOTIFICATION_TYPES.PAYMENT_REMINDER,
-      icon: DollarSign,
-      label: 'Recordatorio de Pagos',
-      description: 'Lunes a las 9:00 AM',
-      color: 'text-yellow-600'
-    },
-    {
-      type: NOTIFICATION_TYPES.DOCUMENT_REMINDER,
-      icon: FileText,
-      label: 'Documentos Pendientes',
-      description: 'Miércoles a las 10:00 AM',
-      color: 'text-blue-600'
-    },
-    {
-      type: NOTIFICATION_TYPES.LOW_ATTENDANCE_ALERT,
-      icon: AlertTriangle,
-      label: 'Alerta Asistencia Baja',
-      description: 'Cuando un estudiante tiene <70% asistencia',
-      color: 'text-red-600'
-    },
-    {
       type: NOTIFICATION_TYPES.UPCOMING_EVENT,
       icon: Calendar,
       label: 'Eventos Próximos',

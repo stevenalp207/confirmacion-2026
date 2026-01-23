@@ -29,8 +29,6 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
       icon: <Check className="w-16 h-16 text-green-500" />,
       features: [
         '📋 Recordatorio de asistencia (Jueves 5:05 PM)',
-        '💰 Revisar pagos pendientes (Lunes 9:00 AM)',
-        '📄 Verificar documentos (Miércoles 10:00 AM)',
         '👨‍🏫 Asistencia de catequistas (Jueves 4:00 PM)'
       ]
     }
@@ -63,7 +61,7 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[60] flex items-center justify-center p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-60 flex items-center justify-center p-4 transition-opacity duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
@@ -113,7 +111,7 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
                   key={index}
                   className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg transform transition hover:scale-105"
                 >
-                  <div className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full" />
+                  <div className="shrink-0 w-2 h-2 bg-blue-500 rounded-full" />
                   <span className="text-gray-700 text-sm">{feature}</span>
                 </div>
               ))}
@@ -122,7 +120,7 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
 
           {/* Highlight para el paso de activar notificaciones */}
           {currentStepData.highlight === 'bell-button' && (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl p-4">
+            <div className="bg-linear-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="bg-blue-500 text-white p-2 rounded-lg">
                   <Bell className="w-5 h-5" />

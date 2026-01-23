@@ -9,93 +9,24 @@ import { supabase } from '../config/supabase';
  * Analizar asistencia y enviar alertas si es necesario
  */
 export async function checkAndNotifyLowAttendance(estudianteId, grupo) {
-  try {
-    // Obtener todas las asistencias del estudiante
-    const { data: asistencias, error } = await supabase
-      .from('asistencias')
-      .select('estado')
-      .eq('estudiante_id', estudianteId)
-      .eq('grupo', grupo);
-
-    if (error || !asistencias || asistencias.length === 0) return;
-
-    // Calcular porcentaje de asistencia
-    const presente = asistencias.filter(a => a.estado === 'presente').length;
-    const porcentaje = (presente / asistencias.length) * 100;
-
-    // Si la asistencia es menor al 70%, enviar alerta
-    if (porcentaje < 70 && porcentaje > 0) {
-      await showNotification(
-        NOTIFICATION_TYPES.LOW_ATTENDANCE_ALERT,
-        `⚠️ Estudiante con ${porcentaje.toFixed(0)}% de asistencia en ${grupo}. Requiere seguimiento.`,
-        { 
-          requireInteraction: true,
-          url: '/?module=asistencia',
-          data: { estudianteId, grupo, porcentaje }
-        }
-      );
-    }
-  } catch (error) {
-    console.error('Error verificando asistencia:', error);
-  }
+  // Notificación deshabilitada
+  return;
 }
 
 /**
  * Notificar sobre pagos pendientes
  */
 export async function checkAndNotifyPendingPayments() {
-  try {
-    // Obtener pagos pendientes
-    const { data: pagos, error } = await supabase
-      .from('pagos_retiro')
-      .select('*')
-      .eq('pagado', false);
-
-    if (error || !pagos || pagos.length === 0) return;
-
-    const total = pagos.length;
-    const grupos = [...new Set(pagos.map(p => p.grupo))];
-
-    await showNotification(
-      NOTIFICATION_TYPES.PAYMENT_REMINDER,
-      `💰 Hay ${total} pago${total !== 1 ? 's' : ''} pendiente${total !== 1 ? 's' : ''} en ${grupos.length} grupo${grupos.length !== 1 ? 's' : ''}.`,
-      {
-        requireInteraction: true,
-        url: '/?module=pagos',
-        data: { total, grupos }
-      }
-    );
-  } catch (error) {
-    console.error('Error verificando pagos:', error);
-  }
+  // Notificación deshabilitada
+  return;
 }
 
 /**
  * Notificar sobre documentos pendientes
  */
 export async function checkAndNotifyPendingDocuments() {
-  try {
-    // Obtener total de estudiantes y documentos entregados
-    const { data: documentos, error } = await supabase
-      .from('documentos_entregados')
-      .select('*')
-      .eq('entregado', false);
-
-    if (error || !documentos || documentos.length === 0) return;
-
-    const total = documentos.length;
-    
-    await showNotification(
-      NOTIFICATION_TYPES.DOCUMENT_REMINDER,
-      `📄 Faltan ${total} documento${total !== 1 ? 's' : ''} por entregar.`,
-      {
-        url: '/?module=documentos',
-        data: { total }
-      }
-    );
-  } catch (error) {
-    console.error('Error verificando documentos:', error);
-  }
+  // Notificación deshabilitada
+  return;
 }
 
 /**
