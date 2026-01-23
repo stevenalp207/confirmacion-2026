@@ -165,18 +165,26 @@ class NotificationService {
       clearInterval(this.checkInterval);
     }
 
-    if (enabledTypes.length === 0) return;
+    if (!enabledTypes || enabledTypes.length === 0) return;
+
+    // Filtrar tipos inválidos o removidos
+    const validTypes = enabledTypes.filter((t) => !!NOTIFICATION_CONFIGS[t]);
+    if (validTypes.length === 0) {
+      // Limpiar almacenamiento si no hay tipos válidos
+      localStorage.removeItem('enabledNotifications');
+      return;
+    }
 
     // Guardar tipos habilitados
-    localStorage.setItem('enabledNotifications', JSON.stringify(enabledTypes));
+    localStorage.setItem('enabledNotifications', JSON.stringify(validTypes));
 
     // Verificar cada minuto
     this.checkInterval = setInterval(() => {
-      this.checkScheduledNotifications(enabledTypes);
+      this.checkScheduledNotifications(validTypes);
     }, 60000);
 
     // Verificar inmediatamente
-    this.checkScheduledNotifications(enabledTypes);
+    this.checkScheduledNotifications(validTypes);
   }
 
   /**
@@ -193,7 +201,7 @@ class NotificationService {
 
     enabledTypes.forEach(type => {
       const config = NOTIFICATION_CONFIGS[type];
-      if (!config.schedule) return;
+      if (!config || !config.schedule) return;
 
       const { day, hour, minute } = config.schedule;
       
@@ -250,7 +258,14 @@ class NotificationService {
    */
   getEnabledNotifications() {
     const enabled = localStorage.getItem('enabledNotifications');
-    return enabled ? JSON.parse(enabled) : [];
+    const types = enabled ? JSON.parse(enabled) : [];
+    // Filtrar cualquier tipo inválido que quede en storage
+    const valid = Array.isArray(types) ? types.filter((t) => !!NOTIFICATION_CONFIGS[t]) : [];
+    // Sincronizar si difiere
+    if (enabled && valid.length !== types.length) {
+      localStorage.setItem('enabledNotifications', JSON.stringify(valid));
+    }
+    return valid;
   }
 
   /**
