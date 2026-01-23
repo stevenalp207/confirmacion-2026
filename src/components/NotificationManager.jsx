@@ -1,194 +1,50 @@
-import { useEffect, useState } from 'react';
-import { Bell, BellOff } from 'lucide-react';
+import { useState } from 'react';
+import { Bell, BellRing } from 'lucide-react';
+import { useNotifications } from '../hooks/useNotifications';
+import NotificationSettings from './NotificationSettings';
 
 const NotificationManager = () => {
-  const [permission, setPermission] = useState(Notification.permission);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [registration, setRegistration] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const { isEnabled, unreadCount, enabledTypes } = useNotifications();
 
-  useEffect(() => {
-    // Verificar si ya hay notificaciones programadas
-    const enabled = localStorage.getItem('attendanceNotificationsEnabled') === 'true';
-    setIsEnabled(enabled);
-
-    // Obtener el Service Worker registrado por Vite PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then(reg => {
-        console.log('Service Worker listo:', reg);
-        setRegistration(reg);
-      });
-    }
-
-    // Configurar notificaciones si ya están habilitadas
-    if (enabled && permission === 'granted') {
-      scheduleWeeklyNotifications();
-    }
-  }, []);
-
-  const requestPermission = async () => {
-    if ('Notification' in window) {
-      const perm = await Notification.requestPermission();
-      setPermission(perm);
-      return perm === 'granted';
-    }
-    return false;
-  };
-
-  const scheduleWeeklyNotifications = () => {
-    // Limpiar cualquier intervalo previo
-    const existingInterval = localStorage.getItem('notificationIntervalId');
-    if (existingInterval) {
-      clearInterval(parseInt(existingInterval));
-    }
-
-    // Verificar la hora cada minuto
-    const intervalId = setInterval(checkAndNotify, 60000);
-    localStorage.setItem('notificationIntervalId', intervalId.toString());
-    
-    // Verificar inmediatamente también
-    checkAndNotify();
-  };
-
-  const checkAndNotify = async () => {
-    const now = new Date();
-    
-    // Convertir a hora de Costa Rica (UTC-6)
-    const costaRicaTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Costa_Rica' }));
-    
-    const day = costaRicaTime.getDay(); // 0 = Domingo, 4 = Jueves
-    const hours = costaRicaTime.getHours();
-    const minutes = costaRicaTime.getMinutes();
-
-    // Verificar si es jueves a las 5:05 PM (17:05)
-    if (day === 4 && hours === 17 && minutes === 5) {
-      // Verificar si ya se envió hoy
-      const lastNotification = localStorage.getItem('lastNotificationDate');
-      const today = costaRicaTime.toDateString();
-      
-      if (lastNotification !== today) {
-        await showNotification();
-        localStorage.setItem('lastNotificationDate', today);
-      }
-    }
-  };
-
-  const showNotification = async () => {
-    if ('serviceWorker' in navigator && 'Notification' in window) {
-      try {
-        const reg = registration || await navigator.serviceWorker.ready;
-        
-        await reg.showNotification('Confirmación 2026', {
-          body: 'Recuerda pasar lista',
-          icon: '/android-chrome-192x192.png',
-          badge: '/android-chrome-192x192.png',
-          vibrate: [200, 100, 200],
-          tag: 'attendance-reminder',
-          requireInteraction: true,
-          actions: [
-            {
-              action: 'open',
-              title: 'Abrir app'
-            },
-            {
-              action: 'close',
-              title: 'Cerrar'
-            }
-          ]
-        });
-      } catch (error) {
-        console.error('Error mostrando notificación:', error);
-      }
-    }
-  };
-
-  const toggleNotifications = async () => {
-    if (!isEnabled) {
-      // Habilitar notificaciones
-      const granted = permission === 'granted' ? true : await requestPermission();
-      
-      if (granted) {
-        setIsEnabled(true);
-        localStorage.setItem('attendanceNotificationsEnabled', 'true');
-        scheduleWeeklyNotifications();
-        
-        // Mostrar confirmación
-        alert('✅ Notificaciones activadas! Recibirás un recordatorio todos los jueves a las 5:05 PM (hora Costa Rica).');
-      } else {
-        alert('❌ Por favor, permite las notificaciones en la configuración de tu navegador.');
-      }
-    } else {
-      // Deshabilitar notificaciones
-      const intervalId = localStorage.getItem('notificationIntervalId');
-      if (intervalId) {
-        clearInterval(parseInt(intervalId));
-        localStorage.removeItem('notificationIntervalId');
-      }
-      
-      setIsEnabled(false);
-      localStorage.setItem('attendanceNotificationsEnabled', 'false');
-      alert('🔕 Notificaciones desactivadas.');
-    }
-  };
-
-  // Botón de prueba (solo para desarrollo)
-  const testNotification = async () => {
-    try {
-      console.log('Iniciando prueba de notificación...');
-      console.log('Permiso actual:', permission);
-      
-      if (permission !== 'granted') {
-        console.log('Solicitando permiso...');
-        const granted = await requestPermission();
-        if (!granted) {
-          alert('❌ Por favor, permite las notificaciones en tu navegador.');
-          return;
-        }
-      }
-      
-      console.log('Mostrando notificación de prueba...');
-      await showNotification();
-      console.log('✅ Notificación enviada');
-      
-      // Feedback visual
-      alert('✅ Notificación de prueba enviada! Revisa tus notificaciones.');
-    } catch (error) {
-      console.error('Error en prueba de notificación:', error);
-      alert('❌ Error al enviar notificación: ' + error.message);
-    }
-  };
+  const hasActiveNotifications = enabledTypes.length > 0;
 
   return (
-    <div className="flex items-center gap-2">
+    <>
       <button
-        onClick={toggleNotifications}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-          isEnabled
-            ? 'bg-green-500 hover:bg-green-600 text-white'
-            : 'bg-gray-600 hover:bg-gray-700 text-white'
+        onClick={() => setShowSettings(true)}
+        className={`relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all shadow-sm ${
+          hasActiveNotifications
+            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+            : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
         }`}
-        title={isEnabled ? 'Notificaciones activas - Click para desactivar' : 'Activar recordatorio semanal'}
+        title={hasActiveNotifications ? 'Notificaciones activas' : 'Configurar notificaciones'}
       >
-        {isEnabled ? (
-          <Bell size={18} />
+        {hasActiveNotifications ? (
+          <BellRing size={18} className="animate-pulse" />
         ) : (
-          <BellOff size={18} />
+          <Bell size={18} />
         )}
-        <span className="text-xs sm:text-sm font-medium hidden sm:inline">
-          {isEnabled ? 'ON' : 'OFF'}
-        </span>
+        
+        {/* Badge de contador */}
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
+
+        {/* Badge de activas */}
+        {hasActiveNotifications && (
+          <span className="hidden sm:inline text-xs font-semibold">
+            {enabledTypes.length}
+          </span>
+        )}
       </button>
-      
-      {/* Botón de prueba - ocultar en producción */}
-      {isEnabled && import.meta.env.DEV && (
-        <button
-          onClick={testNotification}
-          className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded"
-          title="Probar notificación ahora"
-        >
-          Test
-        </button>
+
+      {showSettings && (
+        <NotificationSettings onClose={() => setShowSettings(false)} />
       )}
-    </div>
+    </>
   );
 };
 

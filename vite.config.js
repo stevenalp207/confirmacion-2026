@@ -41,16 +41,38 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
+        scope: '/',
+        orientation: 'portrait-primary',
+        categories: ['education', 'productivity'],
         icons: [
           {
             src: '/android-chrome-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
             src: '/android-chrome-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ],
+        screenshots: [],
+        shortcuts: [
+          {
+            name: 'Asistencia',
+            short_name: 'Asistencia',
+            description: 'Registrar asistencia',
+            url: '/?module=asistencia',
+            icons: [{ src: '/android-chrome-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Documentos',
+            short_name: 'Docs',
+            description: 'Ver documentos',
+            url: '/?module=documentos',
+            icons: [{ src: '/android-chrome-192x192.png', sizes: '192x192' }]
           }
         ]
       }
