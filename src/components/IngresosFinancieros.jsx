@@ -192,8 +192,7 @@ function IngresosFinancieros({ user }) {
             {showForm ? (
               <>
                 <X size={18} className="sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Cancelar</span>
-                <span className="sm:hidden">✕</span>
+                <span className="sm:inline">Cancelar</span>
               </>
             ) : (
               <>
