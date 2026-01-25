@@ -7,11 +7,19 @@ export const usePWAInstallPrompt = () => {
   const [installPrompt, setInstallPrompt] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [promptShown, setPromptShown] = useState(false);
 
   useEffect(() => {
     // Detectar si ya está instalada
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
+      return;
+    }
+
+    // Verificar si ya mostró el prompt en esta sesión
+    const hasShownPrompt = sessionStorage.getItem('pwa-prompt-shown');
+    if (hasShownPrompt) {
+      return;
     }
 
     // Escuchar el evento beforeinstallprompt
@@ -21,6 +29,8 @@ export const usePWAInstallPrompt = () => {
       // Mostrar el prompt después de 3 segundos (UX mejor)
       setTimeout(() => {
         setShowPrompt(true);
+        setPromptShown(true);
+        sessionStorage.setItem('pwa-prompt-shown', 'true');
       }, 3000);
     };
 
@@ -33,11 +43,21 @@ export const usePWAInstallPrompt = () => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
+    // Si no hay beforeinstallprompt en 5 segundos, mostrar prompt personalizado igual
+    const timeoutId = setTimeout(() => {
+      if (!promptShown && !isInstalled) {
+        setShowPrompt(true);
+        setPromptShown(true);
+        sessionStorage.setItem('pwa-prompt-shown', 'true');
+      }
+    }, 5000);
+
     return () => {
+      clearTimeout(timeoutId);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, []);
+  }, [promptShown, isInstalled]);
 
   const handleInstall = async () => {
     if (!installPrompt) return;
