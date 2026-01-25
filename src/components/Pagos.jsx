@@ -189,22 +189,22 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
-          <div className="text-sm text-gray-600">Total Requerido</div>
-          <div className="text-2xl font-bold text-blue-600">
+          <div className="text-sm text-gray-600 mb-1">Total Requerido</div>
+          <div className="text-xl sm:text-2xl font-bold text-blue-600 break-words overflow-hidden">
             ₡{totalRequerido.toLocaleString('es-CR')}
           </div>
         </div>
         <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-          <div className="text-sm text-gray-600">Total Pagado</div>
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-sm text-gray-600 mb-1">Total Pagado</div>
+          <div className="text-xl sm:text-2xl font-bold text-green-600 break-words overflow-hidden">
             ₡{totalPagado.toLocaleString('es-CR')}
           </div>
         </div>
         <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4">
-          <div className="text-sm text-gray-600">Completados</div>
-          <div className="text-2xl font-bold text-purple-600">
+          <div className="text-sm text-gray-600 mb-1">Completados</div>
+          <div className="text-xl sm:text-2xl font-bold text-purple-600 break-words overflow-hidden">
             {completados} / {cantidadPersonas}
           </div>
         </div>
