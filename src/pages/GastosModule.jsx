@@ -31,22 +31,15 @@ function GastosModule({ onBack, user }) {
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
       {/* Navbar */}
       <nav className="bg-rose-600 text-white shadow-lg sticky top-0 z-10">
-        <div className="container mx-auto px-3 sm:px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 py-2 sm:py-0 sm:h-16">
-            <div className="flex items-center gap-1 sm:gap-4">
-              <button
-                onClick={onBack}
-                className="hover:bg-rose-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-xs sm:text-sm font-medium"
-              >
-                ← Atrás
-              </button>
-              <h1 className="text-sm sm:text-base lg:text-lg font-bold truncate">
-                Control de Gastos - Confirmación 2026
-              </h1>
-            </div>
-            <div className="text-xs sm:text-sm text-rose-100 self-end sm:self-auto">
-              Rol: <span className="font-semibold">{user?.rol}</span>
-            </div>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold">GASTOS</h1>
+            <button
+              onClick={onBack}
+              className="bg-white text-rose-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors font-semibold text-sm sm:text-base w-full sm:w-auto"
+            >
+              Salir
+            </button>
           </div>
         </div>
       </nav>

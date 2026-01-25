@@ -138,19 +138,11 @@ function Login() {
                 value={contraseña}
                 onChange={(e) => setContraseña(e.target.value)}
                 placeholder="Ingresa tu contraseña"
-                className="w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-300 bg-white pr-12"
+                className="w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-300 bg-white pr-10"
                 disabled={loading}
                 autoComplete="current-password"
               />
-              <button
-                type="button"
-                onClick={() => setMostrarContraseña(!mostrarContraseña)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition duration-200 p-1"
-                aria-label={mostrarContraseña ? "Ocultar contraseña" : "Mostrar contraseña"}
-                disabled={loading}
-              >
-                {mostrarContraseña ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+
             </div>
           </div>
 

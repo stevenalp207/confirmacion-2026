@@ -247,14 +247,14 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
 
       {/* Notas */}
       <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 shadow">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h3 className="font-bold text-yellow-900 text-lg flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" /> Notas Importantes
           </h3>
           {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
             <button
               onClick={() => setEditandoNotas(!editandoNotas)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 w-full sm:w-auto justify-center ${
                 editandoNotas
                   ? 'bg-gray-600 hover:bg-gray-700 text-white'
                   : 'bg-yellow-600 hover:bg-yellow-700 text-white'

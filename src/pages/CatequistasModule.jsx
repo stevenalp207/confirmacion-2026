@@ -165,37 +165,35 @@ function CatequistasModule({ onBack }) {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-blue-600 text-white shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <button
-                onClick={onBack}
-                className="hover:bg-blue-500 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
-              >
-                ← Atrás
-              </button>
-              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Catequistas - Confirmación 2026</h1>
-            </div>
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold">CATEQUISTAS</h1>
+            <button
+              onClick={onBack}
+              className="bg-white text-blue-600 hover:bg-gray-100 px-5 py-3 rounded-lg transition-colors font-semibold text-base sm:text-lg w-full sm:w-auto"
+            >
+              Salir
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
+      <div className="container mx-auto px-4 py-5 sm:py-6 lg:py-8">
+        <div className="bg-white rounded-lg shadow-md p-5 sm:p-6 lg:p-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
             Asistencia de Catequistas
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+          <p className="text-base sm:text-lg text-gray-600 mb-5 sm:mb-6">
             Registra la asistencia de todos los catequistas
           </p>
 
           {/* Sección de Filtros */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="mb-6 p-5 bg-gray-50 rounded-lg border border-gray-200">
             {/* Búsqueda por nombre */}
-            <div className="mb-4">
-              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
-                <Search className="w-4 h-4" /> Buscar catequista por nombre
+            <div className="mb-5">
+              <label className="block text-sm sm:text-base font-bold text-gray-700 mb-3 uppercase tracking-wide flex items-center gap-2">
+                <Search className="w-5 h-5" /> Buscar catequista por nombre
               </label>
               <input
                 type="text"

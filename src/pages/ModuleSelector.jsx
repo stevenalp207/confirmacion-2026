@@ -15,7 +15,8 @@ import {
   Calendar,
   Shuffle,
   User,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 import OnboardingTutorial from '../components/OnboardingTutorial';
@@ -69,15 +70,16 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <NotificationManager />
               <div className="relative">
                 <button
                   onClick={() => (showSwitcher ? closeSwitcher() : setShowSwitcher(true))}
-                  className="bg-white border border-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:shadow-md transition text-sm sm:text-base flex items-center gap-2 whitespace-nowrap"
+                  className="p-2 bg-white border border-gray-200 text-gray-800 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition"
+                  title="Cambiar cuenta"
+                  aria-label="Cambiar cuenta"
                 >
-                  <User className="w-4 h-4" />
-                  Cambiar cuenta
+                  <User className="w-5 h-5" />
                 </button>
 
                 {showSwitcher && (
@@ -138,11 +140,11 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
                         <div className="pt-3 pb-2 flex justify-center">
                           <div className="h-1.5 w-10 bg-gray-300 rounded-full" />
                         </div>
-                        <div className="px-4 pb-2 border-b border-gray-100 flex items-center justify-between">
-                          <span className="text-base font-semibold text-gray-800">Cuentas guardadas</span>
+                        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
+                          <span className="text-sm sm:text-base font-semibold text-gray-800 flex-1 whitespace-nowrap">Cuentas guardadas</span>
                           <button
                             onClick={closeSwitcher}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="text-gray-400 hover:text-gray-600 flex-shrink-0"
                             aria-label="Cerrar"
                           >
                             <X className="w-5 h-5" />
@@ -186,9 +188,11 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
               </div>
               <button
                 onClick={onLogout}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm sm:text-base whitespace-nowrap"
+                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+                title="Cerrar sesión"
+                aria-label="Cerrar sesión"
               >
-                Cerrar Sesión
+                <LogOut className="w-5 h-5" />
               </button>
             </div>
           </div>

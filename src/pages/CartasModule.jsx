@@ -70,33 +70,28 @@ function CartasModule({ onBack, user }) {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-purple-600 text-white shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3 sm:py-0 sm:h-16">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <button
-                onClick={onBack}
-                className="hover:bg-purple-700 px-2 sm:px-3 py-2 rounded-lg transition-colors text-sm sm:text-base"
-              >
-                ← Atrás
-              </button>
-              <h1 className="text-base sm:text-lg lg:text-xl font-bold">Cartas - Confirmación 2026</h1>
-            </div>
-
-            <div className="w-full sm:w-auto">
-              <select
-                value={currentGroup}
-                onChange={(e) => handleGroupChange(e.target.value)}
-                className="w-full sm:w-auto bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-              >
-                <option value="">Seleccionar Grupo</option>
-                {gruposDisponibles.map((grupo) => (
-                  <option key={grupo} value={grupo}>
-                    {grupo}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold">CARTAS</h1>
+            <button
+              onClick={onBack}
+              className="bg-white text-purple-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors font-semibold text-sm sm:text-base w-full sm:w-auto"
+            >
+              Salir
+            </button>
           </div>
+          <select
+            value={currentGroup}
+            onChange={(e) => handleGroupChange(e.target.value)}
+            className="w-full sm:w-auto bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
+          >
+            <option value="">Seleccionar Grupo</option>
+            {gruposDisponibles.map((grupo) => (
+              <option key={grupo} value={grupo}>
+                {grupo}
+              </option>
+            ))}
+          </select>
         </div>
       </nav>
 

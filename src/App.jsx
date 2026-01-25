@@ -2,6 +2,8 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import ModuleSelector from './pages/ModuleSelector';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import OfflineIndicator from './components/OfflineIndicator';
 
 // Lazy load all modules for better performance
 const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
@@ -166,6 +168,10 @@ function AppContent() {
 
   return (
     <>
+      {/* PWA y indicadores */}
+      <OfflineIndicator />
+      <PWAInstallPrompt />
+
       {!currentModule && (
         <ModuleSelector 
           onSelectModule={handleSelectModule} 

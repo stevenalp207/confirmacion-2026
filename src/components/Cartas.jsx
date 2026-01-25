@@ -123,7 +123,7 @@ function Cartas({ grupo, estudiantes }) {
                       type="checkbox"
                       checked={cartasState[estudianteId] || false}
                       onChange={() => handleCheckboxChange(estudianteId)}
-                      className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
+                      className="w-5 h-5 bg-white border-2 border-gray-400 text-purple-600 rounded focus:ring-purple-500 cursor-pointer accent-purple-600"
                     />
                   </td>
                 </tr>

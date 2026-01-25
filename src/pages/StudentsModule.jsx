@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
-import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, MailX, ArrowRight, Filter } from 'lucide-react';
+import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Filter } from 'lucide-react';
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -138,14 +138,6 @@ function StudentsModule({ onBack, user }) {
             user={user}
           />
         </main>
-
-        {/* Botón flotante de salida */}
-        <button
-          onClick={onBack}
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shadow-lg transition"
-        >
-          <X className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
       </div>
     );
   }
@@ -154,38 +146,38 @@ function StudentsModule({ onBack, user }) {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <h1 className="text-xl sm:text-2xl font-bold">Gestión de Estudiantes</h1>
+        <div className="max-w-7xl mx-auto px-4 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold">ESTUDIANTES</h1>
             <button
               onClick={onBack}
-              className="hover:bg-blue-800 px-3 sm:px-4 py-2 rounded transition font-semibold text-sm sm:text-base flex items-center gap-2"
+              className="bg-white text-blue-600 hover:bg-gray-100 px-5 py-3 rounded-lg transition-colors font-semibold text-base sm:text-lg w-full sm:w-auto"
             >
-              <ArrowLeft className="w-4 h-4" /> Salir
+              Salir
             </button>
           </div>
         </div>
       </nav>
 
       {/* Contenido */}
-      <main className="max-w-7xl mx-auto p-3 sm:p-4">
+      <main className="max-w-7xl mx-auto p-4 sm:p-4">
         {/* Filtros */}
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b-2 border-gray-200">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+        <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b-2 border-gray-200">
+            <h2 className="text-2xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
               <Search className="w-6 h-6" /> Filtros y Búsqueda
             </h2>
             <button
               onClick={generarPDFListaGeneral}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base transition shadow-md hover:shadow-lg whitespace-nowrap"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-5 rounded-lg text-base sm:text-base transition shadow-md hover:shadow-lg whitespace-nowrap w-full sm:w-auto"
             >
               <Printer className="w-5 h-5" /> Imprimir
             </button>
           </div>
           
           {/* Búsqueda por nombre */}
-          <div className="mb-4 sm:mb-6">
-            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+          <div className="mb-5 sm:mb-6">
+            <label className="block text-sm sm:text-sm font-bold text-gray-700 mb-3 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
               <Search className="w-4 h-4" /> Buscar por nombre
             </label>
             <input
@@ -193,19 +185,19 @@ function StudentsModule({ onBack, user }) {
               placeholder="Escribe el nombre del estudiante..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base lg:text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className="w-full px-4 sm:px-4 py-3 sm:py-3 text-base sm:text-base lg:text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
             />
           </div>
 
           {/* Filtro por grupo */}
-          <div className="mb-4 sm:mb-6">
-            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+          <div className="mb-5 sm:mb-6">
+            <label className="block text-sm sm:text-sm font-bold text-gray-700 mb-3 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
               <MapPin className="w-4 h-4" /> Filtrar por grupo
             </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedGroup('Todos')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
                   selectedGroup === 'Todos'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
@@ -219,7 +211,7 @@ function StudentsModule({ onBack, user }) {
                   <button
                     key={grupo}
                     onClick={() => setSelectedGroup(grupo)}
-                    className={`px-4 py-2 rounded-lg font-bold transition flex items-center gap-1 ${
+                    className={`px-4 py-2 rounded-lg text-base font-bold transition flex items-center gap-1 ${
                       selectedGroup === grupo
                         ? 'bg-blue-600 text-white shadow-md'
                         : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
@@ -233,14 +225,14 @@ function StudentsModule({ onBack, user }) {
           </div>
 
           {/* Filtro por estado de documentos */}
-          <div className="mb-4 sm:mb-6">
-            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+          <div className="mb-5 sm:mb-6">
+            <label className="block text-sm sm:text-sm font-bold text-gray-700 mb-3 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
               <Filter className="w-4 h-4" /> Filtrar por documentos
             </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setFilterStatus('todos')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
                   filterStatus === 'todos'
                     ? 'bg-purple-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
@@ -250,7 +242,7 @@ function StudentsModule({ onBack, user }) {
               </button>
               <button
                 onClick={() => setFilterStatus('documentos-completos')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
                   filterStatus === 'documentos-completos'
                     ? 'bg-green-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
@@ -260,7 +252,7 @@ function StudentsModule({ onBack, user }) {
               </button>
               <button
                 onClick={() => setFilterStatus('documentos-pendientes')}
-                className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
                   filterStatus === 'documentos-pendientes'
                     ? 'bg-orange-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
@@ -327,7 +319,6 @@ function StudentsModule({ onBack, user }) {
             })
           ) : (
             <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-300">
-              <MailX className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 text-xl font-medium">
                 No se encontraron estudiantes
               </p>
@@ -339,13 +330,6 @@ function StudentsModule({ onBack, user }) {
         </div>
       </main>
 
-      {/* Botón flotante de salida */}
-      <button
-        onClick={onBack}
-        className="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition"
-      >
-        <X className="w-6 h-6" />
-      </button>
     </div>
   );
 }

@@ -1,27 +1,70 @@
 {
-  "name": "Confirmación 2026",
+  "name": "Confirmación 2026 - Sistema de Gestión",
   "short_name": "Confirmación",
-  "description": "Sistema de gestión para Confirmación 2026 - Recordatorios de asistencia",
+  "description": "Sistema de gestión para Confirmación 2026 - Recordatorios de asistencia, pagos y documentos",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "theme_color": "#2563eb",
   "background_color": "#ffffff",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "start_url": "/",
   "scope": "/",
-  "orientation": "portrait-primary",
   "categories": ["education", "productivity"],
-  "permissions": [
-    "notifications"
+  "permissions": ["notifications"],
+  "screenshots": [
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Asistencia",
+      "short_name": "Asistencia",
+      "description": "Registrar asistencia",
+      "url": "/?module=attendance",
+      "icons": [{"src": "/android-chrome-192x192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Documentos",
+      "short_name": "Documentos",
+      "description": "Gestionar documentos",
+      "url": "/?module=documents",
+      "icons": [{"src": "/android-chrome-192x192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Pagos",
+      "short_name": "Pagos",
+      "description": "Control de pagos",
+      "url": "/?module=pagos",
+      "icons": [{"src": "/android-chrome-192x192.png", "sizes": "192x192"}]
+    }
   ]
 }

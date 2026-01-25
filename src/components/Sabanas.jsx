@@ -123,7 +123,7 @@ function Sabanas({ grupo, estudiantes }) {
                       type="checkbox"
                       checked={sabanasState[estudianteId] || false}
                       onChange={() => handleCheckboxChange(estudianteId)}
-                      className="w-5 h-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+                      className="w-5 h-5 bg-white border-2 border-gray-400 text-orange-600 rounded focus:ring-orange-500 cursor-pointer accent-orange-600"
                     />
                   </td>
                 </tr>

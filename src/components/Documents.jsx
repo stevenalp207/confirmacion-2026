@@ -102,38 +102,42 @@ function Documents({ grupo, estudiantes }) {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">Entrega de Documentos</h2>
+      <h2 className="text-2xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Entrega de Documentos</h2>
       
-      <div className="overflow-x-auto -mx-3 sm:mx-0">
-        <div className="inline-block min-w-full align-middle px-3 sm:px-0">
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="inline-block min-w-full align-middle px-4 sm:px-0">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-            <thead className="bg-gray-100">
+            <thead className="bg-blue-50 border-b-2 border-blue-200">
               <tr>
-                <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10 shadow-sm">Estudiante</th>
+                <th className="px-4 sm:px-4 py-4 text-left text-sm sm:text-base font-bold text-gray-800 sticky left-0 bg-blue-50 z-10 shadow-sm">Estudiante</th>
                 {tiposDocumentos.map(doc => (
-                  <th key={doc.id} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    <span className="hidden sm:inline">{doc.nombre}</span>
-                    <span className="sm:hidden">{doc.nombre.substring(0, 3)}</span>
+                  <th key={doc.id} className="px-2 sm:px-4 py-4 text-center text-xs sm:text-sm font-bold text-gray-700 whitespace-normal sm:whitespace-nowrap min-w-[80px] sm:min-w-[120px]">
+                    <div className="flex flex-col gap-1">
+                      <span className="hidden sm:block">{doc.nombre}</span>
+                      <span className="sm:hidden text-xs font-semibold break-words">{doc.nombre}</span>
+                    </div>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {Object.entries(estudiantes).map(([_key, estudiante]) => {
-                const estudianteId = estudiante.id; // Usar el ID real del estudiante
+                const estudianteId = estudiante.id;
                 return (
-                  <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
-                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-800 font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
+                  <tr key={estudianteId} className="border-t border-gray-200 hover:bg-blue-50">
+                    <td className="px-4 sm:px-4 py-4 text-sm sm:text-base text-gray-800 font-medium sticky left-0 bg-white hover:bg-blue-50 z-10 shadow-sm">
                       {estudiante.nombre}
                     </td>
                     {tiposDocumentos.map(doc => (
-                      <td key={doc.id} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={documentosState[estudianteId]?.[doc.id] || false}
-                          onChange={() => handleCheckboxChange(estudianteId, doc.id)}
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
-                        />
+                      <td key={doc.id} className="px-3 sm:px-4 py-4 text-center">
+                        <div className="flex justify-center">
+                          <input
+                            type="checkbox"
+                            checked={documentosState[estudianteId]?.[doc.id] || false}
+                            onChange={() => handleCheckboxChange(estudianteId, doc.id)}
+                            className="w-5 h-5 text-blue-600 border-2 border-gray-300 bg-white rounded cursor-pointer accent-blue-600"
+                          />
+                        </div>
                       </td>
                     ))}
                   </tr>

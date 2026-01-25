@@ -177,19 +177,16 @@ function CalendarioModule({ onBack, user }) {
             <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 space-y-6 sticky top-4 sm:top-8">
               {/* Búsqueda */}
               <div>
-                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
-                  Buscar Eventos
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <Search className="w-4 h-4" /> Buscar Eventos
                 </label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                    placeholder="Buscar..."
-                    className="w-full pl-8 sm:pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar..."
+                  className="w-full px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
 
               {/* Filtro por tipo */}
