@@ -362,7 +362,7 @@ export function exportarAsignacionPersonalidadExcel(grupos, estadisticas) {
     <tr style="background-color: #f59e0b;">
       <th style="padding: 8px; font-weight: bold; color: white;">Grupo</th>
       <th style="padding: 8px; font-weight: bold; color: white;">Nombre</th>
-      <th style="padding: 8px; font-weight: bold; color: white;">Cédula</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Tel</th>
       <th style="padding: 8px; font-weight: bold; color: white;">Tipo</th>
       <th style="padding: 8px; font-weight: bold; color: white;">Grupo Original</th>
       <th style="padding: 8px; font-weight: bold; color: white;">Posición Ranking</th>
@@ -393,8 +393,8 @@ export function exportarAsignacionPersonalidadExcel(grupos, estadisticas) {
     html += `<tr style="background-color: #fff7ed;">`
     html += `<td style="padding: 8px; font-weight: bold;">${grupoStat.nombre}</td>`
     html += `<td style="padding: 8px; text-align: center; font-weight: bold;">Total: ${grupoStat.total}</td>`
-    html += `<td style="padding: 8px; text-align: center;">Intro: ${grupoStat.introvertidos}</td>`
-    html += `<td style="padding: 8px; text-align: center;">Extro: ${grupoStat.extrovertidos}</td>`
+    html += `<td style="padding: 8px; text-align: center;">Introvertido: ${grupoStat.introvertidos}</td>`
+    html += `<td style="padding: 8px; text-align: center;">Extrovertido: ${grupoStat.extrovertidos}</td>`
     html += `<td style="padding: 8px; text-align: center;">Balance: ${grupoStat.balance}</td>`
     html += `<td style="padding: 8px; text-align: center;">${grupoStat.porcentajeIntro}%</td>`
     html += `</tr>`

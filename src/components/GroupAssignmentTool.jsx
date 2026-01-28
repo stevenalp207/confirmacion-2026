@@ -28,7 +28,7 @@ export default function GroupAssignmentTool() {
       const columnas = linea.split('\t').map(c => c.trim())
       
       if (columnas.length >= 5) {
-        // Formato: Nombre | Cédula | Género | Año | Especialidad
+        // Formato: Nombre | Tel | Género | Año | Especialidad
         const nombre = columnas[0]
         const cedula = columnas[1]
         const genero = columnas[2]
@@ -162,7 +162,7 @@ export default function GroupAssignmentTool() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-2">
-                  Datos TSV (Nombre | Cédula | Género | Año | Especialidad)
+                  Datos TSV (Nombre | Tel | Género | Año | Especialidad)
                 </label>
                 <textarea
                   className="w-full h-32 p-3 border rounded-lg text-xs font-mono resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -191,7 +191,7 @@ export default function GroupAssignmentTool() {
               <input
                 type="text"
                 className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Cédula"
+                placeholder="Tel"
                 value={nuevoEstudiante.cedula}
                 onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, cedula: e.target.value })}
               />

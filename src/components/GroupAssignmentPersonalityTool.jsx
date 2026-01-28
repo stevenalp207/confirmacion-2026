@@ -136,7 +136,7 @@ export default function GroupAssignmentPersonalityTool() {
             <input
               type="range"
               min="1"
-              max={Math.floor((gruposSeleccionados.reduce((sum, g) => sum + g.integrantes.length, 0)) / 2) || 1}
+              max={Math.min(15, Math.floor((gruposSeleccionados.reduce((sum, g) => sum + g.integrantes.length, 0)) / 2)) || 1}
               value={cantidadNuevosGrupos}
               onChange={(e) => setCantidadNuevosGrupos(parseInt(e.target.value))}
               className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"

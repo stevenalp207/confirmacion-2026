@@ -77,8 +77,8 @@ function extraerEstudiantesConPuntuacion(gruposConRanking) {
     if (!grupo.ranking || grupo.ranking.length === 0) return
 
     grupo.ranking.forEach((estudiante, index) => {
-      // Calcular puntuación: primeros = más intros (0), últimos = más extros (1)
-      const puntuacion = index / (grupo.ranking.length - 1 || 1)
+      // Calcular puntuación: primeros = más extros (1), últimos = más intros (0)
+      const puntuacion = 1 - (index / (grupo.ranking.length - 1 || 1))
 
       estudiantes.push({
         ...estudiante,

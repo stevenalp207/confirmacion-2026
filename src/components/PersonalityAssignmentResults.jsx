@@ -132,7 +132,7 @@ export default function PersonalityAssignmentResults({ resultado, onNuevaAsignac
                           <div>
                             <p className="font-medium text-gray-800">{est.nombre}</p>
                             {est.cedula && (
-                              <p className="text-xs text-gray-600">Cédula: {est.cedula}</p>
+                              <p className="text-xs text-gray-600">Tel: {est.cedula}</p>
                             )}
                             <p className="text-xs text-gray-500 mt-1">
                               De: {est.grupoOriginal} (Puesto {est.posicion})
