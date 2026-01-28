@@ -402,3 +402,62 @@ export function generarReporte(resultado) {
   
   return reporte
 }
+
+export function exportarAsignacionPersonalidadExcel(grupos, estadisticas) {
+  let html = `<table border="1" style="border-collapse: collapse; font-family: Arial;">
+    <tr style="background-color: #f59e0b;">
+      <th style="padding: 8px; font-weight: bold; color: white;">Grupo</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Nombre</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Cédula</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Tipo</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Grupo Original</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Posición Ranking</th>
+    </tr>`
+
+  grupos.forEach(grupo => {
+    grupo.integrantes.forEach((est, idx) => {
+      const bgColor = est.puntuacionPersonalidad < 0.5 ? '#dbeafe' : '#fed7aa'
+      const tipo = est.puntuacionPersonalidad < 0.5 ? 'Introvertido' : 'Extrovertido'
+      
+      html += `<tr style="background-color: ${bgColor};">`
+      html += `<td style="padding: 8px;">${grupo.nombre}</td>`
+      html += `<td style="padding: 8px;">${est.nombre || ''}</td>`
+      html += `<td style="padding: 8px;">${est.cedula || ''}</td>`
+      html += `<td style="padding: 8px; font-weight: bold;">${tipo}</td>`
+      html += `<td style="padding: 8px;">${est.grupoOriginal || ''}</td>`
+      html += `<td style="padding: 8px; text-align: center;">${est.posicionRanking || ''}</td>`
+      html += `</tr>`
+    })
+  })
+
+  // Agregar resumen
+  html += `<tr style="background-color: #f3f4f6; font-weight: bold;">
+    <td colspan="6" style="padding: 12px; text-align: center;">RESUMEN ESTADÍSTICO</td>
+  </tr>`
+
+  estadisticas.porGrupo.forEach(grupoStat => {
+    html += `<tr style="background-color: #fff7ed;">`
+    html += `<td style="padding: 8px; font-weight: bold;">${grupoStat.nombre}</td>`
+    html += `<td style="padding: 8px; text-align: center; font-weight: bold;">Total: ${grupoStat.total}</td>`
+    html += `<td style="padding: 8px; text-align: center;">Intro: ${grupoStat.introvertidos}</td>`
+    html += `<td style="padding: 8px; text-align: center;">Extro: ${grupoStat.extrovertidos}</td>`
+    html += `<td style="padding: 8px; text-align: center;">Balance: ${grupoStat.balance}</td>`
+    html += `<td style="padding: 8px; text-align: center;">${grupoStat.porcentajeIntro}%</td>`
+    html += `</tr>`
+  })
+
+  html += '</table>'
+
+  // Crear blob y descargar
+  const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  
+  link.setAttribute('href', url)
+  link.setAttribute('download', `asignacion_personalidad_${new Date().toISOString().split('T')[0]}.xls`)
+  link.style.visibility = 'hidden'
+  
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}

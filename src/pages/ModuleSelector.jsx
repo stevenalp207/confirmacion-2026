@@ -16,7 +16,8 @@ import {
   Shuffle,
   User,
   X,
-  LogOut
+  LogOut,
+  UserCheck
 } from 'lucide-react';
 import NotificationManager from '../components/NotificationManager';
 import OnboardingTutorial from '../components/OnboardingTutorial';
@@ -511,6 +512,29 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
                   Sistema automático para distribuir estudiantes equilibradamente
                 </p>
                 <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white group-hover:animate-pop-in transition-all">
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Personality Assignment Module - para logistica */}
+          {user?.usuario === 'logistica' && (
+            <div
+              onClick={() => onSelectModule('asignacion-personalidad')}
+              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 hover:-translate-y-1 cursor-pointer p-4 sm:p-6 lg:p-8 group animate-fade-in border border-transparent hover:border-pink-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-3 sm:p-4 rounded-full bg-pink-100 group-hover:bg-pink-200 transition-colors mb-3 sm:mb-4">
+                  <UserCheck className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 text-pink-600 group-hover:animate-bounce-sm" strokeWidth={1.5} />
+                </div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
+                  Asignación por Personalidad
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-2">
+                  Distribuye grupos balanceando introvertidos y extrovertidos
+                </p>
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pink-50 text-pink-600 group-hover:bg-pink-600 group-hover:text-white group-hover:animate-pop-in transition-all">
                   <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>

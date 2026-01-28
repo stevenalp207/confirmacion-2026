@@ -19,6 +19,7 @@ const FormacionModule = lazy(() => import('./pages/FormacionModule'));
 const BoletasModule = lazy(() => import('./pages/BoletasModule'));
 const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
+const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssignmentModule'));
 
 // Loading component
 function ModuleLoader() {
@@ -119,13 +120,13 @@ function AppContent() {
 
   const allowedModules = (() => {
     if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos'];
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad'];
     }
     if (user?.rol === 'financiero') {
       return ['pagos', 'gastos', 'ingresos', 'calendario'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad'];
     }
     if (user?.rol === 'formacion') {
       return ['formacion', 'catequistas', 'calendario'];
@@ -196,6 +197,7 @@ function AppContent() {
         {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
         {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
         {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
+        {currentModule === 'asignacion-personalidad' && <PersonalityAssignmentModule onBack={handleBack} user={user} />}
       </Suspense>
     </>
   );
