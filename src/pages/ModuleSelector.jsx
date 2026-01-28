@@ -52,19 +52,19 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header with User Info */}
-      <div className="bg-white shadow-md">
+      <div className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-1">
-              <img src={logo} alt="Logo Confirmación" className="h-10 sm:h-12 w-auto" />
+              <img src={logo} alt="Logo Confirmación" className="h-8 sm:h-10 w-auto" />
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Confirmación 2026</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Confirmación 2026</h1>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                  Bienvenido: <span className="font-semibold">{user?.usuario}</span>
+                  Bienvenido: <span className="font-semibold text-gray-900">{user?.usuario}</span>
                   {user?.rol === 'admin' && (
-                    <span className="ml-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-bold">
+                    <span className="ml-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">
                       ADMIN
                     </span>
                   )}
@@ -76,7 +76,7 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
               <div className="relative">
                 <button
                   onClick={() => (showSwitcher ? closeSwitcher() : setShowSwitcher(true))}
-                  className="p-2 bg-white border border-gray-200 text-gray-800 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition"
+                  className="p-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200"
                   title="Cambiar cuenta"
                   aria-label="Cambiar cuenta"
                 >
@@ -189,7 +189,7 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
               </div>
               <button
                 onClick={onLogout}
-                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+                className="p-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
                 title="Cerrar sesión"
                 aria-label="Cerrar sesión"
               >

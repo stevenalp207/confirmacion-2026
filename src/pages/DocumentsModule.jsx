@@ -103,7 +103,7 @@ function DocumentsModule({ onBack, user }) {
           <select
             value={currentGroup}
             onChange={(e) => handleGroupChange(e.target.value)}
-            className="w-full sm:w-auto bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full sm:w-auto bg-white text-gray-900 px-3 sm:px-4 py-2.5 rounded-lg text-sm sm:text-base border-2 border-blue-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all font-medium shadow-sm"
           >
             <option value="">Seleccionar Grupo</option>
             {gruposDisponibles.map((grupo) => (

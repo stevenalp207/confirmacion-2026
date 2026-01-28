@@ -115,10 +115,10 @@ function Sabanas({ grupo, estudiantes }) {
               const estudianteId = estudiante.id;
               return (
                 <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-800 font-medium">
+                  <td className="px-4 py-3 text-sm text-gray-800 font-medium align-middle">
                     {estudiante.nombre}
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center align-middle flex justify-center">
                     <input
                       type="checkbox"
                       checked={sabanasState[estudianteId] || false}

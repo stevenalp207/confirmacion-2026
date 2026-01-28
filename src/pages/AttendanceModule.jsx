@@ -218,7 +218,7 @@ function AttendanceModule({ onBack, user }) {
           <select
             value={currentGroup}
             onChange={(e) => handleGroupChange(e.target.value)}
-            className="w-full sm:w-auto bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base border border-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+            className="w-full sm:w-auto bg-white text-gray-900 px-3 sm:px-4 py-2.5 rounded-lg text-sm sm:text-base border-2 border-green-300 hover:border-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all font-medium shadow-sm"
           >
             <option value="">Seleccionar Grupo</option>
             {gruposDisponibles.map((grupo) => (

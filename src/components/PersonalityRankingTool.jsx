@@ -233,47 +233,65 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
   const grupoData = gruposConRanking[grupoActual]
 
   return (
-    <div className="space-y-6">
-      {/* Instrucciones */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="font-bold text-blue-900 mb-2">📋 Instrucciones</h3>
-        <p className="text-sm text-blue-800 mb-2">
-          Ordena los integrantes de cada grupo de <strong>MÁS EXTROVERTIDO</strong> (arriba) a <strong>MÁS INTROVERTIDO</strong> (abajo).
-        </p>
-        <p className="text-xs text-blue-700">
-          Arrastra y suelta las tarjetas o usa las flechas ↑↓ para reordenar. Marca ✓ cuando termines con cada grupo.
-        </p>
+    <div className="space-y-6 pb-6">
+      {/* Instrucciones - Diseño mejorado */}
+      <div className="bg-white rounded-xl p-6 text-gray-800 shadow-sm border border-gray-100">
+        <div className="flex items-start gap-4">
+          <div className="text-3xl">📋</div>
+          <div className="flex-1">
+            <h3 className="font-bold text-lg mb-2 text-gray-900">Ordena los Integrantes</h3>
+            <p className="text-gray-600 text-sm mb-2">
+              Coloca a los <strong>MÁS EXTROVERTIDOS</strong> <span className="text-orange-600">arriba</span> y los <strong>MÁS INTROVERTIDOS</strong> <span className="text-blue-600">abajo</span>.
+            </p>
+            <p className="text-xs text-gray-500 font-medium">
+              💡 Arrastra las tarjetas o usa las flechas ↑↓ • Marca ✓ cuando termines cada grupo
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Tabs de grupos */}
-      <div className="flex flex-wrap gap-2 border-b">
-        {gruposConRanking.map((grupo, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleIrAlGrupo(idx)}
-            className={`px-4 py-2 font-medium transition-colors border-b-2 ${
-              grupoActual === idx
-                ? 'border-amber-600 text-amber-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            } flex items-center gap-2`}
-          >
-            {grupo.nombre}
-            {grupo.completado && <Check className="w-4 h-4 text-green-600" />}
-          </button>
-        ))}
+      {/* Tabs de grupos - Diseño mejorado */}
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+        <div className="flex flex-wrap gap-0 p-1 border-b border-gray-100">
+          {gruposConRanking.map((grupo, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleIrAlGrupo(idx)}
+              className={`flex-1 min-w-max px-4 py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-2 rounded-lg mx-0.5 ${
+                grupoActual === idx
+                  ? 'bg-amber-600 text-white shadow-md scale-105'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <span>{grupo.nombre}</span>
+              {grupo.completado && (
+                <div className="inline-flex items-center justify-center w-5 h-5 bg-green-400 rounded-full">
+                  <Check className="w-3 h-3 text-white" />
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Contenido del grupo actual */}
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            {grupoData.nombre} ({grupoData.ranking.length} integrantes)
-          </h2>
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {grupoData.nombre}
+            </h2>
+            <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+              {grupoData.ranking.length} personas
+            </span>
+          </div>
+          <p className="text-gray-600 text-sm">Organiza este grupo de forma estratégica</p>
+        </div>
 
-          <div 
-            ref={listContainerRef}
-            className="space-y-2 max-h-[70vh] overflow-y-auto pr-2"
-          >
+        <div 
+          ref={listContainerRef}
+          className="space-y-2 max-h-[65vh] overflow-y-auto pr-3 bg-gray-50 rounded-lg p-4"
+        >
             {grupoData.ranking.map((estudiante, index) => (
               <div key={`${estudiante.nombre}-${index}`} className="relative">
                 {/* Línea indicadora ARRIBA - muestra dónde se insertará si sueltas aquí */}
@@ -295,42 +313,50 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
                   onTouchStart={(e) => handleTouchStart(e, index)}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all cursor-move ${
+                  className={`flex items-center gap-3 p-3.5 rounded-lg border-2 transition-all duration-200 cursor-move ${
                     draggedIndex === index
-                      ? 'opacity-50 scale-95'
+                      ? 'opacity-40 scale-95 border-amber-400 shadow-lg'
                       : index === 0
-                      ? 'bg-orange-50 border-orange-300'
+                      ? 'bg-white border-orange-300 hover:border-orange-400 hover:shadow-md'
                       : index === grupoData.ranking.length - 1
-                      ? 'bg-blue-50 border-blue-300'
-                      : 'bg-gray-50 border-gray-300'
-                  } hover:shadow-md`}
+                      ? 'bg-white border-blue-300 hover:border-blue-400 hover:shadow-md'
+                      : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                  }`}
                 >
                   {/* Icono de arrastre */}
-                  <div className="shrink-0 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing">
+                  <div className="shrink-0 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing transition-colors">
                     <GripVertical className="w-4 h-4" />
                   </div>
 
                   {/* Número de posición */}
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-sm">
+                  <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm text-white transition-all ${
+                    index === 0 
+                      ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm'
+                      : index === grupoData.ranking.length - 1
+                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm'
+                      : 'bg-gray-400'
+                  }`}>
                     {index + 1}
                   </div>
 
                   {/* Información del estudiante */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-800 text-sm">{estudiante.nombre}</p>
-                    <p className="text-xs text-gray-600">
+                    <p className="font-semibold text-gray-900 text-sm truncate">{estudiante.nombre}</p>
+                    <p className="text-xs text-gray-500">
                       {estudiante.cedula && `Tel: ${estudiante.cedula}`}
                     </p>
                   </div>
 
                   {/* Indicador de tipo */}
-                  <div className="shrink-0 text-xs font-medium">
+                  <div className="shrink-0">
                     {index === 0 ? (
-                      <span className="px-2 py-1 bg-orange-200 text-orange-800 rounded text-xs">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
+                        <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
                         Extrovertido
                       </span>
                     ) : index === grupoData.ranking.length - 1 ? (
-                      <span className="px-2 py-1 bg-blue-200 text-blue-800 rounded text-xs">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                         Introvertido
                       </span>
                     ) : null}
@@ -344,10 +370,10 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
                         handleMoverArriba(index)
                       }}
                       disabled={index === 0}
-                      className="p-1.5 rounded hover:bg-orange-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-orange-100 disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-gray-600 hover:text-orange-600"
                       title="Mover hacia arriba (más extrovertido)"
                     >
-                      <ArrowUp className="w-3 h-3" />
+                      <ArrowUp className="w-4 h-4" />
                     </button>
                     <button
                       onClick={(e) => {
@@ -355,10 +381,10 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
                         handleMoverAbajo(index)
                       }}
                       disabled={index === grupoData.ranking.length - 1}
-                      className="p-1.5 rounded hover:bg-blue-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-blue-100 disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-gray-600 hover:text-blue-600"
                       title="Mover hacia abajo (más introvertido)"
                     >
-                      <ArrowDown className="w-3 h-3" />
+                      <ArrowDown className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -373,36 +399,35 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
               </div>
             ))}
           </div>
-        </div>
 
         {/* Botón de completado */}
-        <div className="flex gap-2">
+        <div className="flex gap-3 mt-6">
           <button
             onClick={handleGrupoCompletado}
             disabled={grupoData.completado}
-            className={`flex-1 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 ${
+            className={`flex-1 py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 text-base ${
               grupoData.completado
-                ? 'bg-green-100 text-green-700 cursor-default'
-                : 'bg-green-600 text-white hover:bg-green-700'
+                ? 'bg-gray-100 text-gray-400 cursor-default'
+                : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg scale-100 hover:scale-105'
             }`}
           >
             <Check className="w-5 h-5" />
-            {grupoData.completado ? 'Grupo Completado' : 'Marcar Grupo como Completado'}
+            {grupoData.completado ? '✓ Grupo Completado' : 'Marcar como Completado'}
           </button>
         </div>
       </div>
 
-      {/* Barra de progreso */}
-      <div className="bg-gray-100 rounded-lg p-4">
-        <div className="flex justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Progreso</span>
-          <span className="text-sm font-bold text-gray-800">
+      {/* Barra de progreso mejorada */}
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="flex justify-between mb-3">
+          <span className="text-sm font-semibold text-gray-700">Progreso General</span>
+          <span className="text-sm font-bold text-gray-900">
             {gruposConRanking.filter(g => g.completado).length} de {gruposConRanking.length} grupos
           </span>
         </div>
-        <div className="w-full bg-gray-300 rounded-full h-3">
+        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
           <div
-            className="bg-green-600 h-3 rounded-full transition-all duration-300"
+            className="h-3 rounded-full transition-all duration-500 bg-gradient-to-r from-green-400 to-green-600"
             style={{
               width: `${(gruposConRanking.filter(g => g.completado).length / gruposConRanking.length) * 100}%`
             }}
@@ -412,12 +437,15 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
 
       {/* Botón final */}
       {todosCompletados && (
-        <button
-          onClick={() => onRankingComplete(gruposConRanking)}
-          className="w-full py-4 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg font-bold text-lg hover:from-green-700 hover:to-green-800 transition-colors shadow-lg"
-        >
-          ✓ Continuar con Asignación de Nuevos Grupos
-        </button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg">
+          <button
+            onClick={() => onRankingComplete(gruposConRanking)}
+            className="w-full max-w-2xl mx-auto py-4 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:via-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center gap-2"
+          >
+            <Check className="w-6 h-6" />
+            Continuar con Asignación de Nuevos Grupos
+          </button>
+        </div>
       )}
     </div>
   )
