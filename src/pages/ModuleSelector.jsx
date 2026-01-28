@@ -58,7 +58,7 @@ function ModuleSelector({ onSelectModule, user, onLogout, savedAccounts, onSwitc
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-1">
-              <img src={logo} alt="Logo Confirmación" className="h-10 sm:h-12 w-auto" />
+              <img src={logo} alt="Logo Confirmación" className="h-10 sm:h-12" width="40" height="40" style={{aspectRatio: '1/1', objectFit: 'contain'}} />
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Confirmación 2026</h1>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">

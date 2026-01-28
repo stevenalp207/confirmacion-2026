@@ -37,6 +37,9 @@ body {
   /* Support notch */
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
+  /* Prevent layout shift from font loading */
+  font-display: optional;
+  min-height: 100vh;
 }
 
 /* Utility classes for safe-area */

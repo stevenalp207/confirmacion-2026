@@ -18,7 +18,7 @@ export function Header({ user, onLogout, logo, title, notificationCount = 0 }) {
           {/* Logo y título */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
             {logo && (
-              <img src={logo} alt="Logo" className="h-8 sm:h-10 w-auto" />
+              <img src={logo} alt="Logo" className="h-8 sm:h-10" width="40" height="40" style={{aspectRatio: '1/1', objectFit: 'contain'}} />
             )}
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-bold text-gray-800 truncate">
