@@ -28,7 +28,7 @@ function IngresosModule({ onBack, user }) {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-emerald-100">
       {/* Navbar */}
       <nav className="bg-emerald-600 text-white shadow-lg sticky top-0 z-10">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h1 className="text-xl sm:text-2xl font-bold">INGRESOS</h1>
             <button
