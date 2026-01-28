@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText } from 'lucide-react';
 
@@ -10,6 +10,53 @@ const categorias = [
   { value: 'servicios', label: 'Servicios', color: 'red' },
   { value: 'otros', label: 'Otros', color: 'gray' }
 ];
+
+const GastoRow = memo(({ gasto, categorias, onEdit, onDelete, getCategoriaColor }) => (
+  <tr className="hover:bg-gray-50">
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+      <div className="flex items-center gap-2">
+        <Calendar size={14} className="text-gray-400 hidden sm:inline" />
+        <span className="text-xs sm:text-sm">{new Date(gasto.fecha).toLocaleDateString('es-CR')}</span>
+      </div>
+    </td>
+    <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
+      <div>
+        <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{gasto.concepto}</p>
+        {gasto.descripcion && (
+          <p className="text-gray-500 text-xs mt-1 truncate">{gasto.descripcion}</p>
+        )}
+      </div>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+      <span className={`px-2 py-1 text-xs font-medium rounded-full bg-${getCategoriaColor(gasto.categoria)}-100 text-${getCategoriaColor(gasto.categoria)}-800`}>
+        {categorias.find(c => c.value === gasto.categoria)?.label}
+      </span>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+      <span className="text-xs sm:text-sm font-semibold text-gray-900">
+        ₡{gasto.monto.toLocaleString()}
+      </span>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
+      <div className="flex justify-end gap-1 sm:gap-2">
+        <button
+          onClick={() => onEdit(gasto)}
+          className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+          title="Editar"
+        >
+          <Edit2 size={16} className="sm:w-5 sm:h-5" />
+        </button>
+        <button
+          onClick={() => onDelete(gasto.id)}
+          className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+          title="Eliminar"
+        >
+          <Trash2 size={16} className="sm:w-5 sm:h-5" />
+        </button>
+      </div>
+    </td>
+  </tr>
+));
 
 function GastosFinancieros({ user }) {
   const [gastos, setGastos] = useState([]);
@@ -45,7 +92,8 @@ function GastosFinancieros({ user }) {
 
   useEffect(() => {
     loadGastos();
-  }, [loadGastos]);
+    // Solo cargar una vez al montar el componente
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -82,12 +130,12 @@ function GastosFinancieros({ user }) {
       }
 
       resetForm();
-      loadGastos();
+      await loadGastos(); // Esperar a que se carguen los datos
     } catch (error) {
       console.error('Error guardando gasto:', error);
       alert('❌ Error al guardar el gasto');
     }
-  }, [editingId, formData, loadGastos]);
+  }, [editingId, formData]);
 
   const handleEdit = useCallback((gasto) => {
     setFormData({
@@ -113,12 +161,12 @@ function GastosFinancieros({ user }) {
 
       if (error) throw error;
       alert('✅ Gasto eliminado');
-      loadGastos();
+      await loadGastos(); // Recargar después de eliminar
     } catch (error) {
       console.error('Error eliminando gasto:', error);
       alert('❌ Error al eliminar el gasto');
     }
-  }, [loadGastos]);
+  }, []);
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -131,7 +179,7 @@ function GastosFinancieros({ user }) {
     });
     setEditingId(null);
     setShowForm(false);
-  }, [user]);
+  }, [user?.usuario]);
 
   const totalGastos = useMemo(() => 
     gastos.reduce((sum, gasto) => sum + (gasto.monto || 0), 0),
@@ -162,9 +210,9 @@ function GastosFinancieros({ user }) {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header con totales */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-4 sm:p-6 shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl p-5 sm:p-8 shadow-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
           <h3 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -189,16 +237,16 @@ function GastosFinancieros({ user }) {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-blue-100 text-xs sm:text-sm mb-1">Total Gastos</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-blue-100 text-xs sm:text-sm mb-2">Total Gastos</p>
             <p className="text-2xl sm:text-3xl font-bold">₡{totalGastos.toLocaleString()}</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-blue-100 text-xs sm:text-sm mb-1">Cantidad de Gastos</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-blue-100 text-xs sm:text-sm mb-2">Cantidad de Gastos</p>
             <p className="text-2xl sm:text-3xl font-bold">{gastos.length}</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-blue-100 text-xs sm:text-sm mb-1">Promedio por Gasto</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-blue-100 text-xs sm:text-sm mb-2">Promedio por Gasto</p>
             <p className="text-2xl sm:text-3xl font-bold">
               ₡{gastos.length > 0 ? Math.round(totalGastos / gastos.length).toLocaleString() : '0'}
             </p>
@@ -208,11 +256,11 @@ function GastosFinancieros({ user }) {
 
       {/* Gastos por categoría */}
       <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-        <h4 className="text-lg font-bold text-gray-800 mb-4">Gastos por Categoría</h4>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+        <h4 className="text-lg font-bold text-gray-800 mb-5">Gastos por Categoría</h4>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5">
           {gastosPorCategoria.map(cat => (
-            <div key={cat.value} className={`bg-${cat.color}-50 border-2 border-${cat.color}-200 rounded-lg p-3 sm:p-4`}>
-              <p className={`text-${cat.color}-700 text-xs sm:text-sm font-medium mb-1`}>{cat.label}</p>
+            <div key={cat.value} className={`bg-${cat.color}-50 border-2 border-${cat.color}-200 rounded-lg p-4 sm:p-5`}>
+              <p className={`text-${cat.color}-700 text-xs sm:text-sm font-medium mb-2`}>{cat.label}</p>
               <p className={`text-${cat.color}-900 text-lg sm:text-xl font-bold`}>₡{cat.total.toLocaleString()}</p>
             </div>
           ))}
@@ -221,12 +269,12 @@ function GastosFinancieros({ user }) {
 
       {/* Formulario */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-          <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
+          <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-5">
             {editingId ? 'Editar Gasto' : 'Registrar Nuevo Gasto'}
           </h4>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                   Concepto *
@@ -353,50 +401,14 @@ function GastosFinancieros({ user }) {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {gastos.map((gasto) => (
-                  <tr key={gasto.id} className="hover:bg-gray-50">
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} className="text-gray-400 hidden sm:inline" />
-                        <span className="text-xs sm:text-sm">{new Date(gasto.fecha).toLocaleDateString('es-CR')}</span>
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
-                      <div>
-                        <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{gasto.concepto}</p>
-                        {gasto.descripcion && (
-                          <p className="text-gray-500 text-xs mt-1 truncate">{gasto.descripcion}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full bg-${getCategoriaColor(gasto.categoria)}-100 text-${getCategoriaColor(gasto.categoria)}-800`}>
-                        {categorias.find(c => c.value === gasto.categoria)?.label}
-                      </span>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-900">
-                        ₡{gasto.monto.toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
-                      <div className="flex justify-end gap-1 sm:gap-2">
-                        <button
-                          onClick={() => handleEdit(gasto)}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                          title="Editar"
-                        >
-                          <Edit2 size={16} className="sm:w-5 sm:h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(gasto.id)}
-                          className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                          title="Eliminar"
-                        >
-                          <Trash2 size={16} className="sm:w-5 sm:h-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <GastoRow
+                    key={gasto.id}
+                    gasto={gasto}
+                    categorias={categorias}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    getCategoriaColor={getCategoriaColor}
+                  />
                 ))}
               </tbody>
             </table>

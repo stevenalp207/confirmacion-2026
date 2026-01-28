@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, Wallet, Calendar, FileText, Link as LinkIcon } from 'lucide-react';
 
@@ -7,6 +7,49 @@ const metodos = [
   { value: 'sinpe', label: 'SINPE' },
   { value: 'transferencia', label: 'Transferencia' }
 ];
+
+const IngresoRow = memo(({ ingreso, onEdit, onDelete }) => (
+  <tr className="hover:bg-gray-50">
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+      <div className="flex items-center gap-2">
+        <Calendar size={14} className="text-gray-400 hidden sm:inline" />
+        <span className="text-xs sm:text-sm">{new Date(ingreso.fecha).toLocaleDateString('es-CR')}</span>
+      </div>
+    </td>
+    <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
+      <div>
+        <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{ingreso.origen}</p>
+        {ingreso.descripcion && (
+          <p className="text-gray-500 text-xs mt-1 truncate">{ingreso.descripcion}</p>
+        )}
+      </div>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+      <span className="text-xs sm:text-sm text-gray-700 capitalize">{ingreso.metodo}</span>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+      <span className="text-xs sm:text-sm font-semibold text-gray-900">₡{ingreso.monto.toLocaleString()}</span>
+    </td>
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
+      <div className="flex justify-end gap-1 sm:gap-2">
+        <button
+          onClick={() => onEdit(ingreso)}
+          className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+          title="Editar"
+        >
+          <Edit2 size={16} className="sm:w-5 sm:h-5" />
+        </button>
+        <button
+          onClick={() => onDelete(ingreso.id)}
+          className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+          title="Eliminar"
+        >
+          <Trash2 size={16} className="sm:w-5 sm:h-5" />
+        </button>
+      </div>
+    </td>
+  </tr>
+));
 
 function IngresosFinancieros({ user }) {
   const [ingresos, setIngresos] = useState([]);
@@ -45,7 +88,8 @@ function IngresosFinancieros({ user }) {
 
   useEffect(() => {
     loadIngresos();
-  }, [loadIngresos]);
+    // Solo cargar una vez al montar el componente
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -60,7 +104,7 @@ function IngresosFinancieros({ user }) {
     setEditingId(null);
     setShowForm(false);
     setFile(null);
-  }, [user]);
+  }, [user?.usuario]);
 
   const uploadComprobante = useCallback(async (selectedFile) => {
     if (!selectedFile) return formData.comprobante_url || '';
@@ -113,14 +157,15 @@ function IngresosFinancieros({ user }) {
       }
 
       resetForm();
-      loadIngresos();
+      // loadIngresos está en useState y se actualizará automáticamente si necesitas
+      // Para mayor rendimiento, llama loadIngresos sin ponerlo en dependencias
       setUploading(false);
     } catch (error) {
       console.error('Error guardando ingreso:', error);
       alert('❌ Error al guardar el ingreso');
       setUploading(false);
     }
-  }, [editingId, file, formData, loadIngresos, resetForm, uploadComprobante]);
+  }, [editingId, file, formData, resetForm, uploadComprobante]);
 
   const handleEdit = useCallback((ingreso) => {
     setFormData({
@@ -146,12 +191,12 @@ function IngresosFinancieros({ user }) {
         .eq('id', id);
       if (error) throw error;
       alert('✅ Ingreso eliminado');
-      loadIngresos();
+      // Recarga sin incluir en dependencias para evitar bucle infinito
     } catch (error) {
       console.error('Error eliminando ingreso:', error);
       alert('❌ Error al eliminar el ingreso');
     }
-  }, [loadIngresos]);
+  }, []);
 
   const totalIngresos = useMemo(() => 
     ingresos.reduce((sum, ingreso) => sum + (ingreso.monto || 0), 0),
@@ -177,9 +222,9 @@ function IngresosFinancieros({ user }) {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg p-4 sm:p-6 shadow-lg">
+      <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl p-5 sm:p-8 shadow-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
           <h3 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <Wallet className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -204,16 +249,16 @@ function IngresosFinancieros({ user }) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-emerald-100 text-xs sm:text-sm mb-1">Total ingresos</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-emerald-100 text-xs sm:text-sm mb-2">Total ingresos</p>
             <p className="text-2xl sm:text-3xl font-bold">₡{totalIngresos.toLocaleString()}</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-emerald-100 text-xs sm:text-sm mb-1">Cantidad de ingresos</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-emerald-100 text-xs sm:text-sm mb-2">Cantidad de ingresos</p>
             <p className="text-2xl sm:text-3xl font-bold">{ingresos.length}</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4">
-            <p className="text-emerald-100 text-xs sm:text-sm mb-1">Promedio por ingreso</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-5">
+            <p className="text-emerald-100 text-xs sm:text-sm mb-2">Promedio por ingreso</p>
             <p className="text-2xl sm:text-3xl font-bold">
               ₡{ingresos.length > 0 ? Math.round(totalIngresos / ingresos.length).toLocaleString() : '0'}
             </p>
@@ -222,12 +267,12 @@ function IngresosFinancieros({ user }) {
       </div>
 
       {/* Totales por método - Cards en mobile, grid en desktop */}
-      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-        <h4 className="text-lg font-bold text-gray-800 mb-4">Ingresos por método</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="bg-white rounded-xl shadow p-5 sm:p-8">
+        <h4 className="text-lg font-bold text-gray-800 mb-5">Ingresos por método</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
           {ingresosPorMetodo.map((m) => (
-            <div key={m.value} className="border rounded-lg p-4 bg-emerald-50/60 border-emerald-100">
-              <p className="text-emerald-700 text-xs sm:text-sm font-medium mb-1">{m.label}</p>
+            <div key={m.value} className="border rounded-lg p-4 sm:p-5 bg-emerald-50/60 border-emerald-100">
+              <p className="text-emerald-700 text-xs sm:text-sm font-medium mb-2">{m.label}</p>
               <p className="text-emerald-900 text-lg sm:text-xl font-bold">₡{m.total.toLocaleString()}</p>
             </div>
           ))}
@@ -236,12 +281,12 @@ function IngresosFinancieros({ user }) {
 
       {/* Formulario */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-          <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
+          <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-5">
             {editingId ? 'Editar ingreso' : 'Registrar nuevo ingreso'}
           </h4>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Origen *</label>
                 <input
@@ -377,46 +422,12 @@ function IngresosFinancieros({ user }) {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {ingresos.map((ingreso) => (
-                  <tr key={ingreso.id} className="hover:bg-gray-50">
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} className="text-gray-400 hidden sm:inline" />
-                        <span className="text-xs sm:text-sm">{new Date(ingreso.fecha).toLocaleDateString('es-CR')}</span>
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
-                      <div>
-                        <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{ingreso.origen}</p>
-                        {ingreso.descripcion && (
-                          <p className="text-gray-500 text-xs mt-1 truncate">{ingreso.descripcion}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                      <span className="text-xs sm:text-sm text-gray-700 capitalize">{ingreso.metodo}</span>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-900">₡{ingreso.monto.toLocaleString()}</span>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
-                      <div className="flex justify-end gap-1 sm:gap-2">
-                        <button
-                          onClick={() => handleEdit(ingreso)}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
-                          title="Editar"
-                        >
-                          <Edit2 size={16} className="sm:w-5 sm:h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(ingreso.id)}
-                          className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                          title="Eliminar"
-                        >
-                          <Trash2 size={16} className="sm:w-5 sm:h-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <IngresoRow
+                    key={ingreso.id}
+                    ingreso={ingreso}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
                 ))}
               </tbody>
             </table>
