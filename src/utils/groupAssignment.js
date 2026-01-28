@@ -298,53 +298,7 @@ function validarRestricciones(grupos, restricciones) {
   return advertencias
 }
 
-export function parsearCSV(csvString) {
-  const lineas = csvString.trim().split('\n')
-  if (lineas.length < 2) return []
-  
-  const headers = lineas[0].split(',').map(h => h.trim().toLowerCase())
-  const estudiantes = []
-  
-  for (let i = 1; i < lineas.length; i++) {
-    if (!lineas[i].trim()) continue
-    
-    const valores = lineas[i].split(',').map(v => v.trim())
-    const estudiante = {}
-    
-    headers.forEach((header, idx) => {
-      if (header.includes('nombre')) estudiante.nombre = valores[idx]
-      else if (header.includes('género') || header.includes('genero')) estudiante.genero = valores[idx]
-      else if (header.includes('especialidad')) estudiante.especialidad = valores[idx]
-      else if (header.includes('grado')) estudiante.grado = valores[idx]
-      else if (header.includes('número') || header.includes('numero')) estudiante.numero = valores[idx]
-    })
-    
-    if (estudiante.nombre) {
-      estudiantes.push(estudiante)
-    }
-  }
-  
-  return estudiantes
-}
 
-export function exportarAsignacion(resultado) {
-  const lineas = ['Grupo,Nombre,Especialidad,Grado,Número,Género']
-  
-  for (const grupo of resultado.grupos) {
-    for (const estudiante of grupo.integrantes) {
-      lineas.push([
-        grupo.nombre,
-        estudiante.nombre,
-        estudiante.especialidad || '',
-        estudiante.grado || '',
-        estudiante.numero || '',
-        estudiante.genero || ''
-      ].join(','))
-    }
-  }
-  
-  return lineas.join('\n')
-}
 
   // Exporta en formato Excel (HTML table) compatible con .xls
   export function exportarAsignacionExcel(resultado) {

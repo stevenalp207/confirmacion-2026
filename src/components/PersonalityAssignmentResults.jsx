@@ -1,4 +1,3 @@
-import React from 'react'
 import { Download, Users, TrendingUp } from 'lucide-react'
 import { exportarAsignacionPersonalidadExcel } from '../utils/groupAssignment'
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { asignarGruposEquilibrados, exportarAsignacionExcel, generarReporte } from '../utils/groupAssignment'
+import { asignarGruposEquilibrados, exportarAsignacionExcel } from '../utils/groupAssignment'
 import { Trash2, Plus, Download, FileText, Users, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function GroupAssignmentTool() {
@@ -120,16 +120,6 @@ export default function GroupAssignmentTool() {
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
     link.download = 'asignacion_grupos.xls'
-    link.click()
-  }
-
-  const handleDescargarReporte = () => {
-    if (!resultado) return
-    const reporte = generarReporte(resultado)
-    const blob = new Blob([reporte], { type: 'text/plain;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'reporte_grupos.txt'
     link.click()
   }
 
@@ -391,20 +381,12 @@ export default function GroupAssignmentTool() {
                 <p className="text-green-700 text-xs mt-1">{resultado.grupos.length} grupos creados</p>
               </div>
 
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={handleDescargarExcel}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-semibold shadow-md"
-                >
-                  <Download className="w-4 h-4" /> Excel
-                </button>
-                <button
-                  onClick={handleDescargarReporte}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-xs font-semibold shadow-md"
-                >
-                  <FileText className="w-4 h-4" /> Reporte
-                </button>
-              </div>
+              <button
+                onClick={handleDescargarExcel}
+                className="w-full flex items-center justify-center gap-2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-semibold shadow-md mb-4"
+              >
+                <Download className="w-4 h-4" /> Excel
+              </button>
 
               {resultado.advertencias.length > 0 && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded p-3">
