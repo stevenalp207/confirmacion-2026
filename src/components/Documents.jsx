@@ -1,10 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Lock } from 'lucide-react';
 import { tiposDocumentos } from '../data/grupos';
 import { supabase } from '../config/supabase';
 
-function Documents({ grupo, estudiantes }) {
+function Documents({ grupo, estudiantes, user }) {
   const [documentosState, setDocumentosState] = useState({});
   const [loading, setLoading] = useState(true);
+
+  // Función para verificar si el usuario puede editar documentos
+  const canEditDocuments = () => {
+    if (!user) return false;
+    return user.rol === 'admin' || user.usuario === 'logistica';
+  };
 
   const loadDocumentos = useCallback(async () => {
     try {
@@ -48,6 +55,11 @@ function Documents({ grupo, estudiantes }) {
   }, [grupo, estudiantes, loadDocumentos]);
 
   const handleCheckboxChange = async (estudianteId, docTipo) => {
+    // Verificar permiso antes de permitir cambio
+    if (!canEditDocuments()) {
+      return;
+    }
+
     const currentValue = documentosState[estudianteId]?.[docTipo] || false;
     const newValue = !currentValue;
 
@@ -130,13 +142,19 @@ function Documents({ grupo, estudiantes }) {
                     </td>
                     {tiposDocumentos.map(doc => (
                       <td key={doc.id} className="px-3 sm:px-4 py-4 text-center">
-                        <div className="flex justify-center">
+                        <div className="flex justify-center items-center gap-2">
                           <input
                             type="checkbox"
                             checked={documentosState[estudianteId]?.[doc.id] || false}
                             onChange={() => handleCheckboxChange(estudianteId, doc.id)}
-                            className="w-5 h-5 text-blue-600 border-2 border-gray-300 bg-white rounded cursor-pointer accent-blue-600"
+                            disabled={!canEditDocuments()}
+                            className={`w-5 h-5 border-2 border-gray-300 bg-white rounded cursor-pointer accent-blue-600 ${
+                              !canEditDocuments() ? 'opacity-50 cursor-not-allowed' : 'text-blue-600'
+                            }`}
                           />
+                          {!canEditDocuments() && (
+                            <Lock size={16} className="text-gray-400" />
+                          )}
                         </div>
                       </td>
                     ))}

@@ -11,6 +11,16 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [editandoNotas, setEditandoNotas] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
+  // Función para verificar si el usuario puede editar notas de este estudiante
+  const canEditNotes = () => {
+    if (!user) return false;
+    // Admin y logistica pueden editar a todos
+    if (user.rol === 'admin' || user.usuario === 'logistica') return true;
+    // El rol del usuario coincide con el grupo del estudiante
+    if (user.rol === grupo) return true;
+    return false;
+  };
+
   useEffect(() => {
     loadAllData();
   }, [estudianteId, grupo]);
@@ -251,7 +261,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
           <h3 className="font-bold text-yellow-900 text-lg flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" /> Notas Importantes
           </h3>
-          {(user?.rol === 'admin' || user?.usuario === 'logistica') && (
+          {canEditNotes() && (
             <button
               onClick={() => setEditandoNotas(!editandoNotas)}
               className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 w-full sm:w-auto justify-center ${

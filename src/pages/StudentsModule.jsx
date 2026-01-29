@@ -13,6 +13,7 @@ function StudentsModule({ onBack, user }) {
 
   // Cargar todos los estudiantes de todos los grupos
   const allStudents = [];
+  
   grupos.forEach(grupo => {
     const grupoInfo = gruposData[grupo];
     const estudiantesObj = grupoInfo?.estudiantes || {};

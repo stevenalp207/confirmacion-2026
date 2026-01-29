@@ -1,12 +1,19 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Lock } from 'lucide-react';
 import { supabase } from '../config/supabase';
 
-function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
+function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
   const [pagosState, setPagosState] = useState({});
   const [loading, setLoading] = useState(true);
 
   // Monto requerido según el tipo
   const montoRequerido = 50000;
+
+  // Función para verificar si el usuario puede editar pagos
+  const canEditPayments = () => {
+    if (!user) return false;
+    return user.rol === 'admin' || user.rol === 'financiero' || user.usuario === 'logistica';
+  };
 
   const loadPagos = useCallback(async () => {
     try {
@@ -111,6 +118,11 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
   }, [esCatequistas, catequistas, estudiantes]);
 
   const handleMontoPagado = async (id, nuevoMonto) => {
+    // Verificar permiso antes de permitir cambio
+    if (!canEditPayments()) {
+      return;
+    }
+
     const pagado = nuevoMonto >= montoRequerido;
 
     try {
@@ -233,13 +245,21 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas }) {
                     {nombre}
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <input
-                      type="number"
-                      value={pago.monto_pagado}
-                      onChange={(e) => handleMontoPagado(id, parseInt(e.target.value) || 0)}
-                      className="w-32 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-center font-semibold"
-                      min="0"
-                    />
+                    <div className="flex items-center justify-center gap-2">
+                      <input
+                        type="number"
+                        value={pago.monto_pagado}
+                        onChange={(e) => handleMontoPagado(id, parseInt(e.target.value) || 0)}
+                        disabled={!canEditPayments()}
+                        className={`w-32 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-center font-semibold ${
+                          !canEditPayments() ? 'opacity-50 bg-gray-100 cursor-not-allowed' : ''
+                        }`}
+                        min="0"
+                      />
+                      {!canEditPayments() && (
+                        <Lock size={16} className="text-gray-400" />
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
                     ₡{montoRequerido.toLocaleString('es-CR')}

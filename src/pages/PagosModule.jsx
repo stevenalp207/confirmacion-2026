@@ -198,6 +198,7 @@ function PagosModule({ onBack, user }) {
                   estudiantes={estudiantes}
                   catequistas={catequistas}
                   esCatequistas={currentGroup === "Catequistas"}
+                  user={user}
                 />
               )}
             </div>
