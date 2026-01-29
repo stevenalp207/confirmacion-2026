@@ -9,6 +9,8 @@ function CalendarioModule({ onBack, user }) {
   const [mesSeleccionado, setMesSeleccionado] = useState(new Date().getMonth())
   const [añoSeleccionado, setAñoSeleccionado] = useState(2026)
   const [busqueda, setBusqueda] = useState('')
+  const [diaSeleccionado, setDiaSeleccionado] = useState(null)
+  const [modalAbierto, setModalAbierto] = useState(false)
 
   // Función para obtener eventos del mes seleccionado
   const eventosMes = useMemo(() => {
@@ -389,8 +391,18 @@ function CalendarioModule({ onBack, user }) {
                   {getDiasDelMes().map((diaInfo, index) => (
                     <div
                       key={index}
+                      onClick={() => {
+                        if (diaInfo && diaInfo.eventos.length > 0) {
+                          setDiaSeleccionado(diaInfo)
+                          setModalAbierto(true)
+                        }
+                      }}
                       className={`min-h-[80px] sm:min-h-[100px] border rounded-lg p-1 sm:p-2 text-xs sm:text-sm ${
-                        diaInfo ? 'bg-white hover:bg-gray-50' : 'bg-gray-50'
+                        diaInfo 
+                          ? diaInfo.eventos.length > 0
+                            ? 'bg-white hover:bg-blue-50 cursor-pointer border-blue-300 hover:border-blue-500 transition'
+                            : 'bg-white hover:bg-gray-50'
+                          : 'bg-gray-50'
                       }`}
                     >
                       {diaInfo && (
@@ -471,6 +483,100 @@ function CalendarioModule({ onBack, user }) {
           </div>
         </div>
       </div>
+
+      {/* Modal de Eventos del Día */}
+      {modalAbierto && diaSeleccionado && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col animate-fade-in">
+            {/* Header */}
+            <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold">
+                  {diaSeleccionado.dia} de {meses[mesSeleccionado]} de {añoSeleccionado}
+                </h2>
+                <p className="text-blue-100 text-sm mt-1">
+                  {diaSeleccionado.eventos.length} evento{diaSeleccionado.eventos.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <button
+                onClick={() => setModalAbierto(false)}
+                className="text-white/90 hover:text-blue-600 hover:bg-white p-2 rounded-lg transition-colors duration-150"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Contenido - Eventos del día */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {diaSeleccionado.eventos.map((evento) => {
+                const tipoInfo = tiposEvento[evento.tipo]
+                const prioridadInfo = prioridades[evento.prioridad]
+                
+                return (
+                  <div
+                    key={evento.id}
+                    className="bg-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition"
+                  >
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold border-2 ${tipoInfo.color}`}>
+                        {tipoInfo.icon} {tipoInfo.label}
+                      </span>
+                      <div className={`w-3 h-3 rounded-full ${prioridadInfo.color}`} title={prioridadInfo.label}></div>
+                    </div>
+                    
+                    <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-2">
+                      {evento.titulo}
+                    </h3>
+                    
+                    <p className="text-gray-600 text-sm sm:text-base mb-3">
+                      {evento.descripcion}
+                    </p>
+                    
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                      <span className="px-2 py-1 bg-white rounded border border-gray-300">
+                        {evento.categoria}
+                      </span>
+                      {evento.grupo && (
+                        <span className="px-2 py-1 bg-blue-50 rounded border border-blue-300 text-blue-700">
+                          Grupo: {evento.grupo}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 p-4 bg-gray-50">
+              <button
+                onClick={() => setModalAbierto(false)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from { 
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to { 
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out;
+        }
+      `}</style>
     </div>
   )
 }
