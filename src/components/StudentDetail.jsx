@@ -121,7 +121,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const totalSesiones = numeroCatequesis; // 25 sesiones totales
 
   if (loadingData) {
-    return <div className="text-gray-600">Cargando datos del estudiante...</div>;
+    return <div className="text-gray-600">Cargando datos del catequizando...</div>;
   }
 
   return (
@@ -131,7 +131,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         <div className="flex items-start justify-between mb-3 sm:mb-4 gap-3">
           <div className="flex-1 min-w-0">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 break-words">{estudiante.nombre}</h2>
-            <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Estudiante de {grupo}</p>
+            <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Catequizando de {grupo}</p>
           </div>
           <GraduationCap className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 text-blue-100" strokeWidth={1.5} />
         </div>

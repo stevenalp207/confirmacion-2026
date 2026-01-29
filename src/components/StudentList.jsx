@@ -46,7 +46,7 @@ function StudentList({ grupo, user }) {
       <div>
         <input
           type="text"
-          placeholder="Buscar estudiante por nombre..."
+          placeholder="Buscar catequizando por nombre..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"

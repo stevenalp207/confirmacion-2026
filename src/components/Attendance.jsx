@@ -76,7 +76,7 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
     }
 
     if (!estudiante) {
-      console.error('Estudiante no encontrado');
+      console.error('Catequizando no encontrado');
       return;
     }
 
