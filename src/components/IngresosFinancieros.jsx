@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, Wallet, Calendar, FileText, Link as LinkIcon } from 'lucide-react';
+import ConfirmationModal from './ConfirmationModal';
 
 const metodos = [
   { value: 'efectivo', label: 'Efectivo' },
@@ -58,6 +59,8 @@ function IngresosFinancieros({ user }) {
   const [editingId, setEditingId] = useState(null);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
+  const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
     origen: '',
     monto: '',
@@ -147,22 +150,36 @@ function IngresosFinancieros({ user }) {
           .update(ingresoData)
           .eq('id', editingId);
         if (error) throw error;
-        alert('✅ Ingreso actualizado');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Ingreso actualizado',
+          message: 'El ingreso ha sido actualizado exitosamente.'
+        });
       } else {
         const { error } = await supabase
           .from('ingresos_confirmacion')
           .insert([ingresoData]);
         if (error) throw error;
-        alert('✅ Ingreso registrado');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Ingreso registrado',
+          message: 'El nuevo ingreso ha sido registrado exitosamente.'
+        });
       }
 
       resetForm();
-      // loadIngresos está en useState y se actualizará automáticamente si necesitas
-      // Para mayor rendimiento, llama loadIngresos sin ponerlo en dependencias
+      await loadIngresos();
       setUploading(false);
     } catch (error) {
       console.error('Error guardando ingreso:', error);
-      alert('❌ Error al guardar el ingreso');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error al guardar',
+        message: 'Ocurrió un error al guardar el ingreso. Intenta nuevamente.'
+      });
       setUploading(false);
     }
   }, [editingId, file, formData, resetForm, uploadComprobante]);
@@ -182,21 +199,42 @@ function IngresosFinancieros({ user }) {
     setFile(null);
   }, [user]);
 
-  const handleDelete = useCallback(async (id) => {
-    if (!confirm('¿Eliminar este ingreso?')) return;
+  const handleDelete = useCallback((id) => {
+    setDeleteId(id);
+    setModal({
+      isOpen: true,
+      type: 'confirm',
+      title: '¿Eliminar ingreso?',
+      message: '¿Está seguro de que desea eliminar este ingreso? Esta acción no se puede deshacer.'
+    });
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deleteId) return;
     try {
       const { error } = await supabase
         .from('ingresos_confirmacion')
         .delete()
-        .eq('id', id);
+        .eq('id', deleteId);
       if (error) throw error;
-      alert('✅ Ingreso eliminado');
-      // Recarga sin incluir en dependencias para evitar bucle infinito
+      setModal({
+        isOpen: true,
+        type: 'success',
+        title: 'Ingreso eliminado',
+        message: 'El ingreso ha sido eliminado correctamente.'
+      });
+      await loadIngresos();
+      setDeleteId(null);
     } catch (error) {
       console.error('Error eliminando ingreso:', error);
-      alert('❌ Error al eliminar el ingreso');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error al eliminar',
+        message: 'Ocurrió un error al eliminar el ingreso. Intenta nuevamente.'
+      });
     }
-  }, []);
+  }, [deleteId, loadIngresos]);
 
   const totalIngresos = useMemo(() => 
     ingresos.reduce((sum, ingreso) => sum + (ingreso.monto || 0), 0),
@@ -434,6 +472,26 @@ function IngresosFinancieros({ user }) {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={modal.isOpen}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.type === 'confirm' ? 'Eliminar' : 'Aceptar'}
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (modal.type === 'confirm') {
+            confirmDelete();
+          } else {
+            setModal({ ...modal, isOpen: false });
+          }
+        }}
+        onCancel={() => {
+          setDeleteId(null);
+          setModal({ ...modal, isOpen: false });
+        }}
+      />
     </div>
   );
 }

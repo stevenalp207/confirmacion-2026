@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
 import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText } from 'lucide-react';
+import ConfirmationModal from './ConfirmationModal';
 
 const categorias = [
   { value: 'transporte', label: 'Transporte', color: 'blue' },
@@ -63,6 +64,8 @@ function GastosFinancieros({ user }) {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
+  const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
     concepto: '',
     monto: '',
@@ -99,7 +102,12 @@ function GastosFinancieros({ user }) {
     e.preventDefault();
     
     if (!formData.concepto || !formData.monto) {
-      alert('Por favor completa el concepto y monto');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Campos incompletos',
+        message: 'Por favor completa el concepto y monto.'
+      });
       return;
     }
 
@@ -118,7 +126,12 @@ function GastosFinancieros({ user }) {
           .eq('id', editingId);
 
         if (error) throw error;
-        alert('✅ Gasto actualizado exitosamente');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Gasto actualizado',
+          message: 'El gasto ha sido actualizado exitosamente.'
+        });
       } else {
         // Crear nuevo gasto
         const { error } = await supabase
@@ -126,14 +139,24 @@ function GastosFinancieros({ user }) {
           .insert([gastoData]);
 
         if (error) throw error;
-        alert('✅ Gasto registrado exitosamente');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Gasto registrado',
+          message: 'El nuevo gasto ha sido registrado exitosamente.'
+        });
       }
 
       resetForm();
       await loadGastos(); // Esperar a que se carguen los datos
     } catch (error) {
       console.error('Error guardando gasto:', error);
-      alert('❌ Error al guardar el gasto');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error al guardar',
+        message: 'Ocurrió un error al guardar el gasto. Intenta nuevamente.'
+      });
     }
   }, [editingId, formData]);
 
@@ -150,23 +173,44 @@ function GastosFinancieros({ user }) {
     setShowForm(true);
   }, [user]);
 
-  const handleDelete = useCallback(async (id) => {
-    if (!confirm('¿Estás seguro de eliminar este gasto?')) return;
+  const handleDelete = useCallback((id) => {
+    setDeleteId(id);
+    setModal({
+      isOpen: true,
+      type: 'confirm',
+      title: '¿Eliminar gasto?',
+      message: '¿Está seguro de que desea eliminar este gasto? Esta acción no se puede deshacer.'
+    });
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deleteId) return;
 
     try {
       const { error } = await supabase
         .from('gastos_confirmacion')
         .delete()
-        .eq('id', id);
+        .eq('id', deleteId);
 
       if (error) throw error;
-      alert('✅ Gasto eliminado');
+      setModal({
+        isOpen: true,
+        type: 'success',
+        title: 'Gasto eliminado',
+        message: 'El gasto ha sido eliminado correctamente.'
+      });
       await loadGastos(); // Recargar después de eliminar
+      setDeleteId(null);
     } catch (error) {
       console.error('Error eliminando gasto:', error);
-      alert('❌ Error al eliminar el gasto');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error al eliminar',
+        message: 'Ocurrió un error al eliminar el gasto. Intenta nuevamente.'
+      });
     }
-  }, []);
+  }, [deleteId, loadGastos]);
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -212,7 +256,7 @@ function GastosFinancieros({ user }) {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Header con totales */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl p-5 sm:p-8 shadow-lg">
+      <div className="bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-xl p-5 sm:p-8 shadow-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
           <h3 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -415,6 +459,26 @@ function GastosFinancieros({ user }) {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={modal.isOpen}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.type === 'confirm' ? 'Eliminar' : 'Aceptar'}
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (modal.type === 'confirm') {
+            confirmDelete();
+          } else {
+            setModal({ ...modal, isOpen: false });
+          }
+        }}
+        onCancel={() => {
+          setDeleteId(null);
+          setModal({ ...modal, isOpen: false });
+        }}
+      />
     </div>
   );
 }
