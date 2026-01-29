@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, TrendingUp } from 'lucide-react';
 import IngresosFinancieros from '../components/IngresosFinancieros';
 
 function IngresosModule({ onBack, user }) {
@@ -25,25 +25,38 @@ function IngresosModule({ onBack, user }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-emerald-100">
-      {/* Navbar */}
-      <nav className="bg-emerald-600 text-white shadow-lg sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 className="text-xl sm:text-2xl font-bold">INGRESOS</h1>
-            <button
-              onClick={onBack}
-              className="bg-white text-emerald-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors font-semibold text-sm sm:text-base w-full sm:w-auto"
-            >
-              Salir
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-4 sm:mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Volver al Menú Principal
+          </button>
+          
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+            <div className="text-center mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
+                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600" />
+                Ingresos
+              </h1>
+              <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
+                Gestiona los ingresos financieros
+              </p>
+              {user && (
+                <p className="text-gray-600 text-xs sm:text-sm mt-2">
+                  Usuario: <span className="font-semibold">{user.usuario}</span>
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </nav>
 
-      {/* Main content */}
-      <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 lg:py-6">
-        <div className="bg-white/80 backdrop-blur rounded-xl shadow-lg p-3 sm:p-6 lg:p-8 border border-emerald-100">
+        {/* Main content */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
           <IngresosFinancieros user={user} />
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import { catequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
-import { Search, Filter, MapPin } from 'lucide-react';
+import { Search, Filter, MapPin, ArrowLeft, Users } from 'lucide-react';
 
 function CatequistasModule({ onBack }) {
   const [catequistasState, setCatequistasState] = useState({});
@@ -162,31 +162,33 @@ function CatequistasModule({ onBack }) {
   // Se quitó la funcionalidad de agregar catequista
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <nav className="bg-blue-600 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold">CATEQUISTAS</h1>
-            <button
-              onClick={onBack}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-5 py-3 rounded-lg transition-colors font-semibold text-base sm:text-lg w-full sm:w-auto"
-            >
-              Salir
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-4 sm:mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Volver al Menú Principal
+          </button>
+          
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+            <div className="text-center mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                Catequistas
+              </h1>
+              <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
+                Registra la asistencia de todos los catequistas
+              </p>
+            </div>
           </div>
         </div>
-      </nav>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-5 sm:py-6 lg:py-8">
-        <div className="bg-white rounded-lg shadow-md p-5 sm:p-6 lg:p-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
-            Asistencia de Catequistas
-          </h2>
-          <p className="text-base sm:text-lg text-gray-600 mb-5 sm:mb-6">
-            Registra la asistencia de todos los catequistas
-          </p>
+        {/* Main Content */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
 
           {/* Sección de Filtros */}
           <div className="mb-6 p-5 bg-gray-50 rounded-lg border border-gray-200">

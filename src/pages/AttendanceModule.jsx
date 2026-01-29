@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ArrowLeft, CheckCircle, Users } from 'lucide-react';
 import { grupos } from '../data/grupos';
 import Attendance from '../components/Attendance';
 import StudentDetail from '../components/StudentDetail';
@@ -169,99 +170,139 @@ function AttendanceModule({ onBack, user }) {
 
   if (selectedStudent) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        {/* Navbar */}
-        <nav className="sticky top-0 z-20 bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-              <button
-                onClick={() => setSelectedStudent(null)}
-                className="hover:bg-green-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base"
-              >
-                ← Volver a asistencia
-              </button>
-              <div className="flex-1">
-                <h1 className="text-lg sm:text-xl font-bold truncate">{selectedStudent.nombre}</h1>
-                <p className="text-green-200 text-xs sm:text-sm">Grupo: {selectedStudent.grupo}</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-4 sm:mb-6">
+            <button
+              onClick={() => setSelectedStudent(null)}
+              className="flex items-center gap-2 text-green-600 hover:text-green-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              Volver a Asistencia
+            </button>
+            
+            <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+              <div className="flex flex-col sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center gap-2 sm:gap-3">
+                    <Users className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                    {selectedStudent.nombre}
+                  </h1>
+                  <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
+                    Grupo: {selectedStudent.grupo}
+                  </p>
+                </div>
+                {user && (
+                  <div className="text-right text-xs sm:text-sm">
+                    <p className="text-gray-600">Usuario: <span className="font-semibold">{user.usuario}</span></p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </nav>
 
-        {/* Contenido */}
-        <main className="max-w-7xl mx-auto p-3 sm:p-4">
+          {/* Contenido */}
           <StudentDetail
             grupo={selectedStudent.grupo}
             estudianteId={selectedStudent.id}
             estudiante={selectedStudent}
             user={user}
           />
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <nav className="bg-green-600 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h1 className="text-xl sm:text-2xl font-bold">ASISTENCIA</h1>
-            <button
-              onClick={onBack}
-              className="bg-white text-green-600 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors font-semibold text-sm sm:text-base w-full sm:w-auto"
-            >
-              Salir
-            </button>
-          </div>
-          <select
-            value={currentGroup}
-            onChange={(e) => handleGroupChange(e.target.value)}
-            className="w-full sm:w-auto bg-white text-gray-900 px-3 sm:px-4 py-2.5 rounded-lg text-sm sm:text-base border-2 border-green-300 hover:border-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all font-medium shadow-sm"
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-4 sm:mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-green-600 hover:text-green-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
           >
-            <option value="">Seleccionar Grupo</option>
-            {gruposDisponibles.map((grupo) => (
-              <option key={grupo} value={grupo}>
-                {grupo}
-              </option>
-            ))}
-          </select>
-        </div>
-      </nav>
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Volver al Menú Principal
+          </button>
+          
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+            <div className="text-center mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
+                <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                Asistencia
+              </h1>
+              <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
+                Registra la asistencia de los estudiantes en las reuniones de jueves
+              </p>
+              {user && (
+                <p className="text-gray-600 text-xs sm:text-sm mt-2">
+                  Usuario: <span className="font-semibold">{user.usuario}</span>
+                </p>
+              )}
+            </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-4 sm:py-6 lg:py-8">
+            {/* Selector de grupo */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Seleccionar Grupo
+              </label>
+              <select
+                value={currentGroup}
+                onChange={(e) => handleGroupChange(e.target.value)}
+                className="w-full sm:w-auto bg-white text-gray-900 px-3 sm:px-4 py-2.5 rounded-lg text-sm sm:text-base border-2 border-gray-300 hover:border-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all font-medium shadow-sm"
+              >
+                <option value="">Seleccionar Grupo</option>
+                {gruposDisponibles.map((grupo) => (
+                  <option key={grupo} value={grupo}>
+                    {grupo}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
         {!currentGroup ? (
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">
-              Módulo de Asistencia
-            </h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 text-center">
-              Selecciona un grupo para registrar asistencias
-            </p>
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <Users className="w-16 h-16 text-green-600 mx-auto mb-4" />
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
+                Selecciona un Grupo
+              </h2>
+              <p className="text-sm sm:text-base text-gray-600">
+                Elige un grupo para ver y registrar asistencias
+              </p>
+            </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {gruposDisponibles.map((grupo) => (
                 <button
                   key={grupo}
                   onClick={() => handleGroupChange(grupo)}
-                  className="p-3 sm:p-4 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-lg hover:border-green-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
+                  className="p-4 sm:p-5 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl hover:border-green-400 hover:shadow-lg transition-all transform hover:scale-105 text-left group"
                 >
-                  <div className="font-semibold text-gray-800 text-base sm:text-lg">{grupo}</div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-1">Click para acceder</div>
+                  <div className="font-bold text-gray-800 text-base sm:text-lg mb-1 group-hover:text-green-700 transition-colors">
+                    {grupo}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600">
+                    Click para gestionar
+                  </div>
                 </button>
               ))}
             </div>
           </div>
         ) : (
           <>
-            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2 flex items-center gap-2">
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     Grupo: {currentGroup}
-                  </h1>
+                  </h2>
                   <p className="text-sm sm:text-base text-gray-600">
                     Registra la asistencia de los estudiantes
                   </p>
@@ -279,7 +320,7 @@ function AttendanceModule({ onBack, user }) {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 lg:p-6">
+            <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 lg:p-6">
               {loading ? (
                 <div className="flex justify-center items-center p-8">
                   <div className="text-gray-600 text-sm sm:text-base">Cargando datos...</div>

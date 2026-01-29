@@ -61,28 +61,25 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-60 flex items-center justify-center p-4 transition-opacity duration-300 ${
+      className={`fixed inset-0 z-60 flex items-center justify-center p-4 transition-opacity duration-150 ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
+      } bg-black/35`}
     >
-      {/* Backdrop con blur */}
-      <div className="absolute inset-0 backdrop-blur-sm" onClick={handleSkipNow} />
+      {/* Backdrop */}
+      <div className="absolute inset-0" onClick={handleSkipNow} />
       
       {/* Tutorial Card */}
       <div 
-        className={`relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all duration-300 ${
-          isVisible ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
+        className={`relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transition-opacity duration-150 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
         {/* Header con gradiente */}
         <div className="bg-linear-to-r from-blue-600 to-indigo-600 p-6 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12" />
           
           <button
             onClick={handleSkipNow}
-            className="absolute top-4 right-4 text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition"
+            className="absolute top-4 right-4 text-white hover:bg-white/20 p-2 rounded-lg transition-colors duration-150"
           >
             <X className="w-5 h-5" />
           </button>
@@ -109,7 +106,7 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
               {currentStepData.features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg transform transition hover:scale-105"
+                  className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg"
                 >
                   <div className="shrink-0 w-2 h-2 bg-blue-500 rounded-full" />
                   <span className="text-gray-700 text-sm">{feature}</span>
@@ -137,34 +134,19 @@ const OnboardingTutorial = ({ onComplete, onSkip }) => {
             </div>
           )}
 
-          {/* Progress dots */}
-          <div className="flex justify-center gap-2 pt-4">
-            {steps.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentStep(index)}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentStep
-                    ? 'w-8 h-2 bg-blue-600'
-                    : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
-                }`}
-              />
-            ))}
-          </div>
-
           {/* Actions */}
           <div className="flex gap-3 pt-2">
             {!isLastStep && (
               <button
                 onClick={handleSkipNow}
-                className="flex-1 px-4 py-3 text-gray-600 hover:text-gray-800 font-semibold rounded-lg hover:bg-gray-100 transition"
+                className="flex-1 px-4 py-3 text-gray-600 hover:text-gray-800 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-150"
               >
                 Saltar
               </button>
             )}
             <button
               onClick={handleNext}
-              className="flex-1 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2"
+              className="flex-1 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-colors duration-150 flex items-center justify-center gap-2"
             >
               {isLastStep ? (
                 <>

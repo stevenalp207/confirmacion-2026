@@ -4,6 +4,8 @@ import Login from './pages/Login';
 import ModuleSelector from './pages/ModuleSelector';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import OfflineIndicator from './components/OfflineIndicator';
+import Sidebar from './components/Sidebar';
+import TopBar from './components/TopBar';
 
 // Lazy load all modules for better performance
 const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
@@ -41,6 +43,8 @@ function ModuleLoader() {
 
 function AppContent() {
   const [currentModule, setCurrentModule] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { user, loading, logout, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
 
   // Escuchar mensajes del Service Worker (clicks en notificaciones)
@@ -135,6 +139,13 @@ function AppContent() {
   })();
 
   const handleSelectModule = (module) => {
+    // Si module es null, volver al inicio
+    if (module === null) {
+      setCurrentModule(null);
+      window.history.pushState(null, '', '#');
+      return;
+    }
+    
     if (!allowedModules.includes(module)) return;
     setCurrentModule(module);
     
@@ -173,32 +184,79 @@ function AppContent() {
       <OfflineIndicator />
       <PWAInstallPrompt />
 
-      {!currentModule && (
-        <ModuleSelector 
-          onSelectModule={handleSelectModule} 
-          user={user}
-          onLogout={handleLogout}
-          savedAccounts={savedAccounts}
-          onSwitchAccount={handleSwitchAccount}
-          onRemoveAccount={removeSavedAccount}
-        />
-      )}
-      <Suspense fallback={<ModuleLoader />}>
-        {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}
-        {currentModule === 'documentos' && <DocumentsModule onBack={handleBack} user={user} />}
-        {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
-        {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
-        {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
-        {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
-        {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
-        {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
-        {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
-        {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
-        {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
-        {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
-        {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
-        {currentModule === 'asignacion-personalidad' && <PersonalityAssignmentModule onBack={handleBack} user={user} />}
-      </Suspense>
+      <div className="flex h-screen overflow-hidden bg-gray-50">
+        {/* Sidebar Desktop */}
+        <div className="hidden lg:block">
+          <Sidebar
+            currentModule={currentModule}
+            onSelectModule={handleSelectModule}
+            user={user}
+            isCollapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
+        </div>
+
+        {/* Sidebar Mobile */}
+        {mobileSidebarOpen && (
+          <>
+            <div
+              className="lg:hidden fixed inset-0 bg-black/20 z-40"
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+            <div className="lg:hidden">
+              <Sidebar
+                currentModule={currentModule}
+                onSelectModule={(module) => {
+                  handleSelectModule(module);
+                  setMobileSidebarOpen(false);
+                }}
+                user={user}
+                isCollapsed={false}
+                onToggleCollapse={() => setMobileSidebarOpen(false)}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Main Content Area */}
+        <div className={`flex-1 flex flex-col overflow-hidden ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+          {/* Top Bar */}
+          <TopBar
+            user={user}
+            onLogout={handleLogout}
+            savedAccounts={savedAccounts}
+            onSwitchAccount={handleSwitchAccount}
+            onRemoveAccount={removeSavedAccount}
+            onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          />
+
+          {/* Content */}
+          <main className="flex-1 overflow-y-auto">
+            {!currentModule && (
+              <ModuleSelector 
+                onSelectModule={handleSelectModule} 
+                user={user}
+              />
+            )}
+            <Suspense fallback={<ModuleLoader />}>
+              {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}
+              {currentModule === 'documentos' && <DocumentsModule onBack={handleBack} user={user} />}
+              {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
+              {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
+              {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
+              {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
+              {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
+              {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
+              {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
+              {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
+              {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}
+              {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
+              {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
+              {currentModule === 'asignacion-personalidad' && <PersonalityAssignmentModule onBack={handleBack} user={user} />}
+            </Suspense>
+          </main>
+        </div>
+      </div>
     </>
   );
 }

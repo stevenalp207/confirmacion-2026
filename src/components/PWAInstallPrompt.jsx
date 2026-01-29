@@ -7,7 +7,7 @@ export default function PWAInstallPrompt() {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-lg z-50 p-6 md:bottom-4 md:left-4 md:right-auto md:max-w-sm md:rounded-lg">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-lg z-[60] p-6 md:bottom-4 md:left-4 md:right-auto md:max-w-sm md:rounded-lg">
       <div className="flex flex-col items-center text-center">
         <button
           onClick={dismissPrompt}

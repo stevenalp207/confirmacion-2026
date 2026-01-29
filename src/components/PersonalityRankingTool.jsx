@@ -412,7 +412,7 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
             }`}
           >
             <Check className="w-5 h-5" />
-            {grupoData.completado ? '✓ Grupo Completado' : 'Marcar como Completado'}
+            {grupoData.completado ? 'Grupo Completado' : 'Marcar como Completado'}
           </button>
         </div>
       </div>
@@ -437,10 +437,10 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
 
       {/* Botón final */}
       {todosCompletados && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={() => onRankingComplete(gruposConRanking)}
-            className="w-full max-w-2xl mx-auto py-4 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:via-green-700 hover:to-green-800 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center gap-2"
+            className="w-full sm:w-auto sm:px-8 py-4 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:via-green-700 hover:to-green-800 transition-colors duration-150 shadow-lg flex items-center justify-center gap-2"
           >
             <Check className="w-6 h-6" />
             Continuar con Asignación de Nuevos Grupos

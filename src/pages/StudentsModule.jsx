@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
-import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Filter } from 'lucide-react';
+import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Filter, Users } from 'lucide-react';
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -110,57 +110,70 @@ function StudentsModule({ onBack, user }) {
 
   if (selectedStudent) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        {/* Navbar */}
-        <nav className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-              <button
-                onClick={() => setSelectedStudent(null)}
-                className="hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors font-bold text-sm sm:text-base flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" /> Volver a la lista
-              </button>
-              <div className="flex-1">
-                <h1 className="text-lg sm:text-xl font-bold truncate">{selectedStudent.nombre}</h1>
-                <p className="text-blue-200 text-xs sm:text-sm">Grupo: {selectedStudent.grupo}</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-4 sm:mb-6">
+            <button
+              onClick={() => setSelectedStudent(null)}
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              Volver a la lista
+            </button>
+            
+            <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+              <div className="text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{selectedStudent.nombre}</h1>
+                <p className="text-gray-600 text-xs sm:text-sm mt-2">Grupo: <span className="font-semibold">{selectedStudent.grupo}</span></p>
               </div>
             </div>
           </div>
-        </nav>
 
-        {/* Contenido */}
-        <main className="max-w-7xl mx-auto p-3 sm:p-4">
+          {/* Contenido */}
           <StudentDetail
             grupo={selectedStudent.grupo}
             estudianteId={selectedStudent.id}
             estudiante={selectedStudent}
             user={user}
           />
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold">ESTUDIANTES</h1>
-            <button
-              onClick={onBack}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-5 py-3 rounded-lg transition-colors font-semibold text-base sm:text-lg w-full sm:w-auto"
-            >
-              Salir
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-4 sm:mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            Volver al Menú Principal
+          </button>
+          
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+            <div className="text-center mb-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                Estudiantes
+              </h1>
+              <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
+                Gestiona los estudiantes y sus detalles
+              </p>
+              {user && (
+                <p className="text-gray-600 text-xs sm:text-sm mt-2">
+                  Usuario: <span className="font-semibold">{user.usuario}</span>
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </nav>
 
-      {/* Contenido */}
-      <main className="max-w-7xl mx-auto p-4 sm:p-4">
+        {/* Contenido */}
         {/* Filtros */}
         <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 lg:p-8 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b-2 border-gray-200">
@@ -328,8 +341,7 @@ function StudentsModule({ onBack, user }) {
             </div>
           )}
         </div>
-      </main>
-
+      </div>
     </div>
   );
 }
