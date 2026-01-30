@@ -1,5 +1,8 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ErrorProvider } from './context/ErrorContext';
+import ErrorBoundary from './components/ErrorBoundary';
+import ErrorToast from './components/ErrorToast';
 import Login from './pages/Login';
 import ModuleSelector from './pages/ModuleSelector';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
@@ -263,9 +266,14 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <ErrorProvider>
+        <AuthProvider>
+          <AppContent />
+          <ErrorToast />
+        </AuthProvider>
+      </ErrorProvider>
+    </ErrorBoundary>
   );
 }
 
