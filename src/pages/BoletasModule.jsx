@@ -4,6 +4,7 @@ import PizZip from 'pizzip'
 import { saveAs } from 'file-saver'
 import { Pencil, ArrowLeft } from 'lucide-react'
 import logo from '../assets/logo.png'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 function BoletasModule({ onBack, user }) {
   // Cargar datos desde localStorage al inicializar el estado
@@ -59,6 +60,9 @@ function BoletasModule({ onBack, user }) {
 
   // Estado para edición
   const [editingId, setEditingId] = useState(null)
+
+  // Estado para modal
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' })
 
   // Guardar en localStorage cuando cambian los datos del formulario
   useEffect(() => {
@@ -124,14 +128,28 @@ function BoletasModule({ onBack, user }) {
   // Validar datos del formulario
   const validateFormData = () => {
     if (!formData.nombre.trim()) {
-      alert('Por favor ingrese el nombre del confirmando')
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Campo Requerido',
+        message: 'Por favor ingrese el nombre del confirmando.'
+      })
       return false
     }
     if (!formData.idCatequizando.trim()) {
-      alert('Por favor ingrese la identificación del confirmando')
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Campo Requerido',
+        message: 'Por favor ingrese la identificación del confirmando.'
+      })
       return false
     }
     return true
+  }
+
+  const handleCloseModal = () => {
+    setModal({ isOpen: false, type: 'success', title: '', message: '' })
   }
 
   // Añadir boleta a la lista o actualizar existente
@@ -256,7 +274,12 @@ function BoletasModule({ onBack, user }) {
   // Generar documento con todas las boletas
   const generateAllDocuments = async () => {
     if (boletasList.length === 0) {
-      alert('No hay boletas en la lista para generar')
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Lista Vacía',
+        message: 'No hay boletas en la lista para generar. Agregue al menos una boleta primero.'
+      })
       return
     }
 
@@ -295,16 +318,36 @@ function BoletasModule({ onBack, user }) {
       const timestamp = new Date().toISOString().split('T')[0]
       saveAs(blob, `Boletas_Confirmacion_${timestamp}_${boletasList.length}.docx`)
       
-      alert(`Se generó exitosamente el documento con ${boletasList.length} boleta(s)`)
+      setModal({
+        isOpen: true,
+        type: 'success',
+        title: 'Documento Generado',
+        message: `Se generó exitosamente el documento con ${boletasList.length} boleta(s). El archivo se ha descargado.`
+      })
     } catch (error) {
       console.error('Error al generar el documento:', error)
-      alert('Error al generar el documento: ' + error.message)
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error al Generar',
+        message: `No se pudo generar el documento: ${error.message}`
+      })
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <>
+      <ConfirmationModal
+        isOpen={modal.isOpen}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        onConfirm={handleCloseModal}
+        confirmText="Entendido"
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
         {/* Header with Back Button */}
         <div className="mb-6">
           <button
@@ -699,8 +742,9 @@ function BoletasModule({ onBack, user }) {
         Cada boleta se generará en una página separada en el documento Word
       </p>
     </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

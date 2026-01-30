@@ -9,6 +9,7 @@ import PWAInstallPrompt from './components/PWAInstallPrompt';
 import OfflineIndicator from './components/OfflineIndicator';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
+import SkeletonLoader from './components/SkeletonLoader';
 
 // Lazy load all modules for better performance
 const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
@@ -26,22 +27,9 @@ const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
 const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssignmentModule'));
 
-// Loading component
+// Loading component - ahora usa SkeletonLoader mejorado
 function ModuleLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100" style={{minHeight: '100vh'}}>
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 border-r-blue-600 animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-indigo-600 animate-spin" style={{animationDirection: 'reverse', animationDuration: '1s'}}></div>
-        </div>
-        <div className="text-center">
-          <p className="text-gray-700 font-semibold text-lg">Cargando módulo</p>
-          <p className="text-gray-500 text-sm mt-2">Por favor espera...</p>
-        </div>
-      </div>
-    </div>
-  );
+  return <SkeletonLoader />;
 }
 
 function AppContent() {
