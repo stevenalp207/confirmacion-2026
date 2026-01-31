@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { supabase } from '../config/supabase';
-import { Plus, Send, X, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Plus, Send, X, CheckCircle2 } from 'lucide-react';
 import ConfirmationModal from './ConfirmationModal';
 
 // Función para normalizar texto (remover tildes y convertir a minúsculas)
@@ -147,34 +147,48 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
-        <div className="text-center mb-4 flex flex-col items-center justify-center gap-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
-            <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" />
-            Tareas
-          </h1>
-        </div>
-        <div className="flex justify-center">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap shadow"
-          >
-            {showForm ? (
-              <>
-                <X size={18} />
-                Cancelar
-              </>
-            ) : (
-              <>
-                <Plus size={18} />
-                Nueva tarea
-              </>
-            )}
-          </button>
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-10">
+            <div className="flex flex-col items-center sm:items-start w-full sm:w-auto gap-2 sm:gap-3">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">
+                <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" />
+                Tareas
+              </h1>
+              <p className="text-gray-600 text-xs sm:text-sm lg:text-base mt-1 sm:mt-0">
+                Gestiona tus tareas pendientes
+              </p>
+              {user && (
+                <p className="text-gray-600 text-xs sm:text-sm mt-1 sm:mt-0">
+                  Usuario: <span className="font-semibold">{user.usuario}</span>
+                </p>
+              )}
+            </div>
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto mt-2 sm:mt-0">
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap shadow min-w-[140px]"
+                style={{ minHeight: '44px' }}
+              >
+                {showForm ? (
+                  <>
+                    <X size={18} />
+                    Cancelar
+                  </>
+                ) : (
+                  <>
+                    <Plus size={18} />
+                    Nueva tarea
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
 
       {/* Formulario */}
       {showForm && (

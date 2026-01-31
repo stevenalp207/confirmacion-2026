@@ -206,6 +206,9 @@ function TodoModule({ user }) {
       <div className="max-w-7xl mx-auto">
         <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={loadTareas} />
 
+        {/* Espacio entre header y filtros */}
+        <div className="h-6 sm:h-8" />
+
         {/* Filtros */}
         <div className="bg-white rounded-xl shadow p-5 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
@@ -242,6 +245,9 @@ function TodoModule({ user }) {
             </div>
           </div>
         </div>
+
+        {/* Espacio entre filtros y lista de tareas */}
+        <div className="h-6 sm:h-8" />
 
         {/* Lista de tareas */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
