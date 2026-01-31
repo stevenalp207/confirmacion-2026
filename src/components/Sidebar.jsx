@@ -15,7 +15,8 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
-  LayoutGrid
+  LayoutGrid,
+  ListTodo
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -26,6 +27,13 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Inicio',
       icon: LayoutGrid,
       color: 'gray',
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+    },
+    {
+      id: 'tareas',
+      name: 'Tareas',
+      icon: ListTodo,
+      color: 'indigo',
       roles: ['admin', 'financiero', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {

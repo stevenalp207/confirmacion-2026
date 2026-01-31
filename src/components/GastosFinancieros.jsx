@@ -177,7 +177,7 @@ function GastosFinancieros({ user }) {
     setDeleteId(id);
     setModal({
       isOpen: true,
-      type: 'confirm',
+      type: 'error', // Fuerza modal rojo para eliminar
       title: '¿Eliminar gasto?',
       message: '¿Está seguro de que desea eliminar este gasto? Esta acción no se puede deshacer.'
     });
@@ -392,7 +392,7 @@ function GastosFinancieros({ user }) {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
+                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
               >
                 <Save size={18} className="sm:w-5 sm:h-5" />
                 {editingId ? 'Actualizar' : 'Guardar'} Gasto
@@ -465,10 +465,10 @@ function GastosFinancieros({ user }) {
         type={modal.type}
         title={modal.title}
         message={modal.message}
-        confirmText={modal.type === 'confirm' ? 'Eliminar' : 'Aceptar'}
+        confirmText={modal.title?.toLowerCase().includes('eliminar') ? 'Eliminar' : 'Aceptar'}
         cancelText="Cancelar"
         onConfirm={() => {
-          if (modal.type === 'confirm') {
+          if (modal.title?.toLowerCase().includes('eliminar')) {
             confirmDelete();
           } else {
             setModal({ ...modal, isOpen: false });

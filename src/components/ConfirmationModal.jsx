@@ -56,14 +56,12 @@ export default function ConfirmationModal({
 
         {/* Botones */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex gap-3">
-          {isConfirm && (
-            <button
-              onClick={onCancel}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 font-semibold transition-colors text-sm"
-            >
-              {cancelText}
-            </button>
-          )}
+          <button
+            onClick={onCancel}
+            className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 font-semibold transition-colors text-sm"
+          >
+            {cancelText}
+          </button>
           <button
             onClick={onConfirm}
             className={`flex-1 px-4 py-2.5 rounded-lg font-semibold transition-colors text-sm text-white ${

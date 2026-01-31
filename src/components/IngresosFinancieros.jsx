@@ -33,6 +33,17 @@ const IngresoRow = memo(({ ingreso, onEdit, onDelete }) => (
     </td>
     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
       <div className="flex justify-end gap-1 sm:gap-2">
+        {ingreso.comprobante_url && (
+          <a
+            href={ingreso.comprobante_url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center text-emerald-600 hover:text-emerald-900 p-1 rounded hover:bg-emerald-50 transition-colors"
+            title="Ver comprobante"
+          >
+            <LinkIcon size={16} className="sm:w-5 sm:h-5" />
+          </a>
+        )}
         <button
           onClick={() => onEdit(ingreso)}
           className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
@@ -203,7 +214,7 @@ function IngresosFinancieros({ user }) {
     setDeleteId(id);
     setModal({
       isOpen: true,
-      type: 'confirm',
+      type: 'error', // Fuerza modal rojo para eliminar
       title: '¿Eliminar ingreso?',
       message: '¿Está seguro de que desea eliminar este ingreso? Esta acción no se puede deshacer.'
     });
@@ -388,15 +399,25 @@ function IngresosFinancieros({ user }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Comprobante (imagen/pdf)</label>
-                <input
-                  type="file"
-                  accept="image/*,application/pdf"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  className="w-full text-xs sm:text-sm text-gray-600"
-                />
-                {file && (
-                  <p className="text-xs text-gray-500 mt-1 truncate">Archivo: {file.name}</p>
-                )}
+                <div className="flex items-center gap-3">
+                  <label
+                    htmlFor="comprobante-input"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs sm:text-sm font-semibold cursor-pointer hover:bg-emerald-700 transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    {file ? 'Cambiar archivo' : 'Elegir archivo'}
+                  </label>
+                  <input
+                    id="comprobante-input"
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                  <span className="text-xs sm:text-sm text-gray-600 truncate">
+                    {file ? file.name : 'Ningún archivo seleccionado'}
+                  </span>
+                </div>
               </div>
               {formData.comprobante_url && (
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-emerald-700 mt-2 sm:mt-0">
@@ -478,10 +499,10 @@ function IngresosFinancieros({ user }) {
         type={modal.type}
         title={modal.title}
         message={modal.message}
-        confirmText={modal.type === 'confirm' ? 'Eliminar' : 'Aceptar'}
+        confirmText={modal.title?.toLowerCase().includes('eliminar') ? 'Eliminar' : 'Aceptar'}
         cancelText="Cancelar"
         onConfirm={() => {
-          if (modal.type === 'confirm') {
+          if (modal.title?.toLowerCase().includes('eliminar')) {
             confirmDelete();
           } else {
             setModal({ ...modal, isOpen: false });

@@ -38,6 +38,7 @@ export const catequistas = [
   { nombre: 'Dylan Chacón Sandoval', grupo: 'Formación' },
   { nombre: 'Mariana Segura Piedra', grupo: 'Formación' },
   { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'Formación' },
+  { nombre: 'Adriana Álvarez Lizano', grupo: 'Formación' },
   
   { nombre: 'José Pablo Castro Jiménez', grupo: 'Formación' },
   { nombre: 'Adrian Chaves Herrera', grupo: 'Formación' },
