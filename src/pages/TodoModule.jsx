@@ -216,7 +216,7 @@ function TodoModule({ user, onBack }) {
         <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={loadTareas} />
 
         {/* Espacio entre header y filtros */}
-        <div className="h-6 sm:h-8" />
+        <div className="h-4 sm:h-6" />
 
         {/* Filtros */}
         <div className="bg-white rounded-xl shadow p-5 sm:p-6">
@@ -256,7 +256,7 @@ function TodoModule({ user, onBack }) {
         </div>
 
         {/* Espacio entre filtros y lista de tareas */}
-        <div className="h-6 sm:h-8" />
+        <div className="h-4 sm:h-6" />
 
         {/* Lista de tareas */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
