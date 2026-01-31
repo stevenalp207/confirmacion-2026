@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '../config/supabase';
-import { CheckCircle2, Filter, Trash2, Check } from 'lucide-react';
+import {ArrowLeft, CheckCircle2, Filter, Trash2, Check } from 'lucide-react';
 import TodoFormulario from '../components/TodoFormulario';
 import ConfirmationModal from '../components/ConfirmationModal';
 import { catequistas as listaCatequistas } from '../data/catequistas';
@@ -14,7 +14,7 @@ const normalizarTexto = (texto) => {
 };
 
 
-function TodoModule({ user }) {
+function TodoModule({ user, onBack }) {
   const [tareas, setTareas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState('');
@@ -204,6 +204,15 @@ function TodoModule({ user }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Botón Volver al Menú Principal */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          Volver al Menú Principal
+        </button>
+
         <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={loadTareas} />
 
         {/* Espacio entre header y filtros */}
