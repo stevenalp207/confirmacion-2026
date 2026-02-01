@@ -26,46 +26,40 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
   const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
   const [formData, setFormData] = useState({
     descripcion: '',
-    menciones: '',
+    responsables: [],
     fecha_limite: '',
     prioridad: 'normal'
   });
-  const [showMenciones, setShowMenciones] = useState(false);
+  const [responsableSeleccionado, setResponsableSeleccionado] = useState('');
 
-  // Obtener sugerencias de menciones
-  const sugerenciasMenciones = useMemo(() => {
-    const texto = formData.menciones;
-    const ultimoArroba = texto.lastIndexOf('@');
-    
-    if (ultimoArroba === -1) return [];
+  // Opciones para el dropdown de responsables
+  const opcionesResponsables = [
+    ...comisiones.map(c => ({ tipo: 'Comisión', nombre: c })),
+    ...grupos.map(g => ({ tipo: 'Grupo', nombre: g })),
+  ];
 
-    const busqueda = normalizarTexto(texto.substring(ultimoArroba + 1));
-    if (!busqueda.trim()) return [];
-
-    const todasLasOpciones = [
-      ...comisiones,
-      ...grupos,
-      ...(catequistas || []).map(c => c.nombre)
-    ];
-
-    return todasLasOpciones.filter(opcion =>
-      normalizarTexto(opcion).includes(busqueda)
-    );
-  }, [formData.menciones, catequistas]);
-
-  const handleMencionesChange = (e) => {
-    const valor = e.target.value;
-    setFormData({ ...formData, menciones: valor });
-    setShowMenciones(valor.includes('@') && sugerenciasMenciones.length > 0);
+  const handleAddResponsable = () => {
+    if (
+      responsableSeleccionado &&
+      !formData.responsables.includes(responsableSeleccionado)
+    ) {
+      setFormData({
+        ...formData,
+        responsables: [...formData.responsables, responsableSeleccionado],
+      });
+      setResponsableSeleccionado('');
+    }
   };
 
-  const seleccionarMencion = (opcion) => {
-    const texto = formData.menciones;
-    const ultimoArroba = texto.lastIndexOf('@');
-    const nuevasMenciones = texto.substring(0, ultimoArroba) + '@' + opcion + ' ';
-    setFormData({ ...formData, menciones: nuevasMenciones });
-    setShowMenciones(false);
+  const handleRemoveResponsable = (nombre) => {
+    setFormData({
+      ...formData,
+      responsables: formData.responsables.filter((r) => r !== nombre),
+    });
   };
+
+
+
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -83,22 +77,29 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
     try {
       setLoading(true);
 
-      // Parsear menciones
-      const menciones = formData.menciones
-        .split(/[@\s,]+/)
-        .filter(m => m.trim())
-        .map(m => m.trim());
+
+      // Guardar responsables seleccionados
+      const responsables = formData.responsables;
+
+      // Forzar año 2026 en la fecha
+      let fecha_limite = formData.fecha_limite;
+      if (fecha_limite) {
+        const [yyyy, mm, dd] = fecha_limite.split('-');
+        fecha_limite = `2026-${mm}-${dd}`;
+      } else {
+        fecha_limite = null;
+      }
 
       const { error } = await supabase
         .from('tareas')
         .insert([
           {
             descripcion: formData.descripcion,
-            menciones: menciones,
+            responsables: responsables,
             estado: 'pendiente',
             prioridad: formData.prioridad,
             creado_por: user?.usuario || 'anon',
-            fecha_limite: formData.fecha_limite || null,
+            fecha_limite: fecha_limite,
             created_at: new Date().toISOString()
           }
         ]);
@@ -106,20 +107,18 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
       if (error) throw error;
 
 
-      // Persist success flag in localStorage for post-reload modal
-      localStorage.setItem('tareaCreada', '1');
 
       setFormData({
         descripcion: '',
-        menciones: '',
+        responsables: [],
         fecha_limite: '',
         prioridad: 'normal'
       });
       setShowForm(false);
       
-      // Recargar tareas después de crear
+      // Notificar al padre que la tarea fue creada
       if (onTaskCreated) {
-        setTimeout(() => onTaskCreated(), 500);
+        onTaskCreated();
       }
     } catch (error) {
       console.error('Error creando tarea:', error);
@@ -137,12 +136,11 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
   const resetForm = useCallback(() => {
     setFormData({
       descripcion: '',
-      menciones: '',
+      responsables: [],
       fecha_limite: '',
       prioridad: 'normal'
     });
     setShowForm(false);
-    setShowMenciones(false);
   }, []);
 
 
@@ -169,7 +167,7 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
             <div className="flex justify-center sm:justify-end w-full sm:w-auto mt-2 sm:mt-0">
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap shadow min-w-[140px]"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap shadow min-w-35"
                 style={{ minHeight: '44px' }}
               >
                 {showForm ? (
@@ -209,34 +207,56 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
               />
             </div>
 
-            <div className="relative">
+            <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                Mencionar usuarios (escribe @ para sugerir)
+                Grupos o comisiones responsables
               </label>
-              <textarea
-                value={formData.menciones}
-                onChange={handleMencionesChange}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                rows="2"
-                placeholder="Escribe @ seguido del nombre (ej: @Juan @Laura)"
-              />
-              
-              {/* Dropdown de sugerencias */}
-              {showMenciones && sugerenciasMenciones.length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
-                  {sugerenciasMenciones.map((opcion, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => seleccionarMencion(opcion)}
-                      className="w-full text-left px-3 py-2 hover:bg-blue-50 text-sm border-b border-gray-100 last:border-b-0 transition-colors"
-                    >
-                      @ {opcion}
-                    </button>
+              <div className="flex gap-2">
+                <select
+                  value={responsableSeleccionado}
+                  onChange={e => setResponsableSeleccionado(e.target.value)}
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Seleccionar...</option>
+                  {opcionesResponsables.map((op, idx) => (
+                    <option key={idx} value={op.nombre}>
+                      {op.tipo}: {op.nombre}
+                    </option>
                   ))}
-                </div>
-              )}
-              <p className="text-xs text-gray-500 mt-1">Solo tú y los mencionados podrán ver esta tarea</p>
+                </select>
+                <button
+                  type="button"
+                  onClick={handleAddResponsable}
+                  className="bg-gray-400 hover:bg-gray-500 text-white rounded-xl px-3 py-2 flex items-center justify-center"
+                  style={{ minWidth: 40, minHeight: 40 }}
+                  aria-label="Agregar responsable"
+                >
+                  <span style={{ fontSize: 20, fontWeight: 'bold' }}>+</span>
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Selecciona y agrega uno o varios grupos o comisiones responsables de la tarea</p>
+              
+              {/* Chips de responsables seleccionados */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.responsables.map((nombre, idx) => (
+                  <span
+                    key={idx}
+                    className="flex items-center bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium min-h-6 h-6"
+                    style={{ lineHeight: '1.2', fontSize: '0.85rem' }}
+                  >
+                    {nombre}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveResponsable(nombre)}
+                      className="ml-1 text-blue-500 hover:text-red-500 focus:outline-none text-base"
+                      aria-label={`Quitar ${nombre}`}
+                      style={{ lineHeight: 1 }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -247,7 +267,17 @@ function TodoFormulario({ user, catequistas, onTaskCreated }) {
                 <input
                   type="date"
                   value={formData.fecha_limite}
-                  onChange={(e) => setFormData({ ...formData, fecha_limite: e.target.value })}
+                  onChange={(e) => {
+                    // Forzar año 2026 en el input
+                    let val = e.target.value;
+                    if (val) {
+                      const [, mm, dd] = val.split('-');
+                      val = `2026-${mm || '01'}-${dd || '01'}`;
+                    }
+                    setFormData({ ...formData, fecha_limite: val });
+                  }}
+                  min="2026-01-01"
+                  max="2026-12-31"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>

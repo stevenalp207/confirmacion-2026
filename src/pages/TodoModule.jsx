@@ -28,20 +28,8 @@ function TodoModule({ user, onBack }) {
     tareaId: null
   });
 
-  // Show 'tarea creada' modal after reload if flag is set
-  useEffect(() => {
-    if (localStorage.getItem('tareaCreada') === '1') {
-      setModal({
-        isOpen: true,
-        type: 'success',
-        title: 'Tarea creada',
-        message: 'La tarea ha sido creada exitosamente.',
-        action: null,
-        tareaId: null
-      });
-      localStorage.removeItem('tareaCreada');
-    }
-  }, []);
+
+
 
   const loadTareas = useCallback(async () => {
     setLoading(true);
@@ -60,7 +48,21 @@ function TodoModule({ user, onBack }) {
     }
   }, []);
 
+
   useEffect(() => {
+    loadTareas();
+  }, [loadTareas]);
+
+  // Callback para mostrar el modal de tarea creada (debe ir después de loadTareas)
+  const handleTaskCreated = useCallback(() => {
+    setModal({
+      isOpen: true,
+      type: 'success',
+      title: 'Tarea creada',
+      message: 'La tarea ha sido creada exitosamente.',
+      action: null,
+      tareaId: null
+    });
     loadTareas();
   }, [loadTareas]);
 
@@ -213,7 +215,7 @@ function TodoModule({ user, onBack }) {
           Volver al Menú Principal
         </button>
 
-        <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={loadTareas} />
+        <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={handleTaskCreated} />
 
         {/* Espacio entre header y filtros */}
         <div className="h-4 sm:h-6" />
@@ -352,13 +354,10 @@ function TodoModule({ user, onBack }) {
               confirmarEliminacion();
             } else {
               setModal({ ...modal, isOpen: false, action: null, tareaId: null });
-              // Clean up flag just in case
-              localStorage.removeItem('tareaCreada');
             }
           }}
           onCancel={() => {
             setModal({ ...modal, isOpen: false, action: null, tareaId: null });
-            localStorage.removeItem('tareaCreada');
           }}
         />
       </div>
