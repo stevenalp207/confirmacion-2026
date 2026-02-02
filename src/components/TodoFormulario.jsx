@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { supabase } from '../config/supabase';
-import { ArrowLeft, Plus, Send, X, CheckCircle2 } from 'lucide-react';
+import { Plus, Send, X, CheckCircle2 } from 'lucide-react';
 import ConfirmationModal from './ConfirmationModal';
 
 // Función para normalizar texto (remover tildes y convertir a minúsculas)

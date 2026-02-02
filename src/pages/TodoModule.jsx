@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '../config/supabase';
-import {ArrowLeft, CheckCircle2, Filter, Trash2, Check } from 'lucide-react';
+import {ArrowLeft, CheckCircle2, Trash2, Square, SquareCheckBig, Check  } from 'lucide-react';
 import TodoFormulario from '../components/TodoFormulario';
 import ConfirmationModal from '../components/ConfirmationModal';
 import { catequistas as listaCatequistas } from '../data/catequistas';
@@ -220,46 +220,6 @@ function TodoModule({ user, onBack }) {
         {/* Espacio entre header y filtros */}
         <div className="h-4 sm:h-6" />
 
-        {/* Filtros */}
-        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-800">Filtrar</h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Estado</label>
-              <select
-                value={filtroEstado}
-                onChange={(e) => setFiltroEstado(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Todos</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="en_progreso">En progreso</option>
-                <option value="completada">Completada</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Prioridad</label>
-              <select
-                value={filtroPrioridad}
-                onChange={(e) => setFiltroPrioridad(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Todas</option>
-                <option value="baja">Baja</option>
-                <option value="normal">Normal</option>
-                <option value="alta">Alta</option>
-                <option value="urgente">Urgente</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Espacio entre filtros y lista de tareas */}
-        <div className="h-4 sm:h-6" />
-
         {/* Lista de tareas */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -280,8 +240,12 @@ function TodoModule({ user, onBack }) {
                   <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-3">
                     <div className="flex-1">
                       <div className="flex items-start gap-2">
-                        <span className={`text-2xl font-bold ${getStateColor(tarea.estado)}`}>
-                          {tarea.estado === 'completada' ? '✓' : '○'}
+                        <span className="flex items-center justify-center w-7 h-7">
+                          {tarea.estado === 'completada' ? (
+                            <SquareCheckBig className="w-5 h-5 text-green-600" />
+                          ) : (
+                            <Square className="w-5 h-5 text-red-500" />
+                          )}
                         </span>
                         <div className="flex-1">
                           <p className={`font-semibold text-sm sm:text-base ${tarea.estado === 'completada' ? 'line-through text-gray-500' : 'text-gray-900'}`}>
@@ -310,7 +274,7 @@ function TodoModule({ user, onBack }) {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 sm:ml-4 sm:self-start justify-end w-full sm:w-auto mt-2 sm:mt-0">
                       {tarea.estado !== 'completada' && (
                         <button
                           onClick={() => marcarCompleta(tarea.id)}

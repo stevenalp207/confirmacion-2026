@@ -96,7 +96,7 @@ function Sabanas({ grupo, estudiantes }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Entrega de Sábanas</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Entrega Sábanas</h2>
         <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-semibold">
           {totalEntregadas} / {Object.keys(estudiantes).length}
         </div>
