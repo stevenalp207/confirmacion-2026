@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { ArrowLeft, Calendar as CalendarIcon, Filter, Search, Clock, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Calendar as CalendarIcon, Filter, Search, Clock, AlertCircle, ExternalLink } from 'lucide-react'
 import { eventos, tiposEvento, prioridades, catequesisGrupos } from '../data/cronograma'
 
 function CalendarioModule({ onBack, user }) {
@@ -111,8 +111,8 @@ function CalendarioModule({ onBack, user }) {
           </button>
           
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
-            <div className="flex flex-col sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
-              <div>
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 mb-4 text-center">
+              <div className="flex flex-col items-center">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center gap-2 sm:gap-3">
                   <CalendarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                   <span className="line-clamp-2">Cronograma de Confirmación 2026</span>
@@ -120,9 +120,18 @@ function CalendarioModule({ onBack, user }) {
                 <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
                   Calendario completo de eventos, catequesis y actividades
                 </p>
+                <a
+                  href="https://docs.google.com/document/d/1IfZsVTtBbXatAubrDTsxrz7eQvA3BY9B/edit?usp=sharing&ouid=112234919645278192952&rtpof=true&sd=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all text-xs sm:text-sm"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver Calendario Original (Google Docs)
+                </a>
               </div>
               {user && (
-                <div className="text-right text-xs sm:text-sm">
+                <div className="text-xs sm:text-sm">
                   <p className="text-gray-600">Usuario: <span className="font-semibold">{user.usuario}</span></p>
                 </div>
               )}
