@@ -4,7 +4,7 @@ export const eventos = [
   {
     id: 1,
     fecha: '2026-01-12',
-    titulo: 'Envío Formularios Catequistas',
+    titulo: 'Envío Forms Catequistas',
     descripcion: 'Envío de formularios a los catequistas',
     tipo: 'administrativo',
     categoria: 'Catequistas',
@@ -25,7 +25,7 @@ export const eventos = [
     id: 3,
     fecha: '2026-02-09',
     titulo: 'Inicio Regular de Clases',
-    descripcion: 'Comienzan las clases regulares de catequesis',
+    descripcion: 'Comienzan las clases regulares. Inscripciones',
     tipo: 'clase',
     categoria: 'General',
     prioridad: 'alta'
@@ -134,7 +134,7 @@ export const eventos = [
   {
     id: 15,
     fecha: '2026-03-05',
-    titulo: 'Catequesis #0 - Bienvenida (Retiro)',
+    titulo: 'Catequesis #0 - Bienvenida (SUM)',
     descripcion: 'Catequesis de Bienvenida, SUM',
     tipo: 'catequesis',
     categoria: 'General',
@@ -187,7 +187,34 @@ export const eventos = [
   },
   {
     id: 21,
-    fecha: '2026-03-17',
+    fecha: '2026-03-19',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 22,
+    fecha: '2026-03-20',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 23,
+    fecha: '2026-03-23',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 24,
+    fecha: '2026-03-24',
     titulo: 'Envío Catequesis #3',
     descripcion: 'Jesucristo el Hijo de Dios Vivo',
     tipo: 'catequesis',
@@ -195,8 +222,26 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 22,
-    fecha: '2026-03-19',
+    id: 25,
+    fecha: '2026-03-24',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 26,
+    fecha: '2026-03-25',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 27,
+    fecha: '2026-03-26',
     titulo: 'Catequesis #2 - Llamados a Vivir',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
@@ -204,8 +249,8 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 23,
-    fecha: '2026-03-19',
+    id: 28,
+    fecha: '2026-03-26',
     titulo: 'Exposición #3 - Jesucristo el Hijo de Dios Vivo',
     descripcion: 'Exposición de la catequesis #3',
     tipo: 'exposicion',
@@ -213,34 +258,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 24,
-    fecha: '2026-03-24',
-    titulo: 'Envío Catequesis #4',
-    descripcion: 'Tú tienes palabras de vida eterna',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
-    prioridad: 'media'
-  },
-  {
-    id: 25,
-    fecha: '2026-03-26',
-    titulo: 'Catequesis #3 - Jesucristo el Hijo de Dios Vivo',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
-  },
-  {
-    id: 26,
-    fecha: '2026-03-26',
-    titulo: 'Exposición #4 - Tú tienes palabras de vida eterna',
-    descripcion: 'Exposición de la catequesis #4',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
-  },
-  {
-    id: 27,
+    id: 29,
     fecha: '2026-03-29',
     titulo: 'Semana Santa',
     descripcion: 'Inicio de Semana Santa',
@@ -248,10 +266,100 @@ export const eventos = [
     categoria: 'Celebración',
     prioridad: 'alta'
   },
+  {
+    id: 30,
+    fecha: '2026-03-30',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 31,
+    fecha: '2026-03-31',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
 
   // ABRIL 2026
   {
-    id: 28,
+    id: 32,
+    fecha: '2026-04-01',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 33,
+    fecha: '2026-04-02',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 34,
+    fecha: '2026-04-03',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 35,
+    fecha: '2026-04-04',
+    titulo: 'Semana Santa',
+    descripcion: 'Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 36,
+    fecha: '2026-04-05',
+    titulo: 'Semana Santa',
+    descripcion: 'Domingo de Semana Santa',
+    tipo: 'liturgico',
+    categoria: 'Celebración',
+    prioridad: 'alta'
+  },
+  {
+    id: 37,
+    fecha: '2026-04-07',
+    titulo: 'Envío Catequesis #4',
+    descripcion: 'Tú tienes palabras de vida eterna',
+    tipo: 'catequesis',
+    categoria: 'Materiales',
+    prioridad: 'media'
+  },
+  {
+    id: 38,
+    fecha: '2026-04-09',
+    titulo: 'Catequesis #3 - Jesucristo el Hijo de Dios Vivo',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 39,
+    fecha: '2026-04-09',
+    titulo: 'Exposición Catequesis #4 - Tú tienes palabras de vida eterna',
+    descripcion: 'Exposición de la catequesis #4',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 40,
     fecha: '2026-04-10',
     titulo: 'PASCUA',
     descripcion: 'Domingo de Resurrección',
@@ -260,8 +368,8 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 29,
-    fecha: '2026-04-07',
+    id: 41,
+    fecha: '2026-04-14',
     titulo: 'Envío Catequesis #5',
     descripcion: 'Jesús muere y resucita para darnos vida',
     tipo: 'catequesis',
@@ -269,8 +377,8 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 30,
-    fecha: '2026-04-09',
+    id: 42,
+    fecha: '2026-04-16',
     titulo: 'Catequesis #4 - Tú tienes palabras de vida eterna',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
@@ -278,8 +386,8 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 31,
-    fecha: '2026-04-09',
+    id: 43,
+    fecha: '2026-04-16',
     titulo: 'Exposición Catequesis #5 - Jesús muere y resucita para darnos vida',
     descripcion: 'Exposición de la catequesis #5',
     tipo: 'exposicion',
@@ -287,16 +395,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 32,
-    fecha: '2026-04-13',
-    titulo: 'Pruebas',
-    descripcion: 'Semana de pruebas escolares',
-    tipo: 'academico',
-    categoria: 'Escolar',
-    prioridad: 'media'
-  },
-  {
-    id: 33,
+    id: 44,
     fecha: '2026-04-21',
     titulo: 'Envío Catequesis #6',
     descripcion: 'El espíritu Santo en la vida de Jesús',
@@ -305,16 +404,16 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 34,
+    id: 45,
     fecha: '2026-04-23',
-    titulo: 'Catequesis #5 - Jesús muere y resucita para darnos vida',
+    titulo: 'Catequesis #5 - Jesús muere y resucita para darnos vidas',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
     categoria: 'General',
     prioridad: 'alta'
   },
   {
-    id: 35,
+    id: 46,
     fecha: '2026-04-23',
     titulo: 'Exposición Catequesis #6 - El espíritu Santo en la vida de Jesús',
     descripcion: 'Exposición de la catequesis #6',
@@ -323,7 +422,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 36,
+    id: 47,
     fecha: '2026-04-24',
     titulo: '4 Semanas para Entrega de Documentos',
     descripcion: 'Fecha límite entrega de documentos de catequizandos',
@@ -332,7 +431,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 37,
+    id: 48,
     fecha: '2026-04-28',
     titulo: 'Envío Catequesis #7',
     descripcion: '¿Quién es el Espíritu Santo?',
@@ -341,7 +440,7 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 38,
+    id: 49,
     fecha: '2026-04-30',
     titulo: 'Catequesis #6 - El espíritu Santo en la vida de Jesús',
     descripcion: 'Catequesis grupal',
@@ -350,7 +449,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 39,
+    id: 50,
     fecha: '2026-04-30',
     titulo: 'Exposición Catequesis #7 - ¿Quién es el Espíritu Santo?',
     descripcion: 'Exposición de la catequesis #7',
@@ -361,7 +460,7 @@ export const eventos = [
 
   // MAYO 2026
   {
-    id: 40,
+    id: 51,
     fecha: '2026-05-05',
     titulo: 'Envío Catequesis #8',
     descripcion: 'El Espíritu Santo nos une a la iglesia',
@@ -370,7 +469,7 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 41,
+    id: 52,
     fecha: '2026-05-07',
     titulo: 'Catequesis #7 - ¿Quién es el Espíritu Santo?',
     descripcion: 'Catequesis grupal',
@@ -379,7 +478,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 42,
+    id: 53,
     fecha: '2026-05-07',
     titulo: 'Exposición Catequesis #8 - El Espíritu Santo nos une a la iglesia',
     descripcion: 'Exposición de la catequesis #8',
@@ -388,7 +487,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 43,
+    id: 54,
     fecha: '2026-05-08',
     titulo: '2 Semanas para Entrega de Documentos',
     descripcion: 'Fecha límite entrega de documentos de catequizandos',
@@ -397,7 +496,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 44,
+    id: 55,
     fecha: '2026-05-12',
     titulo: 'Envío Catequesis #9',
     descripcion: 'El espíritu nos fortalece en las luchas',
@@ -406,7 +505,7 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 45,
+    id: 56,
     fecha: '2026-05-14',
     titulo: 'Catequesis #8 - El Espíritu Santo nos une a la iglesia',
     descripcion: 'Catequesis grupal',
@@ -415,7 +514,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 46,
+    id: 57,
     fecha: '2026-05-14',
     titulo: 'Exposición Catequesis #9 - El espíritu nos fortalece en las luchas',
     descripcion: 'Exposición de la catequesis #9',
@@ -424,7 +523,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 47,
+    id: 58,
     fecha: '2026-05-21',
     titulo: 'Preparativos María',
     descripcion: 'Preparativos para el Día de María Auxiliadora',
@@ -433,7 +532,7 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 48,
+    id: 59,
     fecha: '2026-05-22',
     titulo: 'Día de María Auxiliadora',
     descripcion: 'Celebración de María Auxiliadora',
@@ -442,34 +541,52 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 49,
-    fecha: '2026-05-26',
-    titulo: 'Envío Catequesis #10',
-    descripcion: 'Nacidos por el agua y el espíritu',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
+    id: 60,
+    fecha: '2026-05-25',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
     prioridad: 'media'
   },
   {
-    id: 50,
-    fecha: '2026-05-28',
-    titulo: 'Catequesis #9 - El espíritu nos fortalece en las luchas',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
+    id: 61,
+    fecha: '2026-05-26',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
   },
   {
-    id: 51,
-    fecha: '2026-05-28',
-    titulo: 'Exposición Catequesis #10 - Nacidos por el agua y el espíritu',
-    descripcion: 'Exposición de la catequesis #10',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
+    id: 62,
+    fecha: '2026-05-27',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
   },
   {
-    id: 52,
+    id: 63,
+    fecha: '2026-05-28',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 64,
+    fecha: '2026-05-29',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 65,
     fecha: '2026-05-29',
     titulo: 'FECHA FINAL - Entrega de Documentos de Catequizandos',
     descripcion: 'Último día para entregar documentos de catequizandos',
@@ -480,16 +597,16 @@ export const eventos = [
 
   // JUNIO 2026
   {
-    id: 53,
+    id: 66,
     fecha: '2026-06-02',
-    titulo: 'Envío Catequesis #11',
-    descripcion: 'Confirmados en la fe por el espíritu',
+    titulo: 'Envío Catequesis #10',
+    descripcion: 'Nacidos por el agua y el espíritu',
     tipo: 'catequesis',
     categoria: 'Materiales',
     prioridad: 'media'
   },
   {
-    id: 54,
+    id: 67,
     fecha: '2026-06-04',
     titulo: 'Corpus',
     descripcion: 'Celebración del Corpus Christi',
@@ -498,25 +615,25 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 55,
+    id: 68,
     fecha: '2026-06-04',
-    titulo: 'Catequesis #10 - Nacidos por el agua y el espíritu',
+    titulo: 'Catequesis #9 - El espíritu nos fortalece en las luchas',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
     categoria: 'General',
     prioridad: 'alta'
   },
   {
-    id: 56,
+    id: 69,
     fecha: '2026-06-04',
-    titulo: 'Exposición Catequesis #11 - Confirmados en la fe por el espíritu',
-    descripcion: 'Exposición de la catequesis #11',
+    titulo: 'Exposición Catequesis #10 - Nacidos por el agua y el espíritu',
+    descripcion: 'Exposición de la catequesis #10',
     tipo: 'exposicion',
     categoria: 'Catequesis',
     prioridad: 'alta'
   },
   {
-    id: 57,
+    id: 70,
     fecha: '2026-06-07',
     titulo: 'RETIRO FAMILIAS',
     descripcion: 'Retiro para familias - Domingo',
@@ -525,8 +642,35 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 58,
+    id: 71,
     fecha: '2026-06-09',
+    titulo: 'Envío Catequesis #11',
+    descripcion: 'Confirmados en la fe por el espíritu',
+    tipo: 'catequesis',
+    categoria: 'Materiales',
+    prioridad: 'media'
+  },
+  {
+    id: 72,
+    fecha: '2026-06-11',
+    titulo: 'Catequesis #10 - Nacidos por el agua y el espíritu',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 73,
+    fecha: '2026-06-11',
+    titulo: 'Exposición Catequesis #11 - Confirmados en la fe por el espíritu',
+    descripcion: 'Exposición de la catequesis #11',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 74,
+    fecha: '2026-06-16',
     titulo: 'Envío Catequesis #12',
     descripcion: 'Fortalecidos por la Eucaristía',
     tipo: 'catequesis',
@@ -534,8 +678,8 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 59,
-    fecha: '2026-06-11',
+    id: 75,
+    fecha: '2026-06-18',
     titulo: 'Catequesis #11 - Confirmados en la fe por el espíritu',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
@@ -543,8 +687,8 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 60,
-    fecha: '2026-06-11',
+    id: 76,
+    fecha: '2026-06-18',
     titulo: 'Exposición Catequesis #12 - Fortalecidos por la Eucaristía',
     descripcion: 'Exposición de la catequesis #12',
     tipo: 'exposicion',
@@ -552,43 +696,16 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 61,
-    fecha: '2026-06-16',
-    titulo: 'Envío Catequesis #13',
-    descripcion: 'Reconciliados por el espíritu',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
-    prioridad: 'media'
-  },
-  {
-    id: 62,
-    fecha: '2026-06-18',
-    titulo: 'Catequesis #12 - Fortalecidos por la Eucaristía',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
+    id: 77,
+    fecha: '2026-06-25',
+    titulo: 'Elecciones y Día del Deporte',
+    descripcion: 'Día de elecciones y actividad deportiva',
+    tipo: 'evento',
     categoria: 'General',
-    prioridad: 'alta'
-  },
-  {
-    id: 63,
-    fecha: '2026-06-18',
-    titulo: 'Exposición Catequesis #13 - Reconciliados por el espíritu',
-    descripcion: 'Exposición de la catequesis #13',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
-  },
-  {
-    id: 64,
-    fecha: '2026-06-22',
-    titulo: 'Pruebas',
-    descripcion: 'Semana de pruebas escolares',
-    tipo: 'academico',
-    categoria: 'Escolar',
     prioridad: 'media'
   },
   {
-    id: 65,
+    id: 78,
     fecha: '2026-06-29',
     titulo: 'Vacaciones',
     descripcion: 'Inicio de periodo vacacional',
@@ -597,27 +714,99 @@ export const eventos = [
     prioridad: 'baja'
   },
   {
-    id: 66,
-    fecha: '2026-06-29',
-    titulo: '1 Semana para Entrega Documentos Padrinos y Madrinas',
-    descripcion: 'Fecha límite final de entrega de documentos de Padrinos y Madrinas',
-    tipo: 'administrativo',
-    categoria: 'Documentos',
-    prioridad: 'alta'
+    id: 79,
+    fecha: '2026-06-30',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
   },
 
   // JULIO 2026
   {
-    id: 67,
+    id: 80,
+    fecha: '2026-07-01',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 81,
+    fecha: '2026-07-02',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 82,
+    fecha: '2026-07-03',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 83,
+    fecha: '2026-07-06',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 84,
+    fecha: '2026-07-07',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 85,
+    fecha: '2026-07-08',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 86,
+    fecha: '2026-07-09',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 87,
+    fecha: '2026-07-10',
+    titulo: 'Vacaciones',
+    descripcion: 'Periodo vacacional',
+    tipo: 'vacaciones',
+    categoria: 'General',
+    prioridad: 'baja'
+  },
+  {
+    id: 88,
     fecha: '2026-07-14',
-    titulo: 'Envío Catequesis #14',
-    descripcion: 'La confirmación mi pentecostés',
+    titulo: 'Envío Catequesis #13',
+    descripcion: 'Reconciliados por el espíritu',
     tipo: 'catequesis',
     categoria: 'Materiales',
     prioridad: 'media'
   },
   {
-    id: 68,
+    id: 89,
     fecha: '2026-07-16',
     titulo: 'Reunión Padres Retiro Catequizandos',
     descripcion: 'Reunión informativa con padres sobre el retiro',
@@ -626,25 +815,7 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 69,
-    fecha: '2026-07-16',
-    titulo: 'Catequesis #13 - Reconciliados por el espíritu',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
-  },
-  {
-    id: 70,
-    fecha: '2026-07-16',
-    titulo: 'Exposición Catequesis #14 - La confirmación mi pentecostés',
-    descripcion: 'Exposición de la catequesis #14',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
-  },
-  {
-    id: 71,
+    id: 90,
     fecha: '2026-07-16',
     titulo: 'FECHA FINAL - Entrega Documentos Padrinos y Madrinas',
     descripcion: 'Último día para entregar documentos de Padrinos y Madrinas',
@@ -653,7 +824,25 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 72,
+    id: 91,
+    fecha: '2026-07-16',
+    titulo: 'Catequesis #12 - Fortalecidos por la Eucaristía',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 92,
+    fecha: '2026-07-16',
+    titulo: 'Exposición Catequesis #13 - Reconciliados por el espíritu',
+    descripcion: 'Exposición de la catequesis #13',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 93,
     fecha: '2026-07-20',
     titulo: 'Recepción Cartas',
     descripcion: 'Inicio de recepción de cartas',
@@ -662,34 +851,70 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 73,
+    id: 94,
     fecha: '2026-07-21',
-    titulo: 'Envío Catequesis #15',
-    descripcion: 'La confirmación es una fiesta de la comunidad',
+    titulo: 'Recepción Cartas',
+    descripcion: 'Periodo de recepción de cartas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 95,
+    fecha: '2026-07-21',
+    titulo: 'Envío Catequesis #14',
+    descripcion: 'La confirmación mi pentecostés',
     tipo: 'catequesis',
     categoria: 'Materiales',
     prioridad: 'media'
   },
   {
-    id: 74,
+    id: 96,
+    fecha: '2026-07-22',
+    titulo: 'Recepción Cartas',
+    descripcion: 'Periodo de recepción de cartas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 97,
     fecha: '2026-07-23',
-    titulo: 'Catequesis #14 - La confirmación mi pentecostés',
+    titulo: 'Recepción Cartas',
+    descripcion: 'Periodo de recepción de cartas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 98,
+    fecha: '2026-07-23',
+    titulo: 'Catequesis #13 - Reconciliados por el espíritu',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
     categoria: 'General',
     prioridad: 'alta'
   },
   {
-    id: 75,
+    id: 99,
     fecha: '2026-07-23',
-    titulo: 'Exposición Catequesis #15 - La confirmación es una fiesta de la comunidad',
-    descripcion: 'Exposición de la catequesis #15',
+    titulo: 'Exposición Catequesis #14 - La confirmación mi pentecostés',
+    descripcion: 'Exposición de la catequesis #14',
     tipo: 'exposicion',
     categoria: 'Catequesis',
     prioridad: 'alta'
   },
   {
-    id: 76,
+    id: 100,
+    fecha: '2026-07-24',
+    titulo: 'Recepción Cartas',
+    descripcion: 'Periodo de recepción de cartas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 101,
     fecha: '2026-07-27',
     titulo: 'Recepción Sábanas',
     descripcion: 'Inicio de recepción de sábanas',
@@ -698,8 +923,73 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 77,
+    id: 102,
     fecha: '2026-07-28',
+    titulo: 'Recepción Sábanas',
+    descripcion: 'Periodo de recepción de sábanas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 103,
+    fecha: '2026-07-28',
+    titulo: 'Envío Catequesis #15',
+    descripcion: 'La confirmación es una fiesta de la comunidad',
+    tipo: 'catequesis',
+    categoria: 'Materiales',
+    prioridad: 'media'
+  },
+  {
+    id: 104,
+    fecha: '2026-07-29',
+    titulo: 'Recepción Sábanas',
+    descripcion: 'Periodo de recepción de sábanas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 105,
+    fecha: '2026-07-30',
+    titulo: 'Recepción Sábanas',
+    descripcion: 'Periodo de recepción de sábanas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+  {
+    id: 106,
+    fecha: '2026-07-30',
+    titulo: 'Catequesis #14 - La confirmación mi pentecostés',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 107,
+    fecha: '2026-07-30',
+    titulo: 'Exposición Catequesis #15 - La confirmación es una fiesta de la comunidad',
+    descripcion: 'Exposición de la catequesis #15',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 108,
+    fecha: '2026-07-31',
+    titulo: 'Recepción Sábanas',
+    descripcion: 'Periodo de recepción de sábanas',
+    tipo: 'administrativo',
+    categoria: 'Materiales',
+    prioridad: 'alta'
+  },
+
+  // AGOSTO 2026
+  {
+    id: 109,
+    fecha: '2026-08-04',
     titulo: 'Envío Catequesis #16',
     descripcion: 'El espíritu nos llama a servir',
     tipo: 'catequesis',
@@ -707,8 +997,8 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 78,
-    fecha: '2026-07-30',
+    id: 110,
+    fecha: '2026-08-06',
     titulo: 'Catequesis #15 - La confirmación es una fiesta de la comunidad',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
@@ -716,36 +1006,16 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 79,
-    fecha: '2026-07-30',
+    id: 111,
+    fecha: '2026-08-06',
     titulo: 'Exposición Catequesis #16 - El espíritu nos llama a servir',
     descripcion: 'Exposición de la catequesis #16',
     tipo: 'exposicion',
     categoria: 'Catequesis',
     prioridad: 'alta'
   },
-
-  // AGOSTO 2026
   {
-    id: 80,
-    fecha: '2026-08-04',
-    titulo: 'Envío Catequesis #17',
-    descripcion: 'Testigos de Cristo para hacer un mundo nuevo',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
-    prioridad: 'media'
-  },
-  {
-    id: 81,
-    fecha: '2026-08-06',
-    titulo: 'Catequesis #16 - El espíritu nos llama a servir',
-    descripcion: 'Catequesis grupal. Se debe enviar un video con la Exposición de la Catequesis #17',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
-  },
-  {
-    id: 82,
+    id: 112,
     fecha: '2026-08-07',
     titulo: 'RETIRO',
     descripcion: 'Retiro de Confirmación - Viernes',
@@ -754,7 +1024,7 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 83,
+    id: 113,
     fecha: '2026-08-08',
     titulo: 'RETIRO',
     descripcion: 'Retiro de Confirmación - Sábado',
@@ -763,7 +1033,7 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 84,
+    id: 114,
     fecha: '2026-08-09',
     titulo: 'Retiro',
     descripcion: 'Retiro de Confirmación - Domingo',
@@ -772,7 +1042,7 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 85,
+    id: 115,
     fecha: '2026-08-13',
     titulo: 'Preparación Fiesta Don Bosco',
     descripcion: 'Preparativos para la celebración de Don Bosco',
@@ -781,7 +1051,7 @@ export const eventos = [
     prioridad: 'media'
   },
   {
-    id: 86,
+    id: 116,
     fecha: '2026-08-14',
     titulo: 'Día de Don Bosco',
     descripcion: 'Celebración de Don Bosco',
@@ -790,34 +1060,52 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 87,
-    fecha: '2026-08-18',
-    titulo: 'Envío Catequesis #18',
-    descripcion: 'Llevados al desierto para elegir a Dios y Elegidos por Jesús, para contemplarlo (Marán)',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
+    id: 117,
+    fecha: '2026-08-17',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
     prioridad: 'media'
   },
   {
-    id: 88,
-    fecha: '2026-08-20',
-    titulo: 'Catequesis #17 - Testigos de Cristo para hacer un mundo nuevo',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
+    id: 118,
+    fecha: '2026-08-18',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
   },
   {
-    id: 89,
-    fecha: '2026-08-20',
-    titulo: 'Exposición Catequesis #18 - Llevados al desierto para elegir a Dios',
-    descripcion: 'Exposición de la catequesis #18',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
+    id: 119,
+    fecha: '2026-08-19',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
   },
   {
-    id: 90,
+    id: 120,
+    fecha: '2026-08-20',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 121,
+    fecha: '2026-08-21',
+    titulo: 'Pruebas ACADEMICAS',
+    descripcion: 'Semana de pruebas académicas',
+    tipo: 'academico',
+    categoria: 'Escolar',
+    prioridad: 'media'
+  },
+  {
+    id: 122,
     fecha: '2026-08-27',
     titulo: 'Encuentro Generaciones',
     descripcion: 'Encuentro intergeneracional',
@@ -828,34 +1116,25 @@ export const eventos = [
 
   // SEPTIEMBRE 2026
   {
-    id: 91,
+    id: 123,
     fecha: '2026-09-01',
-    titulo: 'Envío Catequesis #19',
-    descripcion: 'Saciados del agua que da vida',
+    titulo: 'Envío Catequesis #17',
+    descripcion: 'Testigos de Cristo para hacer un mundo nuevo',
     tipo: 'catequesis',
     categoria: 'Materiales',
     prioridad: 'media'
   },
   {
-    id: 92,
+    id: 124,
     fecha: '2026-09-03',
-    titulo: 'Catequesis #18 - Llevados al desierto para elegir a Dios',
-    descripcion: 'Catequesis grupal. Elegidos por Jesús, para contemplarlo',
+    titulo: 'Catequesis #16 - El espíritu nos llama a servir',
+    descripcion: 'Catequesis grupal. Se debe enviar un video con la Exposición de la Catequesis #17 "Testigos de Cristo para hacer un mundo nuevo"',
     tipo: 'catequesis',
     categoria: 'General',
     prioridad: 'alta'
   },
   {
-    id: 93,
-    fecha: '2026-09-03',
-    titulo: 'Exposición Catequesis #19 - Saciados del agua que da vida',
-    descripcion: 'Exposición de la catequesis #19',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
-  },
-  {
-    id: 94,
+    id: 125,
     fecha: '2026-09-06',
     titulo: 'RETIRO PADRINO, MADRINAS',
     descripcion: 'Retiro de Padrinos y Madrinas - Domingo',
@@ -864,17 +1143,71 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 95,
+    id: 126,
     fecha: '2026-09-08',
-    titulo: 'Envío Catequesis #20',
-    descripcion: 'Sanados por la luz',
+    titulo: 'Envío Catequesis #18',
+    descripcion: 'Llevados al desierto para elegir a Dios y Elegidos por Jesús, para contemplarlo (fusión)',
     tipo: 'catequesis',
     categoria: 'Materiales',
     prioridad: 'media'
   },
   {
-    id: 96,
+    id: 127,
     fecha: '2026-09-10',
+    titulo: 'Catequesis #17 - Testigos de Cristo para hacer un mundo nuevo',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 128,
+    fecha: '2026-09-10',
+    titulo: 'Exposición Catequesis #18 - Llevados al desierto para elegir a Dios y Elegidos por Jesús, para contemplarlo (fusión)',
+    descripcion: 'Exposición de la catequesis #18',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 129,
+    fecha: '2026-09-15',
+    titulo: 'Envío Catequesis #19',
+    descripcion: 'Saciados del agua que da vida',
+    tipo: 'catequesis',
+    categoria: 'Materiales',
+    prioridad: 'media'
+  },
+  {
+    id: 130,
+    fecha: '2026-09-17',
+    titulo: 'Catequesis #18 - Llevados al desierto para elegir a Dios y Elegidos por Jesús, para contemplarlo',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 131,
+    fecha: '2026-09-17',
+    titulo: 'Exposición Catequesis #19 - Saciados del agua que da vida',
+    descripcion: 'Exposición de la catequesis #19',
+    tipo: 'exposicion',
+    categoria: 'Catequesis',
+    prioridad: 'alta'
+  },
+  {
+    id: 132,
+    fecha: '2026-09-22',
+    titulo: 'Envío Catequesis #20',
+    descripcion: 'Sanados por la luz y Confiados en las promesas de Jesús (fusión)',
+    tipo: 'catequesis',
+    categoria: 'Materiales',
+    prioridad: 'media'
+  },
+  {
+    id: 133,
+    fecha: '2026-09-24',
     titulo: 'Catequesis #19 - Saciados del agua que da vida',
     descripcion: 'Catequesis grupal',
     tipo: 'catequesis',
@@ -882,43 +1215,16 @@ export const eventos = [
     prioridad: 'alta'
   },
   {
-    id: 97,
-    fecha: '2026-09-10',
-    titulo: 'Exposición Catequesis #20 - Sanados por la luz',
+    id: 134,
+    fecha: '2026-09-24',
+    titulo: 'Exposición Catequesis #20 - Sanados por la luz y Confiados en las promesas de Jesús (fusión)',
     descripcion: 'Exposición de la catequesis #20',
     tipo: 'exposicion',
     categoria: 'Catequesis',
     prioridad: 'alta'
   },
   {
-    id: 98,
-    fecha: '2026-09-15',
-    titulo: 'Envío Catequesis #21',
-    descripcion: 'Confiados en las promesas de Jesús',
-    tipo: 'catequesis',
-    categoria: 'Materiales',
-    prioridad: 'media'
-  },
-  {
-    id: 99,
-    fecha: '2026-09-17',
-    titulo: 'Catequesis #20 - Sanados por la luz',
-    descripcion: 'Catequesis grupal',
-    tipo: 'catequesis',
-    categoria: 'General',
-    prioridad: 'alta'
-  },
-  {
-    id: 100,
-    fecha: '2026-09-17',
-    titulo: 'Exposición Catequesis #21 - Confiados en las promesas de Jesús',
-    descripcion: 'Exposición de la catequesis #21',
-    tipo: 'exposicion',
-    categoria: 'Catequesis',
-    prioridad: 'alta'
-  },
-  {
-    id: 101,
+    id: 135,
     fecha: '2026-09-24',
     titulo: 'Reunión Padres de Familia',
     descripcion: 'Reunión con padres de familia',
@@ -929,7 +1235,16 @@ export const eventos = [
 
   // OCTUBRE 2026
   {
-    id: 102,
+    id: 136,
+    fecha: '2026-10-01',
+    titulo: 'Catequesis #20 - Sanados por la luz y Confiados en las promesas de Jesús (fusión)',
+    descripcion: 'Catequesis grupal',
+    tipo: 'catequesis',
+    categoria: 'General',
+    prioridad: 'alta'
+  },
+  {
+    id: 137,
     fecha: '2026-10-08',
     titulo: 'Ensayo Confirma',
     descripcion: 'Ensayo de la ceremonia de confirmación',
@@ -938,7 +1253,7 @@ export const eventos = [
     prioridad: 'critica'
   },
   {
-    id: 103,
+    id: 138,
     fecha: '2026-10-10',
     titulo: 'RECEPCIÓN DEL SACRAMENTO DE LA CONFIRMACIÓN',
     descripcion: 'Ceremonia de Confirmación - Sábado',
@@ -968,10 +1283,9 @@ export const catequesisGrupos = [
   { numero: 15, nombre: 'La confirmación es una fiesta de la comunidad', encargado: 'Ciencia' },
   { numero: 16, nombre: 'El espíritu nos llama a servir', encargado: 'Piedad' },
   { numero: 17, nombre: 'Testigos de Cristo para hacer un mundo nuevo', encargado: 'Entendimiento' },
-  { numero: 18, nombre: 'Llevados al desierto para elegir a Dios / Elegidos por Jesús, para contemplarlo', encargado: 'Fortaleza' },
+  { numero: 18, nombre: 'Llevados al desierto para elegir a Dios / Elegidos por Jesús, para contemplarlo (fusión)', encargado: 'Fortaleza' },
   { numero: 19, nombre: 'Saciados del agua que da vida', encargado: 'Consejo' },
-  { numero: 20, nombre: 'Sanados por la luz', encargado: 'Sabiduría' },
-  { numero: 21, nombre: 'Confiados en las promesas de Jesús', encargado: 'Temor de Dios' }
+  { numero: 20, nombre: 'Sanados por la luz / Confiados en las promesas de Jesús (fusión)', encargado: 'Sabiduría' }
 ]
 
 // Tipos de eventos
