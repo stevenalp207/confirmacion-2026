@@ -132,7 +132,9 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
           .from('pagos_catequistas')
           .upsert({
             grupo,
-            catequista_nombre: id
+            catequista_nombre: id,
+            monto_pagado: nuevoMonto,
+            pagado: pagado
           }, {
             onConflict: 'grupo,catequista_nombre'
           });

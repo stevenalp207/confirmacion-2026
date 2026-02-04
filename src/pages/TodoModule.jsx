@@ -66,18 +66,24 @@ function TodoModule({ user, onBack }) {
     loadTareas();
   }, [loadTareas]);
 
-  // Filtrar tareas que el usuario puede ver (creador o mencionado, o todo si es admin)
+  // Filtrar tareas que el usuario puede ver (creador, responsable, o todo si es admin)
   const tareasVisibles = useMemo(() => {
     return tareas.filter(tarea => {
       // Admin ve todas las tareas
       if (user?.rol === 'admin') return true;
 
       const usuarioActual = normalizarTexto(user?.usuario || '');
-      const mencionesNormalizadas = (tarea.menciones || []).map(m => normalizarTexto(m));
+      const rolActual = normalizarTexto(user?.rol || '');
+      const responsablesNormalizados = (tarea.responsables || []).map(r => normalizarTexto(r));
       
+      // El usuario puede ver la tarea si:
+      // 1. Es el creador
+      // 2. Su rol está en la lista de responsables
+      // 3. Su usuario está en la lista de responsables
       const puedoVer = 
         normalizarTexto(tarea.creado_por) === usuarioActual ||
-        mencionesNormalizadas.includes(usuarioActual);
+        responsablesNormalizados.includes(rolActual) ||
+        responsablesNormalizados.includes(usuarioActual);
       
       if (!puedoVer) return false;
       if (filtroEstado && tarea.estado !== filtroEstado) return false;
@@ -267,9 +273,9 @@ function TodoModule({ user, onBack }) {
                         </div>
                       </div>
 
-                      {tarea.menciones && tarea.menciones.length > 0 && (
+                      {tarea.responsables && tarea.responsables.length > 0 && (
                         <p className="text-xs text-gray-500 mt-2">
-                          Mencionados: {tarea.menciones.join(', ')}
+                          Responsables: {tarea.responsables.join(', ')}
                         </p>
                       )}
                     </div>

@@ -16,31 +16,43 @@ import {
   ChevronLeft,
   ChevronRight,
   LayoutGrid,
-  ListTodo
+  ListTodo,
+  PieChart,
+  Mic
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCollapse }) {
   const modules = [
+    // === INICIO ===
     {
       id: null,
       name: 'Inicio',
       icon: LayoutGrid,
       color: 'gray',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
+    // === ORGANIZACIÓN ===
     {
       id: 'tareas',
       name: 'Tareas',
       icon: ListTodo,
       color: 'indigo',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
-      id: 'asistencia',
-      name: 'Asistencia',
-      icon: CheckCircle,
-      color: 'green',
+      id: 'calendario',
+      name: 'Calendario',
+      icon: Calendar,
+      color: 'violet',
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+    },
+    // === PERSONAS ===
+    {
+      id: 'estudiantes',
+      name: 'Estudiantes',
+      icon: GraduationCap,
+      color: 'cyan',
       roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
@@ -51,6 +63,14 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       roles: ['admin', 'logistica', 'formacion']
     },
     {
+      id: 'asistencia',
+      name: 'Asistencia',
+      icon: CheckCircle,
+      color: 'green',
+      roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+    },
+    // === DOCUMENTOS ===
+    {
       id: 'documentos',
       name: 'Documentos',
       icon: FileText,
@@ -58,18 +78,11 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
-      id: 'estudiantes',
-      name: 'Estudiantes',
-      icon: GraduationCap,
-      color: 'cyan',
-      roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
-    },
-    {
-      id: 'calendario',
-      name: 'Calendario',
-      icon: Calendar,
-      color: 'violet',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      id: 'cartas',
+      name: 'Cartas',
+      icon: Mail,
+      color: 'purple',
+      roles: ['admin', 'logistica']
     },
     {
       id: 'sabanas',
@@ -78,12 +91,13 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'orange',
       roles: ['admin', 'logistica']
     },
+    // === FINANZAS ===
     {
-      id: 'cartas',
-      name: 'Cartas',
-      icon: Mail,
-      color: 'purple',
-      roles: ['admin', 'logistica']
+      id: 'dashboard-financiero',
+      name: 'Dashboard Financiero',
+      icon: PieChart,
+      color: 'indigo',
+      roles: ['admin', 'financiero', 'logistica', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'pagos',
@@ -106,6 +120,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'rose',
       roles: ['admin', 'financiero']
     },
+    // === FORMACIÓN ===
     {
       id: 'formacion',
       name: 'Formación',
@@ -113,6 +128,14 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'indigo',
       roles: ['admin', 'formacion']
     },
+    {
+      id: 'participaciones',
+      name: 'Participaciones',
+      icon: Mic,
+      color: 'purple',
+      roles: ['admin', 'retiro', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+    },
+    // === HERRAMIENTAS ADMIN ===
     {
       id: 'boletas',
       name: 'Boletas',
@@ -122,7 +145,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
     },
     {
       id: 'asignacion-grupos',
-      name: 'Asignación de Grupos',
+      name: 'Asignación Grupos',
       icon: Shuffle,
       color: 'amber',
       roles: ['admin', 'logistica']

@@ -51,7 +51,7 @@ export default function ConfirmationModal({
 
         {/* Mensaje */}
         <div className="px-6 py-5">
-          <p className="text-gray-700 text-sm leading-relaxed">{message}</p>
+          <div className="text-gray-700 text-sm leading-relaxed">{message}</div>
         </div>
 
         {/* Botones */}

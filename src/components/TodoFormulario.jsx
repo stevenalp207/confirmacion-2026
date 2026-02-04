@@ -12,12 +12,12 @@ const normalizarTexto = (texto) => {
 };
 
 const comisiones = [
-  'Logística', 'Retiro', 'Medios', 'Financiero', 'Formación'
+  'Logistica', 'Retiro', 'Medios', 'Financiero', 'Formacion'
 ];
 
 const grupos = [
   'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 
-  'Sabiduría', 'Temor de Dios'
+  'Sabiduria', 'Temor de Dios'
 ];
 
 function TodoFormulario({ user, catequistas, onTaskCreated }) {
