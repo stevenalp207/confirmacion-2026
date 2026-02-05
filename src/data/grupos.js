@@ -158,11 +158,11 @@ export const tiposDocumentos = [
   { id: 'permiso_retiro', nombre: 'Permiso Retiro' },
 ];
 
-// Número total de catequesis para Confirmación 2026 (incluye eventos especiales)
+// Número total de catequesis para Confirmación 2026 - CATEQUIZANDOS
 // 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 25 sesiones
 export const numeroCatequesis = 25;
 
-// Función para obtener el label de cada catequesis
+// Función para obtener el label de cada catequesis - CATEQUIZANDOS
 // Índice 11: Retiro Familia (después de Catequesis 10)
 // Índice 20: Retiro Padrinos (después de Catequesis 18)
 // Índice 24: Ensayo Confirma (después de Catequesis 21)
@@ -178,6 +178,35 @@ export const getCatequesisLabel = (index) => {
   } else if (index < 20) {
     return `Catequesis ${index - 1}`;
   } else if (index < 24) {
+    return `Catequesis ${index - 2}`;
+  } else {
+    return `Catequesis ${index - 3}`;
+  }
+};
+
+// Número total de sesiones para CATEQUISTAS (incluye Reunion 0)
+// Reunion 0 + 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 26 sesiones
+export const numeroCatequesisCatequistas = 26;
+
+// Función para obtener el label de cada sesión - CATEQUISTAS
+// Índice 0: Reunion 0 (5/2/2026) - exclusiva de catequistas
+// Índice 12: Retiro Familia (después de Catequesis 10)
+// Índice 21: Retiro Padrinos (después de Catequesis 18)
+// Índice 25: Ensayo Confirma (después de Catequesis 21)
+export const getCatequesisLabelCatequistas = (index) => {
+  if (index === 0) {
+    return 'Reunion 0 (5/2/2026)';
+  } else if (index === 12) {
+    return 'Retiro Familia';
+  } else if (index === 21) {
+    return 'Retiro Padrinos';
+  } else if (index === 25) {
+    return 'Ensayo Confirma';
+  } else if (index < 12) {
+    return `Catequesis ${index}`;
+  } else if (index < 21) {
+    return `Catequesis ${index - 1}`;
+  } else if (index < 25) {
     return `Catequesis ${index - 2}`;
   } else {
     return `Catequesis ${index - 3}`;

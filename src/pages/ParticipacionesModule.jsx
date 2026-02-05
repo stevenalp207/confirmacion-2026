@@ -24,7 +24,7 @@ const EVENTOS = [
   { value: 'convivencia_3', label: 'Tercera Convivencia' },
   { value: 'retiro', label: 'Retiro' },
   { value: 'catequesis', label: 'Catequesis Regular' },
-  { value: 'especial', label: 'Evento Especial' }
+  { value: 'formacion', label: 'Evaluación de Formación' }
 ];
 
 function ParticipacionesModule({ onBack, user }) {

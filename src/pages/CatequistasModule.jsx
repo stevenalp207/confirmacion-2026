@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
+import { numeroCatequesisCatequistas, getCatequesisLabelCatequistas } from '../data/grupos';
 import { catequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
 import { Search, Filter, MapPin, ArrowLeft, Users } from 'lucide-react';
@@ -10,8 +10,8 @@ function CatequistasModule({ onBack }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroups, setSelectedGroups] = useState([]);
   
-  // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesis-1]
-  const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
+  // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesisCatequistas-1]
+  const catequesisIndices = Array.from({ length: numeroCatequesisCatequistas }, (_, i) => i);
 
   // Obtener grupos únicos de catequistas
   const uniqueGroups = [...new Set(catequistas.map(c => c.grupo))];
@@ -268,7 +268,7 @@ function CatequistasModule({ onBack }) {
                           key={catequesisNum}
                           className="px-2 py-2 sm:py-3 text-center text-xs font-semibold text-gray-700 bg-blue-50 whitespace-nowrap"
                         >
-                          {getCatequesisLabel(catequesisNum)}
+                          {getCatequesisLabelCatequistas(catequesisNum)}
                         </th>
                       ))}
                     </tr>
