@@ -26,15 +26,54 @@ export function AuthProvider({ children }) {
 
   const login = async (usuario, contraseña) => {
     try {
-      const { data, error } = await supabase
+      // Limpiar espacios en blanco
+      const usuarioLimpio = usuario.trim();
+      const contraseñaLimpia = contraseña.trim();
+
+      // Verificar conexión a internet primero
+      if (!navigator.onLine) {
+        return { success: false, error: 'No hay conexión a internet. Verifica tu conexión y vuelve a intentar.' };
+      }
+
+      console.log('Intentando login para usuario:', usuarioLimpio);
+
+      // Timeout de 15 segundos para la conexión
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('TIMEOUT')), 15000)
+      );
+
+      // Buscar solo por usuario para evitar problemas de encoding con "contraseña"
+      const queryPromise = supabase
         .from('usuarios')
         .select('*')
-        .eq('usuario', usuario)
-        .eq('contraseña', contraseña)
+        .eq('usuario', usuarioLimpio)
         .single();
 
-      if (error || !data) {
-        return { success: false, error: 'Usuario o contraseña incorrectos' };
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+      
+      console.log('Respuesta de Supabase:', { data: data ? 'encontrado' : 'no encontrado', error: error?.message || 'ninguno' });
+
+      if (error) {
+        console.error('Error de Supabase:', error);
+        
+        // Mensajes más específicos según el tipo de error
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+          return { success: false, error: 'Error de conexión. Tu red puede estar bloqueando el acceso al servidor. Intenta con WiFi o datos móviles.' };
+        }
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Usuario no encontrado' };
+        }
+        return { success: false, error: 'Error al conectar con el servidor. Intenta de nuevo.' };
+      }
+
+      if (!data) {
+        return { success: false, error: 'Usuario no encontrado' };
+      }
+
+      // Verificar contraseña localmente (evita problemas de encoding)
+      if (data.contraseña !== contraseñaLimpia) {
+        console.log('Contraseña incorrecta');
+        return { success: false, error: 'Contraseña incorrecta' };
       }
 
       const userData = {
@@ -58,7 +97,16 @@ export function AuthProvider({ children }) {
       return { success: true };
     } catch (error) {
       console.error('Error en login:', error);
-      return { success: false, error: 'Error al iniciar sesión' };
+      
+      if (error.message === 'TIMEOUT') {
+        return { success: false, error: 'La conexión tardó demasiado. Tu red puede estar lenta o bloqueando el acceso.' };
+      }
+      
+      if (error.name === 'TypeError' && error.message?.includes('fetch')) {
+        return { success: false, error: 'No se puede conectar al servidor. Verifica tu conexión a internet.' };
+      }
+      
+      return { success: false, error: `Error al iniciar sesión: ${error.message || 'Error desconocido'}` };
     }
   };
 

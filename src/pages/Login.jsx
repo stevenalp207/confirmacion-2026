@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 import fondo from '../assets/fondo3.jpeg';
-import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 
 function Login() {
   const [usuario, setUsuario] = useState('');
@@ -13,6 +13,17 @@ function Login() {
   const [usuarioValido, setUsuarioValido] = useState(false);
   const { login, savedAccounts, switchAccount, removeSavedAccount } = useAuth();
   const hasQuickAccess = (savedAccounts?.length || 0) > 0;
+
+  // Limpiar caché si hay problemas persistentes
+  const limpiarCache = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    setError('');
+    setUsuario('');
+    setContraseña('');
+    alert('Caché limpiado. Intenta iniciar sesión de nuevo.');
+    window.location.reload();
+  };
 
   const validarUsuario = (valor) => {
     setUsuario(valor);
@@ -123,9 +134,19 @@ function Login() {
 
               {/* Error Message mejorado */}
               {error && (
-                <div className="bg-red-50 border-2 border-red-300 text-red-800 px-4 sm:px-5 py-3 rounded-lg text-xs sm:text-sm flex items-start gap-3 animate-fade-in shadow-sm">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">{error}</span>
+                <div className="bg-red-50 border-2 border-red-300 text-red-800 px-4 sm:px-5 py-3 rounded-lg text-xs sm:text-sm animate-fade-in shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <span className="font-medium">{error}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={limpiarCache}
+                    className="mt-2 text-xs text-red-600 hover:text-red-800 underline flex items-center gap-1 ml-8"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    ¿Problemas? Limpiar caché
+                  </button>
                 </div>
               )}
 
