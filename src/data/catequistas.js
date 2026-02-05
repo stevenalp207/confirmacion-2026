@@ -1,48 +1,48 @@
 // Catequistas para Confirmación 2026
 export const catequistas = [
-  { nombre: 'Luis Ángel Sánchez Badilla', grupo: 'Ciencia' },
-  { nombre: 'Sebastián Huertas Arce', grupo: 'Ciencia' },
-  { nombre: 'Mathias Calderon Sequeira', grupo: 'Ciencia' },
-  { nombre: 'Jefferson David Aguilar Guzman', grupo: 'Ciencia' },
+  { nombre: 'Luis Ángel Sánchez Badilla', grupo: 'NA' },
+  { nombre: 'Sebastián Huertas Arce', grupo: 'NA' },
+  { nombre: 'Mathias Calderon Sequeira', grupo: 'NA' },
+  { nombre: 'Jefferson David Aguilar Guzman', grupo: 'NA' },
   
-  { nombre: 'Jeaustin Emanuel Fernández Arias', grupo: 'Piedad' },
-  { nombre: 'Sofía Arce Hernández', grupo: 'Piedad' },
-  { nombre: 'Monserrat Solano Vargas', grupo: 'Piedad' },
-  { nombre: 'Luis Felipe Mora Ramírez', grupo: 'Piedad' },
+  { nombre: 'Jeaustin Emanuel Fernández Arias', grupo: 'NA' },
+  { nombre: 'Sofía Arce Hernández', grupo: 'NA' },
+  { nombre: 'Monserrat Solano Vargas', grupo: 'NA' },
+  { nombre: 'Luis Felipe Mora Ramírez', grupo: 'NA' },
   
-  { nombre: 'Johanna Victoria Castro Guillén', grupo: 'Fortaleza' },
-  { nombre: 'Gabriel Esteban Valverde Guzmán', grupo: 'Fortaleza' },
-  { nombre: 'Julissa Escalante Badilla', grupo: 'Fortaleza' },
-  { nombre: 'Steven Alpizar Gamboa', grupo: 'Fortaleza' },
+  { nombre: 'Johanna Victoria Castro Guillén', grupo: 'NA' },
+  { nombre: 'Gabriel Esteban Valverde Guzmán', grupo: 'NA' },
+  { nombre: 'Julissa Escalante Badilla', grupo: 'NA' },
+  { nombre: 'Steven Alpizar Gamboa', grupo: 'NA' },
   
-  { nombre: 'Justin Rojas Salazar', grupo: 'Consejo' },
-  { nombre: 'Ashley Rodríguez González', grupo: 'Consejo' },
-  { nombre: 'Samuel Brenes Vargas', grupo: 'Consejo' },
-  { nombre: 'Mariam Astua Solano', grupo: 'Consejo' },
+  { nombre: 'Justin Rojas Salazar', grupo: 'NA' },
+  { nombre: 'Ashley Rodríguez González', grupo: 'NA' },
+  { nombre: 'Samuel Brenes Vargas', grupo: 'NA' },
+  { nombre: 'Mariam Astua Solano', grupo: 'NA' },
   
-  { nombre: 'Sharlyn Blanco Mora', grupo: 'Entendimiento' },
-  { nombre: 'Marco Andrés Sandí Chinchilla', grupo: 'Entendimiento' },
-  { nombre: 'Nazareth Sofía Montoya Chacón', grupo: 'Entendimiento' },
-  { nombre: 'Montserrat de Los Ángeles Mata Madriz', grupo: 'Entendimiento' },
+  { nombre: 'Sharlyn Blanco Mora', grupo: 'NA' },
+  { nombre: 'Marco Andrés Sandí Chinchilla', grupo: 'NA' },
+  { nombre: 'Nazareth Sofía Montoya Chacón', grupo: 'NA' },
+  { nombre: 'Montserrat de Los Ángeles Mata Madriz', grupo: 'NA' },
   
-  { nombre: 'Montserrat Campos Hernández', grupo: 'Sabiduría' },
-  { nombre: 'Ismael Josué Rivera Quesada', grupo: 'Sabiduría' },
-  { nombre: 'Sebastián Altamirano Ling', grupo: 'Sabiduría' },
-  { nombre: 'Francella Fallas Castro', grupo: 'Sabiduría' },
+  { nombre: 'Montserrat Campos Hernández', grupo: 'NA' },
+  { nombre: 'Ismael Josué Rivera Quesada', grupo: 'NA' },
+  { nombre: 'Sebastián Altamirano Ling', grupo: 'NA' },
+  { nombre: 'Francella Fallas Castro', grupo: 'NA' },
   
-  { nombre: 'Nashamy Araya Castellón', grupo: 'Temor de Dios' },
-  { nombre: 'Karemy Guzmán Cruz', grupo: 'Temor de Dios' },
-  { nombre: 'Noelia Odilie Matarrita Araya', grupo: 'Temor de Dios' },
-  { nombre: 'Amanda Cordero Trejos', grupo: 'Temor de Dios' },
+  { nombre: 'Nashamy Araya Castellón', grupo: 'NA' },
+  { nombre: 'Karemy Guzmán Cruz', grupo: 'NA' },
+  { nombre: 'Noelia Odilie Matarrita Araya', grupo: 'NA' },
+  { nombre: 'Amanda Cordero Trejos', grupo: 'NA' },
   
-  { nombre: 'Dylan Chacón Sandoval', grupo: 'Formación' },
-  { nombre: 'Mariana Segura Piedra', grupo: 'Formación' },
-  { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'Formación' },
-  { nombre: 'Adriana Álvarez Lizano', grupo: 'Formación' },
+  { nombre: 'Dylan Chacón Sandoval', grupo: 'NA' },
+  { nombre: 'Mariana Segura Piedra', grupo: 'NA' },
+  { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'NA' },
+  { nombre: 'Adriana Álvarez Lizano', grupo: 'NA' },
   
-  { nombre: 'José Pablo Castro Jiménez', grupo: 'Formación' },
-  { nombre: 'Adrian Chaves Herrera', grupo: 'Formación' },
-  { nombre: 'María Paula Avilés González', grupo: 'Formación' }
+  { nombre: 'José Pablo Castro Jiménez', grupo: 'NA' },
+  { nombre: 'Adrian Chaves Herrera', grupo: 'NA' },
+  { nombre: 'María Paula Avilés González', grupo: 'NA' }
 ];
 
 // Obtener solo los nombres de catequistas
