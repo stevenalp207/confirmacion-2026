@@ -49,13 +49,16 @@ function StudentsModule({ onBack, user }) {
   });
 
   const generarPDFListaGeneral = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter'
+    });
     
     // Título
-    doc.setFontSize(14);
-    doc.text('LISTA DE CATEQUIZANDOS - CONFIRMACIÓN 2026', 14, 12);
-    doc.setFontSize(10);
-    doc.text(`Total de estudiantes: ${allStudents.length}`, 14, 19);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Lista de Catequizandos - Confirmación 2026', doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
     
     // Crear tabla con datos
     const tableData = allStudents.map(student => [
@@ -63,32 +66,51 @@ function StudentsModule({ onBack, user }) {
       '', // Espacio para firma
       ''  // Espacio para correo
     ]);
+
+    // Calcular tamaño dinámico según cantidad de estudiantes
+    const numRows = tableData.length;
+    let fontSize = 11;
+    let cellPadding = 9;
+    
+    if (numRows > 50) {
+      fontSize = 9;
+      cellPadding = 6;
+    } else if (numRows > 40) {
+      fontSize = 10;
+      cellPadding = 7;
+    }
     
     // Crear tabla
     autoTable(doc, {
-      head: [['Nombre del catequizando', 'Firma del encargado', 'Correo electrónico del encargado']],
+      head: [['Catequizando', 'Firma del encargado', 'Correo electrónico']],
       body: tableData,
-      startY: 25,
-      columnStyles: {
-        0: { cellWidth: 65 },
-        1: { cellWidth: 55 },
-        2: { cellWidth: 55 }
+      startY: 22,
+      theme: 'grid',
+      styles: {
+        fontSize: fontSize,
+        cellPadding: cellPadding,
+        lineColor: [0, 0, 0],
+        lineWidth: 0.2,
+        textColor: [0, 0, 0]
       },
       headStyles: {
-        fillColor: [30, 58, 138],
-        textColor: 255,
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
         fontStyle: 'bold',
         halign: 'center',
-        fontSize: 9
+        lineWidth: 0.2,
+        lineColor: [0, 0, 0],
+        fontSize: fontSize + 1
       },
       bodyStyles: {
-        textColor: 0,
-        lineColor: [180, 180, 180],
-        minCellHeight: 20
+        textColor: [0, 0, 0]
       },
-      lineWidth: 0.2,
-      margin: { top: 25, right: 15, bottom: 15, left: 10 },
-      horizontalAlign: 'center',
+      columnStyles: {
+        0: { cellWidth: 60 },
+        1: { cellWidth: 60 },
+        2: { cellWidth: 60 }
+      },
+      margin: { left: 15, right: 15, top: 22 },
       didDrawPage: (data) => {
         // Footer
         const pageCount = doc.internal.pages.length - 1;

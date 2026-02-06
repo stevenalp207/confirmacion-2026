@@ -18,7 +18,8 @@ import {
   LayoutGrid,
   ListTodo,
   PieChart,
-  Mic
+  Mic,
+  Shield
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -155,6 +156,14 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Asignación Personalidad',
       icon: UserCheck,
       color: 'pink',
+      roles: ['admin', 'logistica']
+    },
+    // === LOGÍSTICA ===
+    {
+      id: 'seguridad',
+      name: 'Seguridad',
+      icon: Shield,
+      color: 'blue',
       roles: ['admin', 'logistica']
     }
   ];

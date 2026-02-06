@@ -29,6 +29,7 @@ const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssign
 const TodoModule = lazy(() => import('./pages/TodoModule'));
 const DashboardFinancieroModule = lazy(() => import('./pages/DashboardFinancieroModule'));
 const ParticipacionesModule = lazy(() => import('./pages/ParticipacionesModule'));
+const SeguridadModule = lazy(() => import('./pages/SeguridadModule'));
 
 // Loading component - ahora usa SkeletonLoader mejorado
 function ModuleLoader() {
@@ -118,13 +119,13 @@ function AppContent() {
 
   const allowedModules = (() => {
     if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero', 'participaciones'];
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero', 'participaciones', 'seguridad'];
     }
     if (user?.rol === 'financiero') {
       return ['pagos', 'gastos', 'ingresos', 'calendario', 'tareas', 'dashboard-financiero'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero', 'seguridad'];
     }
     if (user?.rol === 'formacion') {
       return ['formacion', 'catequistas', 'calendario', 'tareas', 'participaciones'];
@@ -253,6 +254,7 @@ function AppContent() {
               {currentModule === 'tareas' && <TodoModule onBack={handleBack} user={user} />}
               {currentModule === 'dashboard-financiero' && <DashboardFinancieroModule onBack={handleBack} user={user} />}
               {currentModule === 'participaciones' && <ParticipacionesModule onBack={handleBack} user={user} />}
+              {currentModule === 'seguridad' && <SeguridadModule onBack={handleBack} user={user} />}
             </Suspense>
           </main>
         </div>

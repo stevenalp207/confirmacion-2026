@@ -155,12 +155,16 @@ function AttendanceModule({ onBack, user }) {
         return;
       }
 
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'letter'
+      });
       
       // Título
-      doc.setFontSize(18);
+      doc.setFontSize(16);
       doc.setFont('helvetica', 'bold');
-      doc.text(currentGroup, doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+      doc.text(currentGroup, doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
       
       // Crear tabla
       const tableData = Object.entries(estudiantes).map(([id, estudiante]) => [
@@ -168,14 +172,32 @@ function AttendanceModule({ onBack, user }) {
         '' // Columna vacía para firma
       ]);
 
+      // Calcular tamaño dinámico según cantidad de estudiantes
+      const numRows = tableData.length;
+      let fontSize = 10;
+      let cellPadding = 6;
+      
+      if (numRows > 16) {
+        fontSize = 9;
+        cellPadding = 5;
+      }
+      if (numRows > 20) {
+        fontSize = 8;
+        cellPadding = 4;
+      }
+      if (numRows > 24) {
+        fontSize = 7;
+        cellPadding = 3;
+      }
+
       autoTable(doc, {
-        startY: 30,
+        startY: 22,
         head: [['Catequizando', 'Firma Padre/Madre/Padrino/Madrina']],
         body: tableData,
         theme: 'grid',
         styles: {
-          fontSize: 10,
-          cellPadding: 8,
+          fontSize: fontSize,
+          cellPadding: cellPadding,
           lineColor: [0, 0, 0],
           lineWidth: 0.2,
           textColor: [0, 0, 0]
@@ -186,16 +208,17 @@ function AttendanceModule({ onBack, user }) {
           fontStyle: 'bold',
           halign: 'center',
           lineWidth: 0.2,
-          lineColor: [0, 0, 0]
+          lineColor: [0, 0, 0],
+          fontSize: fontSize + 1
         },
         bodyStyles: {
           textColor: [0, 0, 0]
         },
         columnStyles: {
-          0: { cellWidth: 90 },
-          1: { cellWidth: 90 }
+          0: { cellWidth: 85 },
+          1: { cellWidth: 95 }
         },
-        margin: { left: 15, right: 15 }
+        margin: { left: 15, right: 15, top: 22 }
       });
 
       doc.save(`Lista_Asistencia_${currentGroup}.pdf`);
