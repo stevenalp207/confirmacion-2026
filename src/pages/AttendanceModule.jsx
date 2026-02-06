@@ -1,17 +1,54 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, CheckCircle, Users } from 'lucide-react';
-import { grupos } from '../data/grupos';
+import { ArrowLeft, CheckCircle, Users, Download } from 'lucide-react';
+import { grupos, numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import Attendance from '../components/Attendance';
 import StudentDetail from '../components/StudentDetail';
 import { gruposData } from '../data/grupos';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { supabase } from '../config/supabase';
 
 function AttendanceModule({ onBack, user }) {
   const [currentGroup, setCurrentGroup] = useState('');
   const [estudiantes, setEstudiantes] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedEventForDownload, setSelectedEventForDownload] = useState(0);
+  const [asistenciasData, setAsistenciasData] = useState({});
+
+  // Generar array de índices de catequesis
+  const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
+
+  // Cargar asistencias del grupo actual
+  useEffect(() => {
+    const loadAsistencias = async () => {
+      if (!currentGroup) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('asistencias')
+          .select('*')
+          .eq('grupo', currentGroup);
+
+        if (error) {
+          console.error('Error loading asistencias:', error);
+        } else if (data) {
+          const asistencias = {};
+          data.forEach(item => {
+            if (!asistencias[item.estudiante_id]) {
+              asistencias[item.estudiante_id] = {};
+            }
+            asistencias[item.estudiante_id][item.catequesis_num] = item.estado;
+          });
+          setAsistenciasData(asistencias);
+        }
+      } catch (error) {
+        console.error('Error loading asistencias:', error);
+      }
+    };
+
+    loadAsistencias();
+  }, [currentGroup]);
 
   // Filtrar grupos según el rol del usuario
   const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica'
@@ -168,6 +205,84 @@ function AttendanceModule({ onBack, user }) {
     }
   };
 
+  // Función para descargar asistencia de un evento específico en PDF
+  const handleDownloadAsistenciaEvento = () => {
+    const eventLabel = getCatequesisLabel(selectedEventForDownload);
+    
+    // Preparar datos para la tabla
+    const tableData = Object.entries(estudiantes).map(([key, estudiante]) => {
+      const estado = asistenciasData[estudiante.id]?.[selectedEventForDownload] || 'ausente';
+      const estadoTexto = estado === 'presente' ? 'Presente' : estado === 'justificado' ? 'Justificado' : 'Ausente';
+      return [estudiante.nombre, estadoTexto];
+    });
+
+    // Crear PDF
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter'
+    });
+    
+    // Título
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Registro de Asistencia - ${currentGroup}`, 14, 20);
+    
+    // Subtítulo con el evento
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Evento: ${eventLabel}  |  Fecha: ${new Date().toLocaleDateString('es-CR')}`, 14, 30);
+    
+    // Tabla
+    autoTable(doc, {
+      startY: 40,
+      head: [['Catequizando', 'Estado']],
+      body: tableData,
+      theme: 'grid',
+      styles: {
+        fontSize: 11,
+        cellPadding: 3
+      },
+      headStyles: {
+        fillColor: [34, 197, 94],
+        textColor: 255,
+        fontStyle: 'bold',
+        halign: 'center',
+        fontSize: 12
+      },
+      bodyStyles: {
+        halign: 'left'
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 40, halign: 'center' }
+      },
+      alternateRowStyles: {
+        fillColor: [240, 253, 244]
+      },
+      margin: { left: 14, right: 14 },
+      didParseCell: function(data) {
+        if (data.section === 'body' && data.column.index === 1) {
+          const estado = data.cell.raw;
+          if (estado === 'Presente') {
+            data.cell.styles.textColor = [22, 163, 74];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (estado === 'Ausente') {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (estado === 'Justificado') {
+            data.cell.styles.textColor = [37, 99, 235];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        }
+      }
+    });
+
+    // Guardar PDF
+    const filename = `asistencia_${currentGroup}_${eventLabel.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+  };
+
   if (selectedStudent) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
@@ -317,6 +432,33 @@ function AttendanceModule({ onBack, user }) {
                   <span className="hidden sm:inline">Imprimir Lista PDF</span>
                   <span className="sm:hidden">PDF</span>
                 </button>
+              </div>
+
+              {/* Descargar asistencia por evento */}
+              <div className="mt-5 pt-5 border-t border-gray-200">
+                <label className="text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                  <Download className="w-4 h-4" /> Descargar asistencia por evento
+                </label>
+                <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                  <select
+                    value={selectedEventForDownload}
+                    onChange={(e) => setSelectedEventForDownload(Number(e.target.value))}
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition bg-white"
+                  >
+                    {catequesisIndices.map((catequesisNum) => (
+                      <option key={catequesisNum} value={catequesisNum}>
+                        {getCatequesisLabel(catequesisNum)}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={handleDownloadAsistenciaEvento}
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition flex items-center justify-center gap-2 shadow-md"
+                  >
+                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Descargar PDF
+                  </button>
+                </div>
               </div>
             </div>
 

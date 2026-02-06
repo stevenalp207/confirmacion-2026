@@ -2,13 +2,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { numeroCatequesisCatequistas, getCatequesisLabelCatequistas } from '../data/grupos';
 import { catequistas } from '../data/catequistas';
 import { supabase } from '../config/supabase';
-import { Search, Filter, MapPin, ArrowLeft, Users } from 'lucide-react';
+import { Search, Filter, MapPin, ArrowLeft, Users, Download } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function CatequistasModule({ onBack }) {
   const [catequistasState, setCatequistasState] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedEventForDownload, setSelectedEventForDownload] = useState(0);
   
   // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesisCatequistas-1]
   const catequesisIndices = Array.from({ length: numeroCatequesisCatequistas }, (_, i) => i);
@@ -159,7 +162,99 @@ function CatequistasModule({ onBack }) {
     }
   };
 
-  // Se quitó la funcionalidad de agregar catequista
+  // Función para descargar asistencia de un evento específico en PDF
+  const handleDownloadAsistencia = () => {
+    const eventLabel = getCatequesisLabelCatequistas(selectedEventForDownload);
+    
+    // Preparar datos para la tabla
+    const tableData = filteredCatequistas.map(catequista => {
+      const estado = catequistasState[catequista.nombre]?.[selectedEventForDownload] || 'ausente';
+      const estadoTexto = estado === 'presente' ? 'Presente' : estado === 'justificado' ? 'Justificado' : 'Ausente';
+      return [catequista.nombre, catequista.grupo, estadoTexto];
+    });
+
+    // Crear PDF en formato carta
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter'
+    });
+    
+    // Título
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Registro de Asistencia - Catequistas', 14, 12);
+    
+    // Subtítulo con el evento
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Evento: ${eventLabel}  |  Fecha: ${new Date().toLocaleDateString('es-CR')}`, 14, 18);
+    
+    // Calcular tamaño de fuente dinámico basado en cantidad de filas
+    const numRows = tableData.length;
+    let fontSize = 9;
+    let cellPadding = 1.3;
+    
+    if (numRows > 45) {
+      fontSize = 7;
+      cellPadding = 0.8;
+    } else if (numRows > 38) {
+      fontSize = 8;
+      cellPadding = 1;
+    }
+    
+    // Tabla optimizada para una página
+    autoTable(doc, {
+      startY: 22,
+      head: [['Catequista', 'Grupo', 'Estado']],
+      body: tableData,
+      theme: 'grid',
+      styles: {
+        fontSize: fontSize,
+        cellPadding: cellPadding,
+        overflow: 'linebreak'
+      },
+      headStyles: {
+        fillColor: [59, 130, 246],
+        textColor: 255,
+        fontStyle: 'bold',
+        halign: 'center',
+        fontSize: fontSize + 1
+      },
+      bodyStyles: {
+        halign: 'left'
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 45, halign: 'center' },
+        2: { cellWidth: 30, halign: 'center' }
+      },
+      alternateRowStyles: {
+        fillColor: [240, 248, 255]
+      },
+      margin: { left: 14, right: 14 },
+      tableWidth: 'auto',
+      didParseCell: function(data) {
+        if (data.section === 'body' && data.column.index === 2) {
+          const estado = data.cell.raw;
+          if (estado === 'Presente') {
+            data.cell.styles.textColor = [22, 163, 74];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (estado === 'Ausente') {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (estado === 'Justificado') {
+            data.cell.styles.textColor = [37, 99, 235];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        }
+      }
+    });
+
+    // Guardar PDF
+    const filename = `asistencia_catequistas_${eventLabel.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
@@ -246,6 +341,36 @@ function CatequistasModule({ onBack }) {
             <div className="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-lg">
               <p className="text-sm sm:text-base text-blue-900 font-semibold flex items-center gap-2">
                 <Filter className="w-4 h-4" /> Mostrando: <span className="font-bold text-blue-600">{filteredCatequistas.length}</span> de {catequistas.length} catequistas
+              </p>
+            </div>
+
+            {/* Descargar asistencia por evento */}
+            <div className="mt-5 pt-5 border-t border-gray-200">
+              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                <Download className="w-4 h-4" /> Descargar asistencia por evento
+              </label>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <select
+                  value={selectedEventForDownload}
+                  onChange={(e) => setSelectedEventForDownload(Number(e.target.value))}
+                  className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition bg-white"
+                >
+                  {catequesisIndices.map((catequesisNum) => (
+                    <option key={catequesisNum} value={catequesisNum}>
+                      {getCatequesisLabelCatequistas(catequesisNum)}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleDownloadAsistencia}
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-md"
+                >
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Descargar PDF
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Se descargará la asistencia de los catequistas filtrados actualmente
               </p>
             </div>
           </div>
