@@ -31,7 +31,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Inicio',
       icon: LayoutGrid,
       color: 'gray',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     // === ORGANIZACIÓN ===
     {
@@ -39,14 +39,14 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Tareas',
       icon: ListTodo,
       color: 'indigo',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'calendario',
       name: 'Calendario',
       icon: Calendar,
       color: 'violet',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     // === PERSONAS ===
     {
@@ -98,7 +98,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Dashboard Financiero',
       icon: PieChart,
       color: 'indigo',
-      roles: ['admin', 'financiero', 'logistica', 'retiro', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'pagos',
@@ -134,7 +134,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Participaciones',
       icon: Mic,
       color: 'purple',
-      roles: ['admin', 'retiro', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'retiro', 'formacion', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     // === HERRAMIENTAS ADMIN ===
     {
@@ -164,7 +164,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Seguridad',
       icon: Shield,
       color: 'blue',
-      roles: ['admin', 'logistica']
+      roles: ['admin', 'logistica', 'catequista']
     }
   ];
 

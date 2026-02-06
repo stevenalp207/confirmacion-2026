@@ -133,6 +133,9 @@ function AppContent() {
     if (user?.rol === 'retiro') {
       return ['tareas', 'calendario', 'dashboard-financiero', 'participaciones'];
     }
+    if (user?.rol === 'catequista') {
+      return ['tareas', 'calendario', 'dashboard-financiero', 'participaciones', 'seguridad'];
+    }
     return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones'];
   })();
 

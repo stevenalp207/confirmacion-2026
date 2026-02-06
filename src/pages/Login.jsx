@@ -166,22 +166,6 @@ function Login() {
                 )}
               </button>
             </form>
-
-            {/* Demo Info mejorada */}
-            <div className="mt-8 pt-8 border-t-2 border-gray-200">
-              <details className="cursor-pointer group">
-                <summary className="text-xs sm:text-sm font-bold text-gray-700 hover:text-blue-600 transition select-none flex items-center gap-2">
-                  <span className="group-open:rotate-90 transition duration-300">▶</span>
-                  ℹ️ Usuarios de Prueba
-                </summary>
-                <div className="text-xs sm:text-sm text-gray-700 space-y-3 mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                  <div className="bg-white p-2 rounded border-l-4 border-green-500">
-                    <p className="font-semibold text-gray-800">Grupo:</p>
-                    <p><code className="bg-gray-100 px-2 py-1 rounded text-green-700">consejo</code> / <code className="bg-gray-100 px-2 py-1 rounded text-green-700">confi2026</code></p>
-                  </div>
-                </div>
-              </details>
-            </div>
           </div>
 
           {hasQuickAccess && (

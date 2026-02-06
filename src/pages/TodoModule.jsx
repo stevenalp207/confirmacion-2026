@@ -221,7 +221,9 @@ function TodoModule({ user, onBack }) {
           Volver al Menú Principal
         </button>
 
-        <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={handleTaskCreated} />
+        {user?.rol !== 'catequista' && (
+          <TodoFormulario user={user} catequistas={listaCatequistas} onTaskCreated={handleTaskCreated} />
+        )}
 
         {/* Espacio entre header y filtros */}
         <div className="h-4 sm:h-6" />
@@ -281,7 +283,7 @@ function TodoModule({ user, onBack }) {
                     </div>
 
                     <div className="flex items-center gap-2 sm:ml-4 sm:self-start justify-end w-full sm:w-auto mt-2 sm:mt-0">
-                      {tarea.estado !== 'completada' && (
+                      {tarea.estado !== 'completada' && user?.rol !== 'catequista' && (
                         <button
                           onClick={() => marcarCompleta(tarea.id)}
                           className="p-2 rounded hover:bg-green-100 text-green-600 transition-colors"
@@ -290,7 +292,7 @@ function TodoModule({ user, onBack }) {
                           <Check size={20} />
                         </button>
                       )}
-                      {(normalizarTexto(tarea.creado_por) === normalizarTexto(user?.usuario) || user?.rol === 'admin') && (
+                      {(normalizarTexto(tarea.creado_por) === normalizarTexto(user?.usuario) || user?.rol === 'admin') && user?.rol !== 'catequista' && (
                         <button
                           onClick={() => eliminarTarea(tarea.id)}
                           className="p-2 rounded hover:bg-red-100 text-red-600 transition-colors"
