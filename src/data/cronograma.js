@@ -1266,8 +1266,8 @@ export const eventos = [
 // Catequesis por grupo encargado
 export const catequesisGrupos = [
   { numero: 0, nombre: 'Bienvenida', encargado: 'Retiro' },
-  { numero: 1, nombre: '¿Quién soy yo? ¿Quién quiero ser?', encargado: 'Ciencia' },
-  { numero: 2, nombre: 'Llamados a Vivir', encargado: 'Piedad' },
+  { numero: 1, nombre: '¿Quién soy yo? ¿Quién quiero ser?', encargado: 'Piedad' },
+  { numero: 2, nombre: 'Llamados a Vivir', encargado: 'Ciencia' },
   { numero: 3, nombre: 'Jesucristo el Hijo de Dios Vivo', encargado: 'Entendimiento' },
   { numero: 4, nombre: 'Tú tienes palabras de vida eterna', encargado: 'Fortaleza' },
   { numero: 5, nombre: 'Jesús muere y resucita para darnos vida', encargado: 'Consejo' },
