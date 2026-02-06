@@ -255,8 +255,7 @@ function DashboardFinancieroModule({ onBack, user }) {
               <div className="mt-2 flex items-center justify-center gap-3">
                 <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs">
                   <Eye className="w-3 h-3" />
-                  Visible para todos los catequistas
-                </div>
+                  Visible para todos los catequistas    
                 <button
                   onClick={descargarPDF}
                   className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-colors"
@@ -264,6 +263,7 @@ function DashboardFinancieroModule({ onBack, user }) {
                   <Download className="w-3 h-3" />
                   Descargar PDF
                 </button>
+                </div>
               </div>
             </div>
           </div>
@@ -518,7 +518,7 @@ function DashboardFinancieroModule({ onBack, user }) {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {[...gastos.map(g => ({ ...g, tipo: 'gasto' })), ...ingresos.map(i => ({ ...i, tipo: 'ingreso' }))]
+                {[...gastos.map(g => ({ ...g, tipo: 'gasto' })), ...ingresos.map(i => ({ ...i, tipo: 'ingreso', concepto: i.origen }))]
                   .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                   .slice(0, 10)
                   .map((mov, idx) => (
