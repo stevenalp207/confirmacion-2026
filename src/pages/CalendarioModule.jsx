@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
-import { ArrowLeft, Calendar as CalendarIcon, Filter, Search, Clock, AlertCircle, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Calendar as CalendarIcon, Filter, Search, Clock, AlertCircle, ExternalLink, Download } from 'lucide-react'
 import { eventos, tiposEvento, prioridades, catequesisGrupos } from '../data/cronograma'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 function CalendarioModule({ onBack, user }) {
   const [vistaActual, setVistaActual] = useState('lista') // 'lista', 'calendario', 'proximos'
@@ -11,6 +13,34 @@ function CalendarioModule({ onBack, user }) {
   const [busqueda, setBusqueda] = useState('')
   const [diaSeleccionado, setDiaSeleccionado] = useState(null)
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [modalGrupoAbierto, setModalGrupoAbierto] = useState(false)
+  const [grupoSeleccionadoPDF, setGrupoSeleccionadoPDF] = useState('')
+
+  // Lista de grupos únicos para el PDF
+  const gruposUnicos = useMemo(() => {
+    const grupos = [...new Set(catequesisGrupos.map(c => c.encargado))]
+    return grupos.filter(g => g !== 'Retiro')
+  }, [])
+
+  // Verificar si usuario es admin o logística
+  const esAdminOLogistica = user && (user.rol === 'admin' || user.usuario === 'logistica')
+
+  // Mapear rol del usuario al nombre del grupo
+  const getGrupoUsuario = () => {
+    if (!user || !user.rol) return null
+    // Capitalizar primera letra del rol
+    const rolCapitalizado = user.rol.charAt(0).toUpperCase() + user.rol.slice(1).toLowerCase()
+    // Verificar si existe en los grupos
+    if (gruposUnicos.includes(rolCapitalizado)) return rolCapitalizado
+    // Mapeos especiales
+    const mapeos = {
+      'temor': 'Temor de Dios',
+      'temor de dios': 'Temor de Dios'
+    }
+    return mapeos[user.rol.toLowerCase()] || null
+  }
+
+  const grupoDelUsuario = getGrupoUsuario()
 
   // Función para obtener eventos del mes seleccionado
   const eventosMes = useMemo(() => {
@@ -97,6 +127,137 @@ function CalendarioModule({ onBack, user }) {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ]
 
+  // Función para obtener la hora según tipo de evento
+  const getHoraEvento = (evento) => {
+    const tituloLower = evento.titulo.toLowerCase()
+    // Verificar envío primero (antes de catequesis porque tienen el mismo tipo)
+    if (tituloLower.includes('envío') || tituloLower.includes('envio')) return '12:00 md'
+    if (evento.tipo === 'catequesis') return '5:00 pm - 6:30 pm'
+    if (evento.tipo === 'exposicion') return '6:45 pm - 7:30 pm'
+    if (evento.tipo === 'reunion') return '6:45 pm - 7:30 pm'
+    return ''
+  }
+
+  // Función para descargar PDF del calendario del grupo
+  const descargarCalendarioGrupo = (grupoOverride = null) => {
+    const grupoADescargar = grupoOverride || grupoSeleccionadoPDF
+    if (!grupoADescargar) return
+
+    // Obtener las catequesis del grupo seleccionado
+    const catequesisDelGrupo = catequesisGrupos.filter(c => c.encargado === grupoADescargar)
+    const numerosCategquesis = catequesisDelGrupo.map(c => c.numero)
+
+    // Filtrar eventos relevantes para el grupo
+    const eventosGrupo = eventos.filter(evento => {
+      // Incluir eventos donde el grupo presenta o expone
+      const tituloLower = evento.titulo.toLowerCase()
+      
+      // Verificar si es una catequesis o exposición del grupo
+      for (const num of numerosCategquesis) {
+        if (tituloLower.includes(`#${num} `) || tituloLower.includes(`#${num}-`) || 
+            tituloLower.includes(`catequesis ${num}`) || tituloLower.includes(`exposición #${num}`) ||
+            tituloLower.includes(`exposicion #${num}`) || evento.titulo.includes(`#${num}`)) {
+          return true
+        }
+      }
+      
+      // Incluir limpiezas antes de las catequesis del grupo
+      if (tituloLower.includes('limpieza')) {
+        // Verificar si hay una catequesis del grupo cercana
+        const fechaLimpieza = new Date(evento.fecha + 'T00:00:00')
+        for (const num of numerosCategquesis) {
+          const catequesisEvento = eventos.find(e => 
+            e.titulo.includes(`#${num}`) && 
+            (e.tipo === 'catequesis' || e.tipo === 'exposicion')
+          )
+          if (catequesisEvento) {
+            const fechaCatequesis = new Date(catequesisEvento.fecha + 'T00:00:00')
+            const diff = Math.abs(fechaCatequesis - fechaLimpieza) / (1000 * 60 * 60 * 24)
+            if (diff <= 7) return true
+          }
+        }
+      }
+      
+      // Incluir envíos de catequesis del grupo
+      if (tituloLower.includes('envío')) {
+        for (const num of numerosCategquesis) {
+          if (tituloLower.includes(`#${num}`)) return true
+        }
+      }
+      
+      // Incluir seguridad si está asignada al grupo
+      if (tituloLower.includes('seguridad')) {
+        for (const num of numerosCategquesis) {
+          if (evento.titulo.includes(`#${num}`) || evento.descripcion?.includes(`#${num}`)) return true
+        }
+      }
+      
+      return false
+    }).sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+
+    // Crear PDF
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' })
+    const pageWidth = doc.internal.pageSize.getWidth()
+
+    // Título
+    doc.setFontSize(16)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(0, 102, 153)
+    doc.text(`CALENDARIO ${grupoADescargar.toUpperCase()} 2026`, pageWidth / 2, 20, { align: 'center' })
+
+    // Preparar datos de la tabla
+    const tableData = eventosGrupo.map(evento => {
+      const fecha = new Date(evento.fecha + 'T00:00:00')
+      const opciones = { weekday: 'long', day: 'numeric', month: 'long' }
+      let fechaFormateada = fecha.toLocaleDateString('es-ES', opciones)
+      // Capitalizar primera letra
+      fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)
+      
+      return [
+        fechaFormateada,
+        evento.titulo,
+        getHoraEvento(evento)
+      ]
+    })
+
+    // Calcular margen para centrar
+    const colWidths = { col0: 55, col1: 85, col2: 40 }
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2
+    const marginLeft = (pageWidth - tableWidth) / 2
+
+    autoTable(doc, {
+      head: [['FECHA', 'ACTIVIDAD', 'HORA']],
+      body: tableData,
+      startY: 30,
+      theme: 'grid',
+      styles: { 
+        fontSize: 9, 
+        cellPadding: 8,
+        lineColor: [0, 102, 153],
+        lineWidth: 0.3
+      },
+      headStyles: { 
+        fillColor: [0, 102, 153], 
+        textColor: 255, 
+        fontStyle: 'bold', 
+        halign: 'center',
+        fontSize: 10,
+        cellPadding: 5
+      },
+      columnStyles: {
+        0: { cellWidth: colWidths.col0 },
+        1: { cellWidth: colWidths.col1 },
+        2: { cellWidth: colWidths.col2, halign: 'center' }
+      },
+      margin: { left: marginLeft, right: marginLeft },
+      alternateRowStyles: { fillColor: [240, 248, 255] }
+    })
+
+    doc.save(`Calendario_${grupoADescargar}_2026.pdf`)
+    setModalGrupoAbierto(false)
+    setGrupoSeleccionadoPDF('')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
@@ -129,6 +290,13 @@ function CalendarioModule({ onBack, user }) {
                   <ExternalLink className="w-4 h-4" />
                   Ver Calendario Original (Google Docs)
                 </a>
+                <button
+                  onClick={() => setModalGrupoAbierto(true)}
+                  className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all text-xs sm:text-sm"
+                >
+                  <Download className="w-4 h-4" />
+                  Descargar Calendario por Grupo
+                </button>
               </div>
               {user && (
                 <div className="text-xs sm:text-sm">
@@ -565,6 +733,130 @@ function CalendarioModule({ onBack, user }) {
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Selección de Grupo para PDF */}
+      {modalGrupoAbierto && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                  <Download className="w-5 h-5" />
+                  Descargar Calendario
+                </h2>
+                <p className="text-blue-100 text-sm mt-1">
+                  {esAdminOLogistica ? 'Selecciona un grupo de confirmación' : `Calendario de ${grupoDelUsuario || 'tu grupo'}`}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setModalGrupoAbierto(false)
+                  setGrupoSeleccionadoPDF('')
+                }}
+                className="text-white/90 hover:text-blue-600 hover:bg-white p-2 rounded-lg transition-colors duration-150"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Contenido */}
+            <div className="p-4 sm:p-6">
+              {esAdminOLogistica ? (
+                // Admin/Logística: pueden seleccionar cualquier grupo
+                <>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Grupo de Confirmación
+                  </label>
+                  <select
+                    value={grupoSeleccionadoPDF}
+                    onChange={(e) => setGrupoSeleccionadoPDF(e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                  >
+                    <option value="">Selecciona un grupo...</option>
+                    {gruposUnicos.map(grupo => (
+                      <option key={grupo} value={grupo}>{grupo}</option>
+                    ))}
+                  </select>
+                </>
+              ) : grupoDelUsuario ? (
+                // Usuario normal con grupo válido
+                <div className="text-center py-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                    <CalendarIcon className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-800 mb-2">
+                    Calendario de {grupoDelUsuario}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Se descargará el calendario con todas las actividades de tu grupo
+                  </p>
+                </div>
+              ) : (
+                // Usuario sin grupo válido
+                <div className="text-center py-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mb-4">
+                    <AlertCircle className="w-8 h-8 text-yellow-600" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-800 mb-2">
+                    Grupo no encontrado
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Tu rol ({user?.rol || 'desconocido'}) no corresponde a ningún grupo de catequesis
+                  </p>
+                </div>
+              )}
+
+              {(grupoSeleccionadoPDF || (!esAdminOLogistica && grupoDelUsuario)) && (
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">Catequesis asignadas a {grupoSeleccionadoPDF || grupoDelUsuario}:</span>
+                  </p>
+                  <ul className="mt-2 text-xs text-blue-700 space-y-1">
+                    {catequesisGrupos.filter(c => c.encargado === (grupoSeleccionadoPDF || grupoDelUsuario)).map(c => (
+                      <li key={c.numero}>#{c.numero} - {c.nombre}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 p-4 bg-gray-50 flex gap-3">
+              <button
+                onClick={() => {
+                  setModalGrupoAbierto(false)
+                  setGrupoSeleccionadoPDF('')
+                }}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  // Si no es admin, usar el grupo del usuario
+                  if (!esAdminOLogistica && grupoDelUsuario) {
+                    descargarCalendarioGrupo(grupoDelUsuario)
+                  } else {
+                    descargarCalendarioGrupo()
+                  }
+                }}
+                disabled={esAdminOLogistica ? !grupoSeleccionadoPDF : !grupoDelUsuario}
+                className={`flex-1 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                  (esAdminOLogistica ? grupoSeleccionadoPDF : grupoDelUsuario)
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                <Download className="w-4 h-4" />
+                Descargar PDF
               </button>
             </div>
           </div>
