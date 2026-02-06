@@ -1,48 +1,55 @@
 // Catequistas para Confirmación 2026
 export const catequistas = [
-  { nombre: 'Luis Ángel Sánchez Badilla', grupo: 'NA' },
-  { nombre: 'Sebastián Huertas Arce', grupo: 'NA' },
-  { nombre: 'Mathias Calderon Sequeira', grupo: 'NA' },
-  { nombre: 'Jefferson David Aguilar Guzman', grupo: 'NA' },
+  // Consejo
+  { nombre: 'Jefferson David Aguilar Guzman', grupo: 'Consejo', comision: 'Retiro' },
+  { nombre: 'Nashamy Araya Castellón', grupo: 'Consejo', comision: '' },
+  { nombre: 'Julissa Escalante Badilla', grupo: 'Consejo', comision: 'Medios' },
+  { nombre: 'Montserrat Campos Hernández', grupo: 'Consejo', comision: 'Medios' },
   
-  { nombre: 'Jeaustin Emanuel Fernández Arias', grupo: 'NA' },
-  { nombre: 'Sofía Arce Hernández', grupo: 'NA' },
-  { nombre: 'Monserrat Solano Vargas', grupo: 'NA' },
-  { nombre: 'Luis Felipe Mora Ramírez', grupo: 'NA' },
+  // Piedad
+  { nombre: 'Adrian Chaves Herrera', grupo: 'Piedad', comision: '' },
+  { nombre: 'María Paula Avilés González', grupo: 'Piedad', comision: 'Medios' },
+  { nombre: 'Justin Rojas Salazar', grupo: 'Piedad', comision: 'Retiro' },
+  { nombre: 'Johanna Victoria Castro Guillén', grupo: 'Piedad', comision: 'Logística' },
+  { nombre: 'Montserrat de Los Ángeles Mata Madriz', grupo: 'Piedad', comision: 'Logística' },
   
-  { nombre: 'Johanna Victoria Castro Guillén', grupo: 'NA' },
-  { nombre: 'Gabriel Esteban Valverde Guzmán', grupo: 'NA' },
-  { nombre: 'Julissa Escalante Badilla', grupo: 'NA' },
-  { nombre: 'Steven Alpizar Gamboa', grupo: 'NA' },
+  // Sabiduría
+  { nombre: 'Amanda Cordero Trejos', grupo: 'Sabiduría', comision: 'Medios' },
+  { nombre: 'Jeaustin Emanuel Fernández Arias', grupo: 'Sabiduría', comision: '' },
+  { nombre: 'Ismael Josué Rivera Quesada', grupo: 'Sabiduría', comision: '' },
+  { nombre: 'Mariana Segura Piedra', grupo: 'Sabiduría', comision: 'Financiero' },
   
-  { nombre: 'Justin Rojas Salazar', grupo: 'NA' },
-  { nombre: 'Ashley Rodríguez González', grupo: 'NA' },
-  { nombre: 'Samuel Brenes Vargas', grupo: 'NA' },
-  { nombre: 'Mariam Astua Solano', grupo: 'NA' },
+  // Ciencia
+  { nombre: 'Luis Ángel Sánchez Badilla', grupo: 'Ciencia', comision: 'Retiro' },
+  { nombre: 'Sharlyn Blanco Mora', grupo: 'Ciencia', comision: 'Medios' },
+  { nombre: 'Mariam Astua Solano', grupo: 'Ciencia', comision: 'Retiro' },
+  { nombre: 'Marco Andrés Sandí Chinchilla', grupo: 'Ciencia', comision: 'Financiero' },
+  { nombre: 'Ashley Rodríguez González', grupo: 'Ciencia', comision: '' },
   
-  { nombre: 'Sharlyn Blanco Mora', grupo: 'NA' },
-  { nombre: 'Marco Andrés Sandí Chinchilla', grupo: 'NA' },
-  { nombre: 'Nazareth Sofía Montoya Chacón', grupo: 'NA' },
-  { nombre: 'Montserrat de Los Ángeles Mata Madriz', grupo: 'NA' },
+  // Temor de Dios
+  { nombre: 'Mathias Calderon Sequeira', grupo: 'Temor de Dios', comision: '' },
+  { nombre: 'Karemy Guzmán Cruz', grupo: 'Temor de Dios', comision: 'Retiro' },
+  { nombre: 'Sofía Arce Hernández', grupo: 'Temor de Dios', comision: 'Retiro' },
+  { nombre: 'Sebastián Huertas Arce', grupo: 'Temor de Dios', comision: 'Financiero' },
+  { nombre: 'Nazareth Sofía Montoya Chacón', grupo: 'Temor de Dios', comision: 'Financiero' },
   
-  { nombre: 'Montserrat Campos Hernández', grupo: 'NA' },
-  { nombre: 'Ismael Josué Rivera Quesada', grupo: 'NA' },
-  { nombre: 'Sebastián Altamirano Ling', grupo: 'NA' },
-  { nombre: 'Francella Fallas Castro', grupo: 'NA' },
+  // Entendimiento
+  { nombre: 'Samuel Brenes Vargas', grupo: 'Entendimiento', comision: 'Retiro' },
+  { nombre: 'Luis Felipe Mora Ramírez', grupo: 'Entendimiento', comision: 'Retiro' },
+  { nombre: 'Noelia Odilie Matarrita Araya', grupo: 'Entendimiento', comision: '' },
+  { nombre: 'Sebastián Altamirano Ling', grupo: 'Entendimiento', comision: 'Financiero' },
+  { nombre: 'Monserrat Solano Vargas', grupo: 'Entendimiento', comision: 'Logística' },
   
-  { nombre: 'Nashamy Araya Castellón', grupo: 'NA' },
-  { nombre: 'Karemy Guzmán Cruz', grupo: 'NA' },
-  { nombre: 'Noelia Odilie Matarrita Araya', grupo: 'NA' },
-  { nombre: 'Amanda Cordero Trejos', grupo: 'NA' },
+  // Fortaleza
+  { nombre: 'Dylan Chacón Sandoval', grupo: 'Fortaleza', comision: 'Financiero' },
+  { nombre: 'Steven Alpizar Gamboa', grupo: 'Fortaleza', comision: 'Logística' },
+  { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'Fortaleza', comision: 'Medios' },
+  { nombre: 'Francella Fallas Castro', grupo: 'Fortaleza', comision: 'Medios' },
   
-  { nombre: 'Dylan Chacón Sandoval', grupo: 'NA' },
-  { nombre: 'Mariana Segura Piedra', grupo: 'NA' },
-  { nombre: 'Jimena Valeska Angulo Ramirez', grupo: 'NA' },
-  { nombre: 'Adriana Álvarez Lizano', grupo: 'NA' },
-  
-  { nombre: 'José Pablo Castro Jiménez', grupo: 'NA' },
-  { nombre: 'Adrian Chaves Herrera', grupo: 'NA' },
-  { nombre: 'María Paula Avilés González', grupo: 'NA' }
+  // Formación
+  { nombre: 'José Pablo Castro Jiménez', grupo: 'Formación', comision: '' },
+  { nombre: 'Gabriel Esteban Valverde Guzmán', grupo: 'Formación', comision: '' },
+  { nombre: 'Adriana Álvarez Lizano', grupo: 'Formación', comision: '' }
 ];
 
 // Obtener solo los nombres de catequistas
