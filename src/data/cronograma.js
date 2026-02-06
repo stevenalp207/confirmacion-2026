@@ -423,7 +423,7 @@ export const eventos = [
   },
   {
     id: 47,
-    fecha: '2026-04-24',
+    fecha: '2026-04-02',
     titulo: '4 Semanas para Entrega de Documentos',
     descripcion: 'Fecha límite entrega de documentos de catequizandos',
     tipo: 'administrativo',
@@ -488,7 +488,7 @@ export const eventos = [
   },
   {
     id: 54,
-    fecha: '2026-05-08',
+    fecha: '2026-04-16',
     titulo: '2 Semanas para Entrega de Documentos',
     descripcion: 'Fecha límite entrega de documentos de catequizandos',
     tipo: 'administrativo',
@@ -587,7 +587,7 @@ export const eventos = [
   },
   {
     id: 65,
-    fecha: '2026-05-29',
+    fecha: '2026-04-30',
     titulo: 'FECHA FINAL - Entrega de Documentos de Catequizandos',
     descripcion: 'Último día para entregar documentos de catequizandos',
     tipo: 'administrativo',
