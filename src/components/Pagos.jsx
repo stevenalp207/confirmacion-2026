@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Lock } from 'lucide-react';
+import { Lock, Download } from 'lucide-react';
 import { supabase } from '../config/supabase';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
   const [pagosState, setPagosState] = useState({});
@@ -201,8 +203,69 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
     );
   }
 
+  const descargarPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const titulo = esCatequistas ? 'Pagos Catequistas' : `Pagos Retiro - ${grupo}`;
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(titulo, pageWidth / 2, 12, { align: 'center' });
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Pagado: ${totalPagado.toLocaleString()} / ${totalRequerido.toLocaleString()} CRC | Completados: ${completados}/${cantidadPersonas} | ${new Date().toLocaleDateString('es-CR')}`, pageWidth / 2, 18, { align: 'center' });
+
+    const tableData = listaPersonas.map(({ id, nombre }) => {
+      const pago = pagosState[id] || { monto_pagado: 0, pagado: false };
+      const falta = Math.max(0, montoRequerido - pago.monto_pagado);
+      return [
+        nombre,
+        pago.monto_pagado.toLocaleString(),
+        montoRequerido.toLocaleString(),
+        pago.pagado ? 'Completo' : `Falta ${falta.toLocaleString()}`
+      ];
+    });
+
+    // Ajustar tamaño según cantidad de personas para que quepa en una página
+    const fontSize = esCatequistas && cantidadPersonas > 25 ? 7.5 : 8.5;
+    const cellPadding = esCatequistas && cantidadPersonas > 25 ? 1.5 : 2;
+
+    // Calcular margen para centrar la tabla
+    const colWidths = { col0: 65, col1: 30, col2: 30, col3: 38 };
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2 + colWidths.col3;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
+    autoTable(doc, {
+      head: [[esCatequistas ? 'Catequista' : 'Estudiante', 'Pagado', 'Requerido', 'Estado']],
+      body: tableData,
+      startY: 22,
+      theme: 'grid',
+      styles: { fontSize: fontSize, cellPadding: cellPadding },
+      headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: fontSize + 1 },
+      columnStyles: {
+        0: { cellWidth: colWidths.col0 },
+        1: { cellWidth: colWidths.col1, halign: 'right' },
+        2: { cellWidth: colWidths.col2, halign: 'right' },
+        3: { cellWidth: colWidths.col3, halign: 'center' }
+      },
+      margin: { left: marginLeft, right: marginLeft }
+    });
+
+    doc.save(`Pagos_${esCatequistas ? 'Catequistas' : grupo}_2026.pdf`);
+  };
+
   return (
     <div className="space-y-6">
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={descargarPDF}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+        >
+          <Download size={16} />
+          Descargar PDF
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
           <div className="text-sm text-gray-600 mb-1">Total Requerido</div>

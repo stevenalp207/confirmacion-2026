@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Lock } from 'lucide-react';
+import { Lock, Download } from 'lucide-react';
 import { tiposDocumentos } from '../data/grupos';
 import { supabase } from '../config/supabase';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function Documents({ grupo, estudiantes, user }) {
   const [documentosState, setDocumentosState] = useState({});
@@ -112,9 +114,62 @@ function Documents({ grupo, estudiantes, user }) {
     );
   }
 
+  const descargarPDF = () => {
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Entrega de Documentos - ${grupo}`, pageWidth / 2, 12, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generado: ${new Date().toLocaleDateString('es-CR')}`, pageWidth / 2, 18, { align: 'center' });
+
+    const headers = ['Estudiante', ...tiposDocumentos.map(d => d.nombre)];
+    const tableData = Object.values(estudiantes).map(est => [
+      est.nombre,
+      ...tiposDocumentos.map(d => documentosState[est.id]?.[d.id] ? 'Si' : 'No')
+    ]);
+
+    // Calcular ancho de tabla y centrar
+    const colWidth = 22; // ancho para cada columna de documento
+    const col0Width = 50;
+    const totalTableWidth = col0Width + (tiposDocumentos.length * colWidth);
+    const marginLeft = (pageWidth - totalTableWidth) / 2;
+
+    // Crear estilos de columnas dinámicamente
+    const columnStyles = { 0: { halign: 'left', cellWidth: col0Width } };
+    tiposDocumentos.forEach((_, i) => {
+      columnStyles[i + 1] = { cellWidth: colWidth };
+    });
+
+    autoTable(doc, {
+      head: [headers],
+      body: tableData,
+      startY: 22,
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 1.5, halign: 'center' },
+      headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'center' },
+      columnStyles: columnStyles,
+      margin: { left: marginLeft, right: marginLeft }
+    });
+
+    doc.save(`Documentos_${grupo}_2026.pdf`);
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-2xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Entrega de Documentos</h2>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-2xl sm:text-2xl font-bold text-gray-800">Entrega de Documentos</h2>
+        <button
+          onClick={descargarPDF}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+        >
+          <Download size={16} />
+          PDF
+        </button>
+      </div>
       
       <div className="overflow-x-auto -mx-4 sm:mx-0">
         <div className="inline-block min-w-full align-middle px-4 sm:px-0">

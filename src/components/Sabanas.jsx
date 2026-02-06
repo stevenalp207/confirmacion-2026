@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../config/supabase';
+import { Download } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function Sabanas({ grupo, estudiantes }) {
   const [sabanasState, setSabanasState] = useState({});
@@ -93,12 +96,60 @@ function Sabanas({ grupo, estudiantes }) {
 
   const totalEntregadas = Object.values(sabanasState).filter(Boolean).length;
 
+  const descargarPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Entrega de Sábanas - ${grupo}`, pageWidth / 2, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Entregadas: ${totalEntregadas} / ${Object.keys(estudiantes).length} | Generado: ${new Date().toLocaleDateString('es-CR')}`, pageWidth / 2, 22, { align: 'center' });
+
+    const tableData = Object.values(estudiantes).map(est => [
+      est.nombre,
+      sabanasState[est.id] ? 'Si' : 'No'
+    ]);
+
+    // Calcular margen para centrar la tabla
+    const colWidths = { col0: 120, col1: 50 };
+    const tableWidth = colWidths.col0 + colWidths.col1;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
+    autoTable(doc, {
+      head: [['Estudiante', 'Estado']],
+      body: tableData,
+      startY: 28,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2.5 },
+      headStyles: { fillColor: [249, 115, 22], textColor: 255, fontStyle: 'bold', halign: 'center' },
+      columnStyles: {
+        0: { cellWidth: colWidths.col0 },
+        1: { cellWidth: colWidths.col1, halign: 'center' }
+      },
+      margin: { left: marginLeft, right: marginLeft }
+    });
+
+    doc.save(`Sabanas_${grupo}_2026.pdf`);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">Entrega Sábanas</h2>
-        <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-semibold">
-          {totalEntregadas} / {Object.keys(estudiantes).length}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={descargarPDF}
+            className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+          >
+            <Download size={16} />
+            PDF
+          </button>
+          <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-semibold">
+            {totalEntregadas} / {Object.keys(estudiantes).length}
+          </div>
         </div>
       </div>
       

@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
-import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText, Download } from 'lucide-react';
 import ConfirmationModal from './ConfirmationModal';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const categorias = [
   { value: 'transporte', label: 'Transporte', color: 'blue' },
@@ -245,6 +247,49 @@ function GastosFinancieros({ user }) {
     return cat?.color || 'gray';
   }, []);
 
+  const descargarPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Registro de Gastos - Confirmación 2026', pageWidth / 2, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Total: ${totalGastos.toLocaleString()} CRC | Generado: ${new Date().toLocaleDateString('es-CR')}`, pageWidth / 2, 22, { align: 'center' });
+
+    const tableData = gastos.map(g => [
+      new Date(g.fecha).toLocaleDateString('es-CR'),
+      g.concepto,
+      categorias.find(c => c.value === g.categoria)?.label || g.categoria,
+      g.monto.toLocaleString()
+    ]);
+
+    // Calcular margen para centrar la tabla
+    const colWidths = { col0: 25, col1: 80, col2: 30, col3: 35 };
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2 + colWidths.col3;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
+    autoTable(doc, {
+      head: [['Fecha', 'Concepto', 'Categoría', 'Monto']],
+      body: tableData,
+      startY: 28,
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [225, 29, 72], textColor: 255, fontStyle: 'bold', halign: 'center' },
+      columnStyles: {
+        0: { cellWidth: colWidths.col0, halign: 'center' },
+        1: { cellWidth: colWidths.col1 },
+        2: { cellWidth: colWidths.col2, halign: 'center' },
+        3: { cellWidth: colWidths.col3, halign: 'right' }
+      },
+      margin: { left: marginLeft, right: marginLeft }
+    });
+
+    doc.save('Gastos_Confirmacion_2026.pdf');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -262,22 +307,31 @@ function GastosFinancieros({ user }) {
             <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
             <span className="truncate">Gestión de Gastos</span>
           </h3>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-white text-blue-600 hover:bg-blue-50 px-3 sm:px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
-          >
-            {showForm ? (
-              <>
-                <X size={18} className="sm:w-5 sm:h-5" />
-                <span className="sm:inline">Cancelar</span>
-              </>
-            ) : (
-              <>
-                <Plus size={18} className="sm:w-5 sm:h-5" />
-                Nuevo
-              </>
-            )}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={descargarPDF}
+              className="bg-white/20 hover:bg-white/30 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
+            >
+              <Download size={18} className="sm:w-5 sm:h-5" />
+              PDF
+            </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-white text-rose-600 hover:bg-rose-50 px-3 sm:px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
+            >
+              {showForm ? (
+                <>
+                  <X size={18} className="sm:w-5 sm:h-5" />
+                  <span className="sm:inline">Cancelar</span>
+                </>
+              ) : (
+                <>
+                  <Plus size={18} className="sm:w-5 sm:h-5" />
+                  Nuevo
+                </>
+              )}
+            </button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">

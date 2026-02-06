@@ -190,6 +190,12 @@ function AttendanceModule({ onBack, user }) {
         cellPadding = 3;
       }
 
+      // Calcular margen para centrar la tabla
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const colWidths = { col0: 85, col1: 95 };
+      const tableWidth = colWidths.col0 + colWidths.col1;
+      const marginLeft = (pageWidth - tableWidth) / 2;
+
       autoTable(doc, {
         startY: 22,
         head: [['Catequizando', 'Firma Padre/Madre/Padrino/Madrina']],
@@ -215,10 +221,10 @@ function AttendanceModule({ onBack, user }) {
           textColor: [0, 0, 0]
         },
         columnStyles: {
-          0: { cellWidth: 85 },
-          1: { cellWidth: 95 }
+          0: { cellWidth: colWidths.col0 },
+          1: { cellWidth: colWidths.col1 }
         },
-        margin: { left: 15, right: 15, top: 22 }
+        margin: { left: marginLeft, right: marginLeft, top: 22 }
       });
 
       doc.save(`Lista_Asistencia_${currentGroup}.pdf`);
@@ -257,6 +263,11 @@ function AttendanceModule({ onBack, user }) {
     doc.text(`Evento: ${eventLabel}  |  Fecha: ${new Date().toLocaleDateString('es-CR')}`, 14, 30);
     
     // Tabla
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const colWidths = { col0: 120, col1: 40 };
+    const tableWidth = colWidths.col0 + colWidths.col1;
+    const marginLeftEvento = (pageWidth - tableWidth) / 2;
+
     autoTable(doc, {
       startY: 40,
       head: [['Catequizando', 'Estado']],
@@ -277,13 +288,13 @@ function AttendanceModule({ onBack, user }) {
         halign: 'left'
       },
       columnStyles: {
-        0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'center' }
+        0: { cellWidth: colWidths.col0 },
+        1: { cellWidth: colWidths.col1, halign: 'center' }
       },
       alternateRowStyles: {
         fillColor: [240, 253, 244]
       },
-      margin: { left: 14, right: 14 },
+      margin: { left: marginLeftEvento, right: marginLeftEvento },
       didParseCell: function(data) {
         if (data.section === 'body' && data.column.index === 1) {
           const estado = data.cell.raw;

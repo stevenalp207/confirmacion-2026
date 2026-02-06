@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Shield, RefreshCw, Save, Users, CheckCircle, ExternalLink, AlertTriangle, Download, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Shield, RefreshCw, Save, Users, CheckCircle, ExternalLink, AlertTriangle, Download, MessageCircle } from 'lucide-react';
 import { calendarioSeguridad, seleccionarCatequistasAleatorios, getCatequistasDisponibles, generarAsignacionesEquitativas } from '../data/seguridadCalendario';
 import { supabase } from '../config/supabase';
 import jsPDF from 'jspdf';
@@ -9,7 +9,7 @@ function SeguridadModule({ onBack, user }) {
   const [asignaciones, setAsignaciones] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [copiedId, setCopiedId] = useState(null);
+  
 
   // Cargar asignaciones guardadas desde Supabase
   const loadAsignaciones = useCallback(async () => {
@@ -123,8 +123,8 @@ function SeguridadModule({ onBack, user }) {
     }
   };
 
-  // Copiar asignación al portapapeles con formato específico
-  const copiarAsignacion = (catequesis) => {
+  // Compartir asignación en WhatsApp
+  const compartirWhatsApp = (catequesis) => {
     const asignacion = asignaciones[catequesis.numero];
     if (!asignacion?.catequistas?.length) return;
 
@@ -146,13 +146,8 @@ function SeguridadModule({ onBack, user }) {
 
 Favor estar en sus lugares correspondientes a la hora de la salida.`;
 
-    navigator.clipboard.writeText(texto).then(() => {
-      setCopiedId(catequesis.numero);
-      setTimeout(() => setCopiedId(null), 2000);
-    }).catch(err => {
-      console.error('Error al copiar:', err);
-      alert('Error al copiar al portapapeles');
-    });
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   // Descargar PDF con todas las asignaciones
@@ -163,9 +158,16 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
       format: 'letter'
     });
 
-    doc.setFontSize(16);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Anchos de columnas
+    const colWidths = { col0: 10, col1: 50, col2: 28, col3: 80 };
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2 + colWidths.col3;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('Asignaciones de Seguridad - Confirmación 2026', doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
+    doc.text('Asignaciones de Seguridad - Confirmación 2026', pageWidth / 2, 12, { align: 'center' });
 
     const tableData = calendarioSeguridad.map(cat => {
       const asignacion = asignaciones[cat.numero];
@@ -181,11 +183,11 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
     autoTable(doc, {
       head: [['#', 'Catequesis', 'Grupo Presentador', 'Asignados a Seguridad']],
       body: tableData,
-      startY: 22,
+      startY: 18,
       theme: 'grid',
       styles: {
         fontSize: 8,
-        cellPadding: 3,
+        cellPadding: 2,
         lineColor: [0, 0, 0],
         lineWidth: 0.2,
         textColor: [0, 0, 0]
@@ -195,15 +197,15 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
         textColor: 255,
         fontStyle: 'bold',
         halign: 'center',
-        fontSize: 9
+        fontSize: 8.5
       },
       columnStyles: {
-        0: { cellWidth: 12, halign: 'center' },
-        1: { cellWidth: 55 },
-        2: { cellWidth: 30, halign: 'center' },
-        3: { cellWidth: 85 }
+        0: { cellWidth: colWidths.col0, halign: 'center' },
+        1: { cellWidth: colWidths.col1 },
+        2: { cellWidth: colWidths.col2, halign: 'center' },
+        3: { cellWidth: colWidths.col3 }
       },
-      margin: { left: 10, right: 10 }
+      margin: { left: marginLeft, right: marginLeft }
     });
 
     doc.save('Asignaciones_Seguridad_2026.pdf');
@@ -298,7 +300,7 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
                     <th className="px-3 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">Catequesis</th>
                     <th className="px-3 py-3 text-center text-xs sm:text-sm font-semibold text-gray-700">Grupo Presentador</th>
                     <th className="px-3 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">Asignados a Seguridad</th>
-                    <th className="px-3 py-3 text-center text-xs sm:text-sm font-semibold text-gray-700">Copiar</th>
+                    <th className="px-3 py-3 text-center text-xs sm:text-sm font-semibold text-gray-700">WhatsApp</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -340,16 +342,12 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
                         </td>
                         <td className="px-3 py-3 text-center">
                           <button
-                            onClick={() => copiarAsignacion(catequesis)}
+                            onClick={() => compartirWhatsApp(catequesis)}
                             disabled={!tieneAsignacion}
-                            className={`p-2 rounded-lg transition ${tieneAsignacion ? 'bg-green-100 hover:bg-green-200 text-green-700' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-                            title={tieneAsignacion ? 'Copiar asignación' : 'Sin asignación para copiar'}
+                            className={`p-2 rounded-lg transition ${tieneAsignacion ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                            title={tieneAsignacion ? 'Enviar a WhatsApp' : 'Sin asignación para enviar'}
                           >
-                            {copiedId === catequesis.numero ? (
-                              <Check className="w-4 h-4" />
-                            ) : (
-                              <Copy className="w-4 h-4" />
-                            )}
+                            <MessageCircle className="w-4 h-4" />
                           </button>
                         </td>
                       </tr>
@@ -368,7 +366,7 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
               <li>• Se seleccionan <strong>3 catequistas</strong> para cubrir calle, escuela y pista.</li>
               <li>• La distribución es <strong>equitativa</strong>: cada catequista cubre aproximadamente la misma cantidad de veces.</li>
               <li>• Los catequistas de <strong>Formación</strong> no participan en seguridad.</li>
-              <li>• Haz clic en el botón de <strong>copiar</strong> para copiar el cronograma formateado al portapapeles.</li>
+              <li>• Haz clic en el botón de <strong>WhatsApp</strong> para enviar el cronograma al grupo que elijas.</li>
             </ul>
           </div>
         </div>

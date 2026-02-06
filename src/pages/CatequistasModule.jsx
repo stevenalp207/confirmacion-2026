@@ -204,6 +204,11 @@ function CatequistasModule({ onBack }) {
     }
     
     // Tabla optimizada para una página
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const fixedColWidths = 45 + 30; // grupo + estado
+    const col0Width = pageWidth - fixedColWidths - 36; // 36 = margen * 2
+    const marginLeft = 18;
+
     autoTable(doc, {
       startY: 22,
       head: [['Catequista', 'Grupo', 'Estado']],
@@ -225,15 +230,14 @@ function CatequistasModule({ onBack }) {
         halign: 'left'
       },
       columnStyles: {
-        0: { cellWidth: 'auto' },
+        0: { cellWidth: col0Width },
         1: { cellWidth: 45, halign: 'center' },
         2: { cellWidth: 30, halign: 'center' }
       },
       alternateRowStyles: {
         fillColor: [240, 248, 255]
       },
-      margin: { left: 14, right: 14 },
-      tableWidth: 'auto',
+      margin: { left: marginLeft, right: marginLeft },
       didParseCell: function(data) {
         if (data.section === 'body' && data.column.index === 2) {
           const estado = data.cell.raw;

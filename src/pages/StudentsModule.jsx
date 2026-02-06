@@ -81,6 +81,11 @@ function StudentsModule({ onBack, user }) {
     }
     
     // Crear tabla
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const colWidths = { col0: 60, col1: 60, col2: 60 };
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
     autoTable(doc, {
       head: [['Catequizando', 'Firma del encargado', 'Correo electrónico']],
       body: tableData,
@@ -106,11 +111,11 @@ function StudentsModule({ onBack, user }) {
         textColor: [0, 0, 0]
       },
       columnStyles: {
-        0: { cellWidth: 60 },
-        1: { cellWidth: 60 },
-        2: { cellWidth: 60 }
+        0: { cellWidth: colWidths.col0 },
+        1: { cellWidth: colWidths.col1 },
+        2: { cellWidth: colWidths.col2 }
       },
-      margin: { left: 15, right: 15, top: 22 },
+      margin: { left: marginLeft, right: marginLeft, top: 22 },
       didDrawPage: (data) => {
         // Footer
         const pageCount = doc.internal.pages.length - 1;

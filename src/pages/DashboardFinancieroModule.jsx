@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, Wallet, AlertCircle, CheckCircle2, Eye } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, Wallet, AlertCircle, CheckCircle2, Eye, Download } from 'lucide-react';
 import { supabase } from '../config/supabase';
 import { catequistas } from '../data/catequistas';
 import { gruposData } from '../data/grupos';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function DashboardFinancieroModule({ onBack, user }) {
   const [ingresos, setIngresos] = useState([]);
@@ -138,6 +140,95 @@ function DashboardFinancieroModule({ onBack, user }) {
     return colors[cat] || 'gray';
   };
 
+  const descargarPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Reporte Financiero - Confirmación 2026', pageWidth / 2, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generado: ${new Date().toLocaleDateString('es-CR')}`, pageWidth / 2, 22, { align: 'center' });
+
+    // Resumen general
+    let yPos = 32;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Resumen General', 15, yPos);
+    
+    yPos += 8;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Total Ingresos: ${totales.ingresosTotales.toLocaleString()} CRC`, 15, yPos);
+    doc.text(`Total Gastos: ${totales.gastos.toLocaleString()} CRC`, 105, yPos);
+    yPos += 6;
+    doc.text(`Pagos Retiro: ${totales.pagosRetiro.toLocaleString()} CRC`, 15, yPos);
+    doc.text(`Balance: ${totales.balance.toLocaleString()} CRC`, 105, yPos);
+
+    // Tabla de gastos por categoría
+    yPos += 12;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Gastos por Categoria', 15, yPos);
+
+    autoTable(doc, {
+      head: [['Categoria', 'Monto']],
+      body: gastosPorCategoria.map(c => [getCategoriaLabel(c.nombre), c.monto.toLocaleString()]),
+      startY: yPos + 5,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2 },
+      headStyles: { fillColor: [225, 29, 72], textColor: 255, fontStyle: 'bold' },
+      margin: { left: 15, right: 105 }
+    });
+
+    // Tabla de ingresos por categoría
+    const gastosEndY = doc.lastAutoTable.finalY;
+    autoTable(doc, {
+      head: [['Categoria', 'Monto']],
+      body: ingresosPorCategoria.map(c => [getCategoriaLabel(c.nombre), c.monto.toLocaleString()]),
+      startY: yPos + 5,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2 },
+      headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
+      margin: { left: 110, right: 15 }
+    });
+
+    // Estado de pagos
+    yPos = Math.max(gastosEndY, doc.lastAutoTable.finalY) + 12;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Estado de Pagos del Retiro', 15, yPos);
+
+    // Centrar tabla de pagos (reutiliza pageWidth de arriba)
+    const pagosColWidths = { col0: 35, col1: 28, col2: 28, col3: 28, col4: 25 };
+    const pagosTableWidth = pagosColWidths.col0 + pagosColWidths.col1 + pagosColWidths.col2 + pagosColWidths.col3 + pagosColWidths.col4;
+    const pagosMarginLeft = (pageWidth - pagosTableWidth) / 2;
+
+    autoTable(doc, {
+      head: [['Grupo', 'Completos', 'Parciales', 'Pendientes', 'Total']],
+      body: [
+        ['Estudiantes', pagosEstudiantesStats.completos, pagosEstudiantesStats.parciales, pagosEstudiantesStats.pendientes, pagosEstudiantesStats.total],
+        ['Catequistas', pagosCatequistasStats.completos, pagosCatequistasStats.parciales, pagosCatequistasStats.pendientes, pagosCatequistasStats.total]
+      ],
+      startY: yPos + 5,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2, halign: 'center' },
+      headStyles: { fillColor: [99, 102, 241], textColor: 255, fontStyle: 'bold' },
+      columnStyles: {
+        0: { cellWidth: pagosColWidths.col0 },
+        1: { cellWidth: pagosColWidths.col1 },
+        2: { cellWidth: pagosColWidths.col2 },
+        3: { cellWidth: pagosColWidths.col3 },
+        4: { cellWidth: pagosColWidths.col4 }
+      },
+      margin: { left: pagosMarginLeft, right: pagosMarginLeft }
+    });
+
+    doc.save('Reporte_Financiero_2026.pdf');
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
@@ -161,9 +252,18 @@ function DashboardFinancieroModule({ onBack, user }) {
               <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
                 Transparencia total de las finanzas del proceso
               </p>
-              <div className="mt-2 inline-flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs">
-                <Eye className="w-3 h-3" />
-                Visible para todos los catequistas
+              <div className="mt-2 flex items-center justify-center gap-3">
+                <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs">
+                  <Eye className="w-3 h-3" />
+                  Visible para todos los catequistas
+                </div>
+                <button
+                  onClick={descargarPDF}
+                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-colors"
+                >
+                  <Download className="w-3 h-3" />
+                  Descargar PDF
+                </button>
               </div>
             </div>
           </div>
