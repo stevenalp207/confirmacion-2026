@@ -302,9 +302,9 @@ function validarRestricciones(grupos, restricciones) {
 
   // Exporta en formato Excel (HTML table) compatible con .xls
   export function exportarAsignacionExcel(resultado) {
-    let html = '<table border="1"><tr><th>Grupo</th><th>Nombre</th><th>Especialidad</th><th>Grado</th><th>Número</th></tr>'
+    let html = '<table border="1"><tr><th>Grupo</th><th>Nombre</th><th>Especialidad</th><th>Grado</th><th>Número</th><th>Nombre Madre</th><th>Tel. Madre</th><th>Nombre Padre</th><th>Tel. Padre</th></tr>'
 
-    resultado.grupos.forEach(grupo => {
+    resultado.grupos.forEach((grupo, index) => {
       grupo.integrantes.forEach(est => {
         html += '<tr>'
         html += `<td>${grupo.nombre || ''}</td>`
@@ -312,8 +312,16 @@ function validarRestricciones(grupos, restricciones) {
         html += `<td>${est.especialidad || ''}</td>`
         html += `<td>${est.ano || est.grado || ''}</td>`
         html += `<td>${est.cedula || est.numero || ''}</td>`
+        html += `<td>${est.nombreMadre || ''}</td>`
+        html += `<td>${est.telMadre || ''}</td>`
+        html += `<td>${est.nombrePadre || ''}</td>`
+        html += `<td>${est.telPadre || ''}</td>`
         html += '</tr>'
       })
+      // Fila vacía para separar grupos (excepto después del último)
+      if (index < resultado.grupos.length - 1) {
+        html += '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'
+      }
     })
 
     html += '</table>'

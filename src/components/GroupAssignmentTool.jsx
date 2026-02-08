@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { asignarGruposEquilibrados, exportarAsignacionExcel } from '../utils/groupAssignment'
-import { Trash2, Plus, Download, FileText, Users, AlertCircle, CheckCircle } from 'lucide-react'
+import { Trash2, Plus, Download, FileText, Users, AlertCircle, CheckCircle, Code } from 'lucide-react'
 
 export default function GroupAssignmentTool() {
   const [tipoImportacion, setTipoImportacion] = useState('nombres')
   const [listaNombres, setListaNombres] = useState('')
   const [estudiantes, setEstudiantes] = useState([])
-  const [nuevoEstudiante, setNuevoEstudiante] = useState({ nombre: '', cedula: '', genero: '', ano: '', especialidad: '' })
+  const [nuevoEstudiante, setNuevoEstudiante] = useState({ nombre: '', cedula: '', genero: '', ano: '', especialidad: '', nombreMadre: '', telMadre: '', nombrePadre: '', telPadre: '' })
   const [restricciones, setRestricciones] = useState({
     problematicos: [],
     gruposAmigos: []
@@ -28,19 +28,23 @@ export default function GroupAssignmentTool() {
       const columnas = linea.split('\t').map(c => c.trim())
       
       if (columnas.length >= 5) {
-        // Formato: Nombre | Tel | Género | Año | Especialidad
+        // Formato: Nombre | Tel | Género | Año | Especialidad | NombreMadre | TelMadre | NombrePadre | TelPadre
         const nombre = columnas[0]
         const cedula = columnas[1]
         const genero = columnas[2]
         const ano = columnas[3]
         const especialidad = columnas[4]
+        const nombreMadre = columnas[5] || ''
+        const telMadre = columnas[6] || ''
+        const nombrePadre = columnas[7] || ''
+        const telPadre = columnas[8] || ''
         
         if (nombre && genero && especialidad) {
-          est.push({ nombre, cedula, genero, ano, especialidad })
+          est.push({ nombre, cedula, genero, ano, especialidad, nombreMadre, telMadre, nombrePadre, telPadre })
         }
       } else if (columnas.length === 1) {
         // Si es una línea simple sin tabs, la trata como solo nombre
-        est.push({ nombre: columnas[0], cedula: '', genero: '', ano: '', especialidad: '' })
+        est.push({ nombre: columnas[0], cedula: '', genero: '', ano: '', especialidad: '', nombreMadre: '', telMadre: '', nombrePadre: '', telPadre: '' })
       }
     })
     
@@ -52,7 +56,7 @@ export default function GroupAssignmentTool() {
   const handleAgregarEstudiante = () => {
     if (!nuevoEstudiante.nombre.trim()) return
     setEstudiantes([...estudiantes, { ...nuevoEstudiante }])
-    setNuevoEstudiante({ nombre: '', cedula: '', genero: '', ano: '', especialidad: '' })
+    setNuevoEstudiante({ nombre: '', cedula: '', genero: '', ano: '', especialidad: '', nombreMadre: '', telMadre: '', nombrePadre: '', telPadre: '' })
   }
 
   const handleEliminarEstudiante = (index) => {
@@ -123,6 +127,79 @@ export default function GroupAssignmentTool() {
     link.click()
   }
 
+  const handleDescargarGruposJS = () => {
+    if (!resultado) return
+    
+    let code = `// Grupos para Confirmación 2026
+export const grupos = [
+${resultado.grupos.map(g => `  '${g.nombre}'`).join(',\n')}
+];
+
+// Datos generados automáticamente desde la herramienta de asignación
+export const gruposData = {
+`
+    
+    resultado.grupos.forEach((grupo, gIdx) => {
+      code += `  '${grupo.nombre}': {
+    nombre: '${grupo.nombre}',
+    estudiantes: {
+`
+      grupo.integrantes.forEach((est, idx) => {
+        const id = est.cedula || (Date.now() + idx)
+        const escapedNombre = (est.nombre || '').replace(/'/g, "\\'")
+        code += `      '${idx + 1}': { id: ${id}, nombre: '${escapedNombre}', documentos: {}, asistencias: {} },\n`
+      })
+      code += `    }
+  }${gIdx < resultado.grupos.length - 1 ? ',' : ''}\n`
+    })
+    
+    code += `};
+
+// Tipos de documentos requeridos
+export const tiposDocumentos = [
+  { id: 'cedula_catequizando', nombre: 'Cédula Catequizando' },
+  { id: 'fe_bautismo', nombre: 'Fe de Bautismo' },
+  { id: 'constancia_comunion', nombre: 'Constancia Comunión' },
+  { id: 'cedula_padrino', nombre: 'Cédula Padrino' },
+  { id: 'fe_confirmacion_padrino', nombre: 'Fe Confirmación Padrino' },
+  { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
+  { id: 'permiso_retiro', nombre: 'Permiso Retiro' },
+];
+
+// Número total de catequesis
+export const numeroCatequesis = 25;
+
+export const getCatequesisLabel = (index) => {
+  if (index === 11) return 'Retiro Familia';
+  if (index === 20) return 'Retiro Padrinos';
+  if (index === 24) return 'Ensayo Confirma';
+  if (index < 11) return \`Catequesis \${index}\`;
+  if (index < 20) return \`Catequesis \${index - 1}\`;
+  if (index < 24) return \`Catequesis \${index - 2}\`;
+  return \`Catequesis \${index - 3}\`;
+};
+
+export const numeroCatequesisCatequistas = 26;
+
+export const getCatequesisLabelCatequistas = (index) => {
+  if (index === 0) return 'Reunion 0 (5/2/2026)';
+  if (index === 12) return 'Retiro Familia';
+  if (index === 21) return 'Retiro Padrinos';
+  if (index === 25) return 'Ensayo Confirma';
+  if (index < 12) return \`Catequesis \${index}\`;
+  if (index < 21) return \`Catequesis \${index - 1}\`;
+  if (index < 25) return \`Catequesis \${index - 2}\`;
+  return \`Catequesis \${index - 3}\`;
+};
+`
+    
+    const blob = new Blob([code], { type: 'text/javascript' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'grupos.js'
+    link.click()
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Tabs de Importación */}
@@ -162,11 +239,11 @@ export default function GroupAssignmentTool() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-2">
-                  Datos TSV (Nombre | Tel | Género | Año | Especialidad)
+                  Datos TSV (Nombre | Tel | Género | Año | Especialidad | Nombre Madre | Tel Madre | Nombre Padre | Tel Padre)
                 </label>
                 <textarea
                   className="w-full h-32 p-3 border rounded-lg text-xs font-mono resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Alaina Soto Alfaro	84307847	Femenino	Décimo	Diseño Gráfico&#10;Alejandro Vargas	72429663	Masculino	Undécimo	Desarrollo Web"
+                  placeholder="Alaina Soto	84307847	Femenino	Décimo	Diseño	María López	88112233	Juan Soto	77445566"
                   value={listaNombres}
                   onChange={(e) => setListaNombres(e.target.value)}
                 />
@@ -217,6 +294,34 @@ export default function GroupAssignmentTool() {
                 placeholder="Especialidad"
                 value={nuevoEstudiante.especialidad}
                 onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, especialidad: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nombre de la Madre"
+                value={nuevoEstudiante.nombreMadre}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, nombreMadre: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Tel. Madre"
+                value={nuevoEstudiante.telMadre}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, telMadre: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nombre del Padre"
+                value={nuevoEstudiante.nombrePadre}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, nombrePadre: e.target.value })}
+              />
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Tel. Padre"
+                value={nuevoEstudiante.telPadre}
+                onChange={(e) => setNuevoEstudiante({ ...nuevoEstudiante, telPadre: e.target.value })}
               />
               <button
                 onClick={handleAgregarEstudiante}
@@ -383,9 +488,16 @@ export default function GroupAssignmentTool() {
 
               <button
                 onClick={handleDescargarExcel}
-                className="w-full flex items-center justify-center gap-2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-semibold shadow-md mb-4"
+                className="w-full flex items-center justify-center gap-2 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-semibold shadow-md mb-2"
               >
                 <Download className="w-4 h-4" /> Excel
+              </button>
+
+              <button
+                onClick={handleDescargarGruposJS}
+                className="w-full flex items-center justify-center gap-2 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-xs font-semibold shadow-md mb-4"
+              >
+                <Code className="w-4 h-4" /> grupos.js
               </button>
 
               {resultado.advertencias.length > 0 && (
