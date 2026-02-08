@@ -367,12 +367,12 @@ export const getCatequesisLabelCatequistas = (index) => {
 
           {/* Problemáticos */}
           <div className="mb-5">
-            <label className="block text-xs font-semibold text-gray-700 mb-2 text-red-800">
+            <label className="block text-xs font-semibold text-red-800 mb-2">
               🔴 Problemáticos (no pueden estar juntos)
             </label>
             <div className="flex gap-2 mb-2">
               <select
-                className="flex-1 p-2 border rounded-lg text-xs focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="flex-1 min-w-0 p-2 border rounded-lg text-xs focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 value={nuevoProblematico}
                 onChange={(e) => setNuevoProblematico(e.target.value)}
               >
@@ -386,7 +386,7 @@ export const getCatequesisLabelCatequistas = (index) => {
               <button
                 onClick={handleAgregarProblematico}
                 disabled={!nuevoProblematico}
-                className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition"
+                className="flex-shrink-0 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition"
               >
                 <Plus className="w-4 h-4" />
               </button>

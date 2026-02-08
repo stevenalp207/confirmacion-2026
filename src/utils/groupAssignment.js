@@ -11,12 +11,33 @@ export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {
     throw new Error('Se requieren estudiantes y grupos')
   }
 
+  // Pre-calcular conteos por grado para distribución equitativa
+  const conteosPorGrado = {}
+  estudiantes.forEach(est => {
+    const grado = est.ano || est.grado
+    if (grado) {
+      conteosPorGrado[grado] = (conteosPorGrado[grado] || 0) + 1
+    }
+  })
+  
+  // Calcular promedio esperado por grupo para cada grado
+  const promediosPorGrado = {}
+  Object.entries(conteosPorGrado).forEach(([grado, count]) => {
+    promediosPorGrado[grado] = count / grupos.length
+  })
+
+  // Calcular máximo de problemáticos permitidos por grupo
+  const numProblematicos = restNormalizadas.problematicos.length
+  const maxProblematicosPorGrupo = numProblematicos > 0 ? Math.ceil(numProblematicos / grupos.length) : 0
+
   const gruposAsignados = grupos.map(nombre => ({
     nombre,
     integrantes: [],
     hombres: 0,
     mujeres: 0,
-    especialidades: {}
+    especialidades: {},
+    grados: {},
+    problematicos: 0  // Contador de problemáticos en el grupo
   }))
 
   const estudiantesPendientes = [...estudiantes].sort(() => Math.random() - 0.5)
@@ -27,15 +48,17 @@ export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {
       gruposAsignados,
       estudiante,
       restNormalizadas,
-      tamañoObjetivo
+      tamañoObjetivo,
+      promediosPorGrado,
+      maxProblematicosPorGrupo
     )
     
     if (mejorGrupo) {
-      asignarEstudianteAGrupo(mejorGrupo, estudiante)
+      asignarEstudianteAGrupo(mejorGrupo, estudiante, restNormalizadas)
     }
   }
 
-  optimizarDistribucion(gruposAsignados, restNormalizadas)
+  optimizarDistribucion(gruposAsignados, restNormalizadas, promediosPorGrado)
 
   return {
     grupos: gruposAsignados,
@@ -44,17 +67,33 @@ export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {
   }
 }
 
-function encontrarMejorGrupo(grupos, estudiante, restricciones, tamañoObjetivo) {
+function encontrarMejorGrupo(grupos, estudiante, restricciones, tamañoObjetivo, promediosPorGrado = {}, maxProblematicosPorGrupo = 1) {
+  const esProblematico = restricciones.problematicos.includes(estudiante.nombre)
+  
   const puntajes = grupos.map(grupo => {
     if (grupo.integrantes.length >= tamañoObjetivo) {
       return { grupo, puntaje: -1000 }
     }
 
-    if (tieneConflictoEnGrupo(estudiante.nombre, grupo, restricciones)) {
+    // Verificar conflicto, pero pasando el máximo permitido de problemáticos
+    if (tieneConflictoEnGrupo(estudiante.nombre, grupo, restricciones, maxProblematicosPorGrupo)) {
       return { grupo, puntaje: -2000 }
     }
 
     let puntaje = 0
+
+    // Si es problemático, preferir grupos con menos problemáticos
+    if (esProblematico) {
+      const problematicosEnGrupo = grupo.problematicos || 0
+      // Bonus grande si el grupo no tiene problemáticos
+      if (problematicosEnGrupo === 0) {
+        puntaje += 50
+      }
+      // Penalización por cada problemático ya presente
+      else {
+        puntaje -= problematicosEnGrupo * 25
+      }
+    }
 
     const genero = estudiante.genero?.toLowerCase()
     if (genero === 'masculino' || genero === 'hombre' || genero === 'm') {
@@ -69,9 +108,29 @@ function encontrarMejorGrupo(grupos, estudiante, restricciones, tamañoObjetivo)
       puntaje -= count * 5
     }
 
+    // Equilibrar por año/grado con promedio esperado
+    const grado = estudiante.ano || estudiante.grado
+    if (grado) {
+      const countGrado = grupo.grados[grado] || 0
+      const promedioEsperado = promediosPorGrado[grado] || 1
+      
+      // Bonus grande si el grupo no tiene ninguno de este grado
+      if (countGrado === 0) {
+        puntaje += 20
+      }
+      // Penalización fuerte si ya tiene >= promedio esperado
+      else if (countGrado >= Math.ceil(promedioEsperado)) {
+        puntaje -= 30
+      }
+      // Penalización normal por cada uno que ya tiene
+      else {
+        puntaje -= countGrado * 10
+      }
+    }
+
     const espacio = tamañoObjetivo - grupo.integrantes.length
     puntaje += espacio * 2
-    puntaje += (Math.random() * 6) - 3
+    puntaje += (Math.random() * 4) - 2  // Reducir aleatoriedad
 
     return { grupo, puntaje }
   })
@@ -80,11 +139,13 @@ function encontrarMejorGrupo(grupos, estudiante, restricciones, tamañoObjetivo)
   return puntajes[0]?.puntaje > -1000 ? puntajes[0].grupo : null
 }
 
-function tieneConflictoEnGrupo(nombre, grupo, restricciones) {
+function tieneConflictoEnGrupo(nombre, grupo, restricciones, maxProblematicosPorGrupo = 1) {
   const integrantes = grupo.integrantes.map(i => i.nombre)
   
+  // Para problemáticos: solo es conflicto si el grupo ya alcanzó el máximo permitido
   if (restricciones.problematicos.includes(nombre)) {
-    if (integrantes.some(n => restricciones.problematicos.includes(n))) {
+    const problematicosEnGrupo = grupo.problematicos || 0
+    if (problematicosEnGrupo >= maxProblematicosPorGrupo) {
       return true
     }
   }
@@ -105,8 +166,13 @@ function tieneConflictoEnGrupo(nombre, grupo, restricciones) {
   return false
 }
 
-function asignarEstudianteAGrupo(grupo, estudiante) {
+function asignarEstudianteAGrupo(grupo, estudiante, restricciones = {}) {
   grupo.integrantes.push(estudiante)
+  
+  // Incrementar contador de problemáticos si aplica
+  if (restricciones.problematicos && restricciones.problematicos.includes(estudiante.nombre)) {
+    grupo.problematicos = (grupo.problematicos || 0) + 1
+  }
   
   const genero = estudiante.genero?.toLowerCase()
   if (genero === 'masculino' || genero === 'hombre' || genero === 'm') {
@@ -119,19 +185,25 @@ function asignarEstudianteAGrupo(grupo, estudiante) {
     grupo.especialidades[estudiante.especialidad] = 
       (grupo.especialidades[estudiante.especialidad] || 0) + 1
   }
+
+  // Contar por año/grado
+  const grado = estudiante.ano || estudiante.grado
+  if (grado) {
+    grupo.grados[grado] = (grupo.grados[grado] || 0) + 1
+  }
 }
 
-function optimizarDistribucion(grupos, restricciones, intentos = 50) {
+function optimizarDistribucion(grupos, restricciones, promediosPorGrado = {}, intentos = 50) {
   for (let i = 0; i < intentos; i++) {
-    const mejoro = intentarIntercambio(grupos, restricciones)
+    const mejoro = intentarIntercambio(grupos, restricciones, promediosPorGrado)
     if (!mejoro) break
   }
 }
 
-function intentarIntercambio(grupos, restricciones) {
+function intentarIntercambio(grupos, restricciones, promediosPorGrado = {}) {
   const desequilibrios = calcularDesequilibrios(grupos)
   
-  if (desequilibrios.maxDesbalance < 2) {
+  if (desequilibrios.maxDesbalance < 2 && desequilibrios.maxDesbalanceGrado < 2) {
     return false
   }
 
@@ -142,8 +214,8 @@ function intentarIntercambio(grupos, restricciones) {
 
       for (const est1 of grupo1.integrantes) {
         for (const est2 of grupo2.integrantes) {
-          if (intercambioMejora(grupo1, grupo2, est1, est2, restricciones)) {
-            realizarIntercambio(grupo1, grupo2, est1, est2)
+          if (intercambioMejora(grupo1, grupo2, est1, est2, restricciones, promediosPorGrado)) {
+            realizarIntercambio(grupo1, grupo2, est1, est2, restricciones)
             return true
           }
         }
@@ -154,13 +226,22 @@ function intentarIntercambio(grupos, restricciones) {
   return false
 }
 
-function intercambioMejora(grupo1, grupo2, est1, est2, restricciones) {
-  const temp1 = { ...grupo1, integrantes: grupo1.integrantes.filter(e => e !== est1) }
-  const temp2 = { ...grupo2, integrantes: grupo2.integrantes.filter(e => e !== est2) }
+function intercambioMejora(grupo1, grupo2, est1, est2, restricciones, promediosPorGrado = {}) {
+  const temp1 = { ...grupo1, integrantes: grupo1.integrantes.filter(e => e !== est1), problematicos: grupo1.problematicos || 0 }
+  const temp2 = { ...grupo2, integrantes: grupo2.integrantes.filter(e => e !== est2), problematicos: grupo2.problematicos || 0 }
   
-  if (tieneConflictoEnGrupo(est2.nombre, temp1, restricciones)) return false
-  if (tieneConflictoEnGrupo(est1.nombre, temp2, restricciones)) return false
+  // Ajustar contadores temporales de problemáticos
+  if (restricciones.problematicos?.includes(est1.nombre)) temp1.problematicos--
+  if (restricciones.problematicos?.includes(est2.nombre)) temp2.problematicos--
+  
+  // Calcular max permitido
+  const numGrupos = 7 // Asumimos 7 grupos
+  const maxProblematicos = Math.ceil((restricciones.problematicos?.length || 0) / numGrupos)
+  
+  if (tieneConflictoEnGrupo(est2.nombre, temp1, restricciones, maxProblematicos)) return false
+  if (tieneConflictoEnGrupo(est1.nombre, temp2, restricciones, maxProblematicos)) return false
 
+  // Evaluar mejora en balance de género
   const desbalanceActual = Math.abs(grupo1.hombres - grupo1.mujeres) + 
                            Math.abs(grupo2.hombres - grupo2.mujeres)
 
@@ -175,25 +256,44 @@ function intercambioMejora(grupo1, grupo2, est1, est2, restricciones) {
 
   const nuevoDesbalance = Math.abs((grupo1.hombres + delta1) - (grupo1.mujeres - delta1)) +
                           Math.abs((grupo2.hombres + delta2) - (grupo2.mujeres - delta2))
+  
+  // Evaluar mejora en balance de grado
+  const grado1 = est1.ano || est1.grado
+  const grado2 = est2.ano || est2.grado
+  
+  let mejoraGrado = 0
+  if (grado1 && grado1 !== grado2) {
+    const count1EnGrupo1 = grupo1.grados[grado1] || 0
+    const count1EnGrupo2 = grupo2.grados[grado1] || 0
+    // Si grupo1 tiene más de este grado y grupo2 tiene menos, mejora
+    if (count1EnGrupo1 > count1EnGrupo2) mejoraGrado += 5
+  }
+  if (grado2 && grado2 !== grado1) {
+    const count2EnGrupo1 = grupo1.grados[grado2] || 0
+    const count2EnGrupo2 = grupo2.grados[grado2] || 0
+    if (count2EnGrupo2 > count2EnGrupo1) mejoraGrado += 5
+  }
 
-  return nuevoDesbalance < desbalanceActual
+  return (nuevoDesbalance < desbalanceActual) || (nuevoDesbalance === desbalanceActual && mejoraGrado > 0)
 }
 
-function realizarIntercambio(grupo1, grupo2, est1, est2) {
+function realizarIntercambio(grupo1, grupo2, est1, est2, restricciones = {}) {
   grupo1.integrantes = grupo1.integrantes.filter(e => e !== est1)
   grupo2.integrantes = grupo2.integrantes.filter(e => e !== est2)
 
-  actualizarContadores(grupo1)
-  actualizarContadores(grupo2)
+  actualizarContadores(grupo1, restricciones)
+  actualizarContadores(grupo2, restricciones)
 
-  asignarEstudianteAGrupo(grupo2, est1)
-  asignarEstudianteAGrupo(grupo1, est2)
+  asignarEstudianteAGrupo(grupo2, est1, restricciones)
+  asignarEstudianteAGrupo(grupo1, est2, restricciones)
 }
 
-function actualizarContadores(grupo) {
+function actualizarContadores(grupo, restricciones = {}) {
   grupo.hombres = 0
   grupo.mujeres = 0
   grupo.especialidades = {}
+  grupo.grados = {}
+  grupo.problematicos = 0
 
   for (const est of grupo.integrantes) {
     const genero = est.genero?.toLowerCase()
@@ -207,15 +307,38 @@ function actualizarContadores(grupo) {
       grupo.especialidades[est.especialidad] = 
         (grupo.especialidades[est.especialidad] || 0) + 1
     }
+    
+    const grado = est.ano || est.grado
+    if (grado) {
+      grupo.grados[grado] = (grupo.grados[grado] || 0) + 1
+    }
+    
+    // Contar problemáticos
+    if (restricciones.problematicos && restricciones.problematicos.includes(est.nombre)) {
+      grupo.problematicos++
+    }
   }
 }
 
 function calcularDesequilibrios(grupos) {
   const desbalancesGenero = grupos.map(g => Math.abs(g.hombres - g.mujeres))
   const tamaños = grupos.map(g => g.integrantes.length)
+  
+  // Calcular desbalance máximo de grados
+  const todosGrados = new Set()
+  grupos.forEach(g => Object.keys(g.grados || {}).forEach(grado => todosGrados.add(grado)))
+  
+  let maxDesbalanceGrado = 0
+  todosGrados.forEach(grado => {
+    const countsPorGrupo = grupos.map(g => (g.grados || {})[grado] || 0)
+    const maxCount = Math.max(...countsPorGrupo)
+    const minCount = Math.min(...countsPorGrupo)
+    maxDesbalanceGrado = Math.max(maxDesbalanceGrado, maxCount - minCount)
+  })
 
   return {
     maxDesbalance: Math.max(...desbalancesGenero),
+    maxDesbalanceGrado,
     desviacionTamaño: Math.max(...tamaños) - Math.min(...tamaños)
   }
 }
