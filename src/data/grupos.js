@@ -196,19 +196,21 @@ export const numeroCatequesisCatequistas = 26;
 export const getCatequesisLabelCatequistas = (index) => {
   if (index === 0) {
     return 'Reunion 0 (5/2/2026)';
-  } else if (index === 12) {
+  } else if (index === 1) {
+    return 'Reunion Comisiones / Formación';
+  } else if (index === 13) {
     return 'Retiro Familia';
-  } else if (index === 21) {
+  } else if (index === 22) {
     return 'Retiro Padrinos';
-  } else if (index === 25) {
+  } else if (index === 26) {
     return 'Ensayo Confirma';
-  } else if (index < 12) {
-    return `Catequesis ${index}`;
-  } else if (index < 21) {
+  } else if (index < 13) {
     return `Catequesis ${index - 1}`;
-  } else if (index < 25) {
+  } else if (index < 22) {
     return `Catequesis ${index - 2}`;
-  } else {
+  } else if (index < 26) {
     return `Catequesis ${index - 3}`;
+  } else {
+    return `Catequesis ${index - 4}`;
   }
 };
