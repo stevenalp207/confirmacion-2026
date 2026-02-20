@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocalStorage } from '../utils/storage';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData } from '../data/grupos';
@@ -11,11 +12,19 @@ function StudentsModule({ onBack, user }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [filterStatus, setFilterStatus] = useState('todos'); // todos, documentos-pendientes, documentos-completos
 
+  // Hooks para persistencia
+  const [localGruposData, setLocalGruposData] = useLocalStorage('gruposData', gruposData);
+  // Problemáticos
+  const [problematicos, setProblematicos] = useLocalStorage('problematicos', []);
+  // Grupos conflictivos (pares de grupos que no pueden estar juntos)
+  const [gruposConflictivos, setGruposConflictivos] = useLocalStorage('gruposConflictivos', []);
+  // Estudiantes añadidos manualmente
+  const [estudiantesAñadidos, setEstudiantesAñadidos] = useLocalStorage('estudiantesAñadidos', []);
+
   // Cargar todos los estudiantes de todos los grupos
   const allStudents = [];
-  
   grupos.forEach(grupo => {
-    const grupoInfo = gruposData[grupo];
+    const grupoInfo = localGruposData[grupo];
     const estudiantesObj = grupoInfo?.estudiantes || {};
     Object.entries(estudiantesObj).forEach(([id, data]) => {
       allStudents.push({
@@ -29,6 +38,24 @@ function StudentsModule({ onBack, user }) {
   // Función para contar documentos entregados
   const countDocumentosEntregados = (student) => {
     return Object.values(student.documentos || {}).filter(Boolean).length;
+  };
+
+  // Función para actualizar datos de un estudiante
+  const actualizarEstudiante = (grupo, estudianteId, nuevosDatos) => {
+    setLocalGruposData(prev => {
+      const nuevosGrupos = { ...prev };
+      nuevosGrupos[grupo] = {
+        ...nuevosGrupos[grupo],
+        estudiantes: {
+          ...nuevosGrupos[grupo].estudiantes,
+          [estudianteId]: {
+            ...nuevosGrupos[grupo].estudiantes[estudianteId],
+            ...nuevosDatos
+          }
+        }
+      };
+      return nuevosGrupos;
+    });
   };
 
   const totalDocumentos = 6; // Total de documentos requeridos
@@ -164,6 +191,7 @@ function StudentsModule({ onBack, user }) {
             estudianteId={selectedStudent.id}
             estudiante={selectedStudent}
             user={user}
+            actualizarEstudiante={actualizarEstudiante}
           />
         </div>
       </div>
