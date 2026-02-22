@@ -145,53 +145,54 @@ function CalendarioModule({ onBack, user }) {
 
     // Obtener las catequesis del grupo seleccionado
     const catequesisDelGrupo = catequesisGrupos.filter(c => c.encargado === grupoADescargar)
-    const numerosCategquesis = catequesisDelGrupo.map(c => c.numero)
+    const numerosCatequesis = catequesisDelGrupo.map(c => c.numero)
 
     // Filtrar eventos relevantes para el grupo
     const eventosGrupo = eventos.filter(evento => {
-      // Incluir eventos donde el grupo presenta o expone
       const tituloLower = evento.titulo.toLowerCase()
-      
-      // Verificar si es una catequesis o exposición del grupo
-      for (const num of numerosCategquesis) {
-        if (tituloLower.includes(`#${num} `) || tituloLower.includes(`#${num}-`) || 
-            tituloLower.includes(`catequesis ${num}`) || tituloLower.includes(`exposición #${num}`) ||
-            tituloLower.includes(`exposicion #${num}`) || evento.titulo.includes(`#${num}`)) {
-          return true
+      // Solo catequesis/exposiciones que sean exactamente de este grupo
+      if ((evento.tipo === 'catequesis' || evento.tipo === 'exposicion')) {
+        // Buscar el número de catequesis en el título
+        for (const num of numerosCatequesis) {
+          // Solo incluir si el evento es de este grupo
+          // Evitar coincidencias parciales
+          const regex = new RegExp(`(^|[^0-9])#${num}([^0-9]|$)`, 'i')
+          if (regex.test(evento.titulo)) return true
         }
+        return false
       }
-      
-      // Incluir limpiezas antes de las catequesis del grupo
+      // Limpieza: solo si está cerca de una catequesis de este grupo
       if (tituloLower.includes('limpieza')) {
-        // Verificar si hay una catequesis del grupo cercana
         const fechaLimpieza = new Date(evento.fecha + 'T00:00:00')
-        for (const num of numerosCategquesis) {
-          const catequesisEvento = eventos.find(e => 
-            e.titulo.includes(`#${num}`) && 
-            (e.tipo === 'catequesis' || e.tipo === 'exposicion')
-          )
+        for (const num of numerosCatequesis) {
+          const catequesisEvento = eventos.find(e => {
+            const regex = new RegExp(`(^|[^0-9])#${num}([^0-9]|$)`, 'i')
+            return regex.test(e.titulo) && (e.tipo === 'catequesis' || e.tipo === 'exposicion')
+          })
           if (catequesisEvento) {
             const fechaCatequesis = new Date(catequesisEvento.fecha + 'T00:00:00')
             const diff = Math.abs(fechaCatequesis - fechaLimpieza) / (1000 * 60 * 60 * 24)
             if (diff <= 7) return true
           }
         }
+        return false
       }
-      
-      // Incluir envíos de catequesis del grupo
+      // Envío: solo si es de este grupo
       if (tituloLower.includes('envío')) {
-        for (const num of numerosCategquesis) {
-          if (tituloLower.includes(`#${num}`)) return true
+        for (const num of numerosCatequesis) {
+          const regex = new RegExp(`(^|[^0-9])#${num}([^0-9]|$)`, 'i')
+          if (regex.test(evento.titulo)) return true
         }
+        return false
       }
-      
-      // Incluir seguridad si está asignada al grupo
+      // Seguridad: solo si está asignada a este grupo
       if (tituloLower.includes('seguridad')) {
-        for (const num of numerosCategquesis) {
-          if (evento.titulo.includes(`#${num}`) || evento.descripcion?.includes(`#${num}`)) return true
+        for (const num of numerosCatequesis) {
+          const regex = new RegExp(`(^|[^0-9])#${num}([^0-9]|$)`, 'i')
+          if (regex.test(evento.titulo) || (evento.descripcion && regex.test(evento.descripcion))) return true
         }
+        return false
       }
-      
       return false
     }).sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
 
