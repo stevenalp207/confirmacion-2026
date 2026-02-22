@@ -1,20 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { asignarGruposEquilibrados, exportarAsignacionExcel } from '../utils/groupAssignment'
 import { Trash2, Plus, Download, FileText, Users, AlertCircle, CheckCircle, Code } from 'lucide-react'
 
 export default function GroupAssignmentTool() {
   const [tipoImportacion, setTipoImportacion] = useState('nombres')
   const [listaNombres, setListaNombres] = useState('')
-  const [estudiantes, setEstudiantes] = useState([])
+  const [estudiantes, setEstudiantes] = useState(() => {
+    const saved = localStorage.getItem('ga_estudiantes')
+    return saved ? JSON.parse(saved) : []
+  })
   const [nuevoEstudiante, setNuevoEstudiante] = useState({ nombre: '', cedula: '', genero: '', ano: '', especialidad: '', nombreMadre: '', telMadre: '', nombrePadre: '', telPadre: '' })
-  const [restricciones, setRestricciones] = useState({
-    problematicos: [],
-    gruposAmigos: []
+  const [restricciones, setRestricciones] = useState(() => {
+    const saved = localStorage.getItem('ga_restricciones')
+    return saved ? JSON.parse(saved) : { problematicos: [], gruposAmigos: [] }
   })
   const [nuevoProblematico, setNuevoProblematico] = useState('')
   const [nuevoGrupoAmigos, setNuevoGrupoAmigos] = useState('')
-  const [resultado, setResultado] = useState(null)
+  const [resultado, setResultado] = useState(() => {
+    const saved = localStorage.getItem('ga_resultado')
+    return saved ? JSON.parse(saved) : null
+  })
   const [loading, setLoading] = useState(false)
+
+  // Persistir estudiantes
+  useEffect(() => {
+    localStorage.setItem('ga_estudiantes', JSON.stringify(estudiantes))
+  }, [estudiantes])
+
+  // Persistir restricciones
+  useEffect(() => {
+    localStorage.setItem('ga_restricciones', JSON.stringify(restricciones))
+  }, [restricciones])
+
+  // Persistir resultado
+  useEffect(() => {
+    localStorage.setItem('ga_resultado', JSON.stringify(resultado))
+  }, [resultado])
 
   const gruposDisponibles = ['Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
 
@@ -386,7 +407,7 @@ export const getCatequesisLabelCatequistas = (index) => {
               <button
                 onClick={handleAgregarProblematico}
                 disabled={!nuevoProblematico}
-                className="flex-shrink-0 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition"
+                className="shrink-0 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 transition"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -411,7 +432,7 @@ export const getCatequesisLabelCatequistas = (index) => {
 
           {/* Grupos Amigos */}
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-2 text-cyan-800">
+            <label className="block text-xs font-semibold mb-2 text-cyan-800">
               🔵 Grupos Amigos (separarlos)
             </label>
             <div className="flex gap-2 mb-2">
@@ -474,7 +495,7 @@ export const getCatequesisLabelCatequistas = (index) => {
           <button
             onClick={handleAsignar}
             disabled={estudiantes.length === 0 || loading}
-            className="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold rounded-lg hover:from-green-700 hover:to-green-800 disabled:bg-gray-400 transition mb-4 text-sm shadow-md hover:shadow-lg"
+            className="w-full py-3 bg-linear-to-r from-green-600 to-green-700 text-white font-bold rounded-lg hover:from-green-700 hover:to-green-800 disabled:bg-gray-400 transition mb-4 text-sm shadow-md hover:shadow-lg"
           >
             {loading ? '⏳ Procesando...' : '✨ Asignar Grupos'}
           </button>
@@ -524,7 +545,7 @@ export const getCatequesisLabelCatequistas = (index) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {resultado.grupos.map((grupo, idx) => (
               <div key={idx} className="border-2 border-gray-200 rounded-lg p-4 bg-white hover:shadow-lg transition hover:border-blue-400">
-                <h3 className="font-bold text-lg mb-2 text-gray-800 border-b pb-2 text-blue-600">{grupo.nombre}</h3>
+                <h3 className="font-bold text-lg mb-2 border-b pb-2 text-blue-600">{grupo.nombre}</h3>
                 <div className="text-xs text-gray-600 mb-3 space-y-1">
                   <div>👥 <span className="font-semibold">{grupo.integrantes.length}</span> personas</div>
                   <div>♂️ <span className="font-semibold">{grupo.hombres}</span> | ♀️ <span className="font-semibold">{grupo.mujeres}</span></div>
