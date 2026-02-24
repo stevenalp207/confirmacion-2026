@@ -1,10 +1,56 @@
 // Sistema de asignación automática de grupos con equilibrio y restricciones
 
 export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {}) {
+  // Excepciones y restricciones personalizadas
   const restNormalizadas = {
-    problematicos: restricciones.problematicos || [],
-    parejas: restricciones.parejas || [],
-    gruposAmigos: restricciones.gruposAmigos || []
+    problematicos: [
+      'Terry Anderson Solis Centeno',
+      'Dereck Jiménez Durán',
+      'Lara Herrera Sebastián',
+      'Fabricio Morales Chacón',
+      'Angelo Ortiz Alvarado',
+      'Roy Madrigal Aguilar',
+      'Sebastián Peraza Chinchilla',
+      'Ignacio Álvarez Ramírez',
+      'Laura Marcela Forbes Segura',
+      'Fiorella Sequeira Aguilar',
+      'Rebeca de los Angeles Artavia Quirós',
+      'María Samantha Orozco Mora',
+      'Marlie Monserrat Gómez Ramírez',
+      'Sebastián Peraza Chinchilla'
+    ],
+    parejas: [
+      ['Stacey Camila Soto Segura', 'Ismael Jesús Astorga Calderón'],
+      ['Amanda Ramírez Calderón', 'Santiago Lemuel Arrieta Venegas'],
+      ['Marlie Monserrat Gómez Ramírez', 'Sebastián Peraza Chinchilla']
+    ],
+    gruposAmigos: [
+      ['Christopher Castro Picado', 'Angelo Ortiz Alvarado']
+    ],
+    fortaleza: ['Daniel Del Valle Portuguez'],
+    // Problemas fuertes entre ellos
+    problemasFuertes: [
+      'Dereck Jiménez Durán',
+      'Laura Marcela Forbes Segura',
+      'Fiorella Sequeira Aguilar'
+    ],
+    // Parejas que terminaron mal
+    parejasMal: [
+      ['Marlie Monserrat Gómez Ramírez', 'Sebastián Peraza Chinchilla']
+    ]
+  }
+  // Si se pasan restricciones externas, combinarlas
+  if (restricciones.problematicos) {
+    restNormalizadas.problematicos = [...new Set([...restNormalizadas.problematicos, ...restricciones.problematicos])]
+  }
+  if (restricciones.parejas) {
+    restNormalizadas.parejas = [...restNormalizadas.parejas, ...restricciones.parejas]
+  }
+  if (restricciones.gruposAmigos) {
+    restNormalizadas.gruposAmigos = [...restNormalizadas.gruposAmigos, ...restricciones.gruposAmigos]
+  }
+  if (restricciones.fortaleza) {
+    restNormalizadas.fortaleza = [...new Set([...restNormalizadas.fortaleza, ...restricciones.fortaleza])]
   }
 
   if (!estudiantes?.length || !grupos?.length) {
@@ -44,6 +90,14 @@ export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {
   const tamañoObjetivo = Math.ceil(estudiantes.length / grupos.length)
 
   for (const estudiante of estudiantesPendientes) {
+    // Restricción especial: Daniel Del Valle Portuguez debe estar en fortaleza
+    if (restNormalizadas.fortaleza && restNormalizadas.fortaleza.includes(estudiante.nombre)) {
+      const grupoFortaleza = gruposAsignados.find(g => g.nombre.toLowerCase().includes('fortaleza'))
+      if (grupoFortaleza && grupoFortaleza.integrantes.length < tamañoObjetivo) {
+        asignarEstudianteAGrupo(grupoFortaleza, estudiante, restNormalizadas)
+        continue
+      }
+    }
     const mejorGrupo = encontrarMejorGrupo(
       gruposAsignados,
       estudiante,
@@ -52,7 +106,6 @@ export function asignarGruposEquilibrados(estudiantes, grupos, restricciones = {
       promediosPorGrado,
       maxProblematicosPorGrupo
     )
-    
     if (mejorGrupo) {
       asignarEstudianteAGrupo(mejorGrupo, estudiante, restNormalizadas)
     }

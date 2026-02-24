@@ -526,7 +526,17 @@ export const getCatequesisLabelCatequistas = (index) => {
                   <p className="text-yellow-800 font-semibold text-xs mb-2">⚠️ Advertencias</p>
                   <div className="space-y-1 text-xs text-yellow-700">
                     {resultado.advertencias.slice(0, 3).map((adv, i) => (
-                      <div key={i}>• {adv.mensaje}</div>
+                      <div
+                        key={i}
+                        className={
+                          adv.tipo === 'PROBLEMATICOS_JUNTOS' ? 'bg-red-100 text-red-800 rounded px-2 py-1' :
+                          adv.tipo === 'PAREJA_JUNTA' ? 'bg-orange-100 text-orange-800 rounded px-2 py-1' :
+                          adv.tipo === 'GRUPO_AMIGOS_JUNTO' ? 'bg-cyan-100 text-cyan-800 rounded px-2 py-1' :
+                          'bg-yellow-100 text-yellow-800 rounded px-2 py-1'
+                        }
+                      >
+                        • {adv.mensaje}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -563,26 +573,76 @@ export const getCatequesisLabelCatequistas = (index) => {
 
                 <div className="space-y-1 border-t pt-2">
                   {grupo.integrantes.map((est, i) => {
-                    let bgColor = 'bg-white'
-                    let textColor = 'text-gray-900'
-                    let borderColor = 'border-gray-200'
-
-                    if (restricciones.problematicos.includes(est.nombre)) {
-                      bgColor = 'bg-red-100'
-                      textColor = 'text-red-900'
-                      borderColor = 'border-red-300'
-                    } else if (restricciones.gruposAmigos.some(g => g.includes(est.nombre))) {
-                      bgColor = 'bg-cyan-100'
-                      textColor = 'text-cyan-900'
-                      borderColor = 'border-cyan-300'
+                    let bgColor = 'bg-white';
+                    let textColor = 'text-gray-900';
+                    let borderColor = 'border-gray-200';
+                    let restriccionTipo = null;
+                    let restriccionIcon = null;
+                    // Usar restricciones del resultado si existen
+                    const restriccionesAsignacion = resultado.restricciones || restricciones;
+                    const parejaConflictiva = restriccionesAsignacion.parejas && restriccionesAsignacion.parejas.some(p => p.includes(est.nombre));
+                    const parejaMal = restriccionesAsignacion.parejasMal && restriccionesAsignacion.parejasMal.some(p => p.includes(est.nombre));
+                    const problemaFuerte = restriccionesAsignacion.problemasFuertes && restriccionesAsignacion.problemasFuertes.includes(est.nombre);
+                    if (restriccionesAsignacion.problematicos && restriccionesAsignacion.problematicos.includes(est.nombre)) {
+                      bgColor = 'bg-red-100';
+                      textColor = 'text-red-900';
+                      borderColor = 'border-red-300';
+                      restriccionTipo = 'Problemático';
+                      restriccionIcon = '🚫';
+                    } else if (problemaFuerte) {
+                      bgColor = 'bg-pink-100';
+                      textColor = 'text-pink-900';
+                      borderColor = 'border-pink-300';
+                      restriccionTipo = 'Problema Fuerte';
+                      restriccionIcon = '⚡';
+                    } else if (restriccionesAsignacion.gruposAmigos && restriccionesAsignacion.gruposAmigos.some(g => g.includes(est.nombre))) {
+                      bgColor = 'bg-cyan-100';
+                      textColor = 'text-cyan-900';
+                      borderColor = 'border-cyan-300';
+                      restriccionTipo = 'Grupo Amigos';
+                      restriccionIcon = '👥';
+                    } else if (parejaMal) {
+                      bgColor = 'bg-purple-100';
+                      textColor = 'text-purple-900';
+                      borderColor = 'border-purple-300';
+                      restriccionTipo = 'Pareja Mal';
+                      restriccionIcon = '💔';
+                    } else if (parejaConflictiva) {
+                      bgColor = 'bg-orange-100';
+                      textColor = 'text-orange-900';
+                      borderColor = 'border-orange-300';
+                      restriccionTipo = 'Pareja';
+                      restriccionIcon = '❤️';
                     }
-
                     return (
                       <div key={i} className={`py-1.5 px-2 rounded text-xs ${bgColor} ${textColor} border ${borderColor}`}>
-                        <div className="font-semibold">{est.nombre}</div>
+                        <div className="font-semibold flex items-center gap-1">
+                          {est.nombre}
+                          {restriccionTipo && (
+                            <span className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1"
+                              style={{
+                                backgroundColor:
+                                  restriccionTipo === 'Problemático' ? '#fee2e2' :
+                                  restriccionTipo === 'Grupo Amigos' ? '#cffafe' :
+                                  restriccionTipo === 'Pareja' ? '#ffedd5' :
+                                  restriccionTipo === 'Problema Fuerte' ? '#fbcfe8' :
+                                  restriccionTipo === 'Pareja Mal' ? '#ede9fe' : '#fef9c3',
+                                color:
+                                  restriccionTipo === 'Problemático' ? '#b91c1c' :
+                                  restriccionTipo === 'Grupo Amigos' ? '#0e7490' :
+                                  restriccionTipo === 'Pareja' ? '#c2410c' :
+                                  restriccionTipo === 'Problema Fuerte' ? '#db2777' :
+                                  restriccionTipo === 'Pareja Mal' ? '#6d28d9' : '#a16207',
+                              }}
+                              title={restriccionTipo}
+                            >
+                              {restriccionIcon} {restriccionTipo}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-xs opacity-75 mt-0.5">{est.especialidad} • {est.ano} • {est.cedula}</div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
