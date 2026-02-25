@@ -57,7 +57,7 @@ export const gruposData = {
     estudiantes: {
       '1': { id: 70482659, nombre: 'Fabricio Daniel Rodríguez Carvajal', documentos: {}, asistencias: {} },
       '2': { id: 70462286, nombre: 'Santiago Lemuel Arrieta Venegas', documentos: {}, asistencias: {} },
-      '3': { id: 84598910, nombre: 'Rebeca de los Angeles Artavia Quirós', documentos: {}, asistencias: {} },
+      '3': { id: 86113982, nombre: 'María Samantha Orozco Mora', documentos: {}, asistencias: {} },
       '4': { id: 85066940, nombre: 'Joaquín de Jesús Chinchilla Bonilla', documentos: {}, asistencias: {} },
       '5': { id: 70092935, nombre: 'Fiorella Sequeira Aguilar', documentos: {}, asistencias: {} },
       '6': { id: 86128601, nombre: 'Ian Gabriel Solano Monge', documentos: {}, asistencias: {} },
@@ -78,7 +78,7 @@ export const gruposData = {
     estudiantes: {
       '1': { id: 84346244, nombre: 'Mariana de los Ángeles Rodríguez Pérez', documentos: {}, asistencias: {} },
       '2': { id: 77715785, nombre: 'José Pablo Flores Rojas', documentos: {}, asistencias: {} },
-      '3': { id: 86113982, nombre: 'María Samantha Orozco Mora', documentos: {}, asistencias: {} },
+      '3': { id: 84598910, nombre: 'Rebeca de los Angeles Artavia Quirós', documentos: {}, asistencias: {} },
       '4': { id: 71463515, nombre: 'Isaac Corrales Guzmán', documentos: {}, asistencias: {} },
       '5': { id: 84805934, nombre: 'André Manzanares Leon', documentos: {}, asistencias: {} },
       '6': { id: 84576788, nombre: 'Laura Marcela Forbes Segura', documentos: {}, asistencias: {} },
