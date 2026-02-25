@@ -175,11 +175,11 @@ function AttendanceModule({ onBack, user }) {
       // Calcular tamaño dinámico según cantidad de estudiantes
       const numRows = tableData.length;
       let fontSize = 10;
-      let cellPadding = 6;
+      let cellPadding = 5;
       
       if (numRows > 16) {
-        fontSize = 9;
-        cellPadding = 5;
+        fontSize = 8;
+        cellPadding = 4;
       }
       if (numRows > 20) {
         fontSize = 8;

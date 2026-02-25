@@ -12,19 +12,12 @@ function StudentsModule({ onBack, user }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [filterStatus, setFilterStatus] = useState('todos'); // todos, documentos-pendientes, documentos-completos
 
-  // Hooks para persistencia
-  const [localGruposData, setLocalGruposData] = useLocalStorage('gruposData', gruposData);
-  // Problemáticos
-  const [problematicos, setProblematicos] = useLocalStorage('problematicos', []);
-  // Grupos conflictivos (pares de grupos que no pueden estar juntos)
-  const [gruposConflictivos, setGruposConflictivos] = useLocalStorage('gruposConflictivos', []);
-  // Estudiantes añadidos manualmente
-  const [estudiantesAñadidos, setEstudiantesAñadidos] = useLocalStorage('estudiantesAñadidos', []);
+  // Mostrar estudiantes directamente desde gruposData
 
   // Cargar todos los estudiantes de todos los grupos
-  const allStudents = [];
+  let allStudents = [];
   grupos.forEach(grupo => {
-    const grupoInfo = localGruposData[grupo];
+    const grupoInfo = gruposData[grupo];
     const estudiantesObj = grupoInfo?.estudiantes || {};
     Object.entries(estudiantesObj).forEach(([id, data]) => {
       allStudents.push({
@@ -34,6 +27,8 @@ function StudentsModule({ onBack, user }) {
       });
     });
   });
+  // Ordenar alfabéticamente por nombre
+  allStudents = allStudents.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
 
   // Función para contar documentos entregados
   const countDocumentosEntregados = (student) => {
