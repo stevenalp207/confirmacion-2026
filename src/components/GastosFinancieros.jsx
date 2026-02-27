@@ -493,6 +493,9 @@ function GastosFinancieros({ user }) {
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
                   className="hidden"
                 />
+                <span className="text-xs sm:text-sm text-gray-700 truncate max-w-[120px] sm:max-w-[200px]">
+                  {file ? file.name : 'Ningún archivo seleccionado'}
+                </span>
                 {formData.comprobante_url && (
                   <a
                     href={formData.comprobante_url}
