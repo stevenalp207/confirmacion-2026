@@ -269,19 +269,19 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
           <div className="text-sm text-gray-600 mb-1">Total Requerido</div>
-          <div className="text-xl sm:text-2xl font-bold text-blue-600 break-words overflow-hidden">
+          <div className="text-xl sm:text-2xl font-bold text-blue-600 wrap-break-word overflow-hidden">
             ₡{totalRequerido.toLocaleString('es-CR')}
           </div>
         </div>
         <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4">
           <div className="text-sm text-gray-600 mb-1">Total Pagado</div>
-          <div className="text-xl sm:text-2xl font-bold text-green-600 break-words overflow-hidden">
+          <div className="text-xl sm:text-2xl font-bold text-green-600 wrap-break-word overflow-hidden">
             ₡{totalPagado.toLocaleString('es-CR')}
           </div>
         </div>
         <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4">
           <div className="text-sm text-gray-600 mb-1">Completados</div>
-          <div className="text-xl sm:text-2xl font-bold text-purple-600 break-words overflow-hidden">
+          <div className="text-xl sm:text-2xl font-bold text-purple-600 wrap-break-word overflow-hidden">
             {completados} / {cantidadPersonas}
           </div>
         </div>
@@ -315,7 +315,7 @@ function Pagos({ grupo, estudiantes, catequistas, esCatequistas, user }) {
                         type="number"
                         value={pago.monto_pagado}
                         onChange={(e) => handleMontoPagado(id, parseInt(e.target.value) || 0)}
-                        disabled={!canEditPayments()}
+                        disabled={!canEditPayments() || pago.monto_pagado >= montoRequerido}
                         className={`w-32 px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-center font-semibold ${
                           !canEditPayments() ? 'opacity-50 bg-gray-100 cursor-not-allowed' : ''
                         }`}
