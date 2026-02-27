@@ -119,34 +119,34 @@ function AppContent() {
 
   const allowedModules = (() => {
     if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero', 'participaciones', 'seguridad'];
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'participaciones', 'seguridad'];
     }
     if (user?.rol === 'financiero') {
-      return ['pagos', 'gastos', 'ingresos', 'calendario', 'tareas', 'dashboard-financiero'];
+      return ['pagos', 'gastos', 'ingresos', 'calendario', 'dashboard-financiero'];
     }
     if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'tareas', 'dashboard-financiero', 'seguridad'];
+      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'seguridad'];
     }
     if (user?.rol === 'formacion') {
-      return ['formacion', 'catequistas', 'calendario', 'tareas', 'participaciones'];
+      return ['formacion', 'catequistas', 'calendario', 'participaciones'];
     }
     if (user?.rol === 'retiro') {
-      return ['tareas', 'calendario', 'dashboard-financiero', 'participaciones'];
+      return ['calendario', 'dashboard-financiero', 'participaciones'];
     }
     if (user?.rol === 'catequista') {
-      return ['tareas', 'calendario', 'dashboard-financiero', 'participaciones', 'seguridad'];
+      return ['calendario', 'dashboard-financiero', 'participaciones', 'seguridad'];
     }
     // Si el usuario pertenece a un grupo especial, agregar catequistas
     const gruposEspeciales = [
       'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
     ];
     if (user?.grupo && gruposEspeciales.includes(user.grupo)) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones', 'catequistas'];
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones', 'catequistas'];
     }
     if (user?.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones', 'catequistas'];
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones', 'catequistas'];
     }
-    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones'];
+    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones'];
   })();
 
   const handleSelectModule = (module) => {
