@@ -61,7 +61,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Catequistas',
       icon: Users,
       color: 'blue',
-      roles: ['admin', 'logistica', 'formacion']
+      roles: ['admin', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'asistencia',

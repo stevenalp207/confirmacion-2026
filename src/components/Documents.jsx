@@ -11,8 +11,7 @@ function Documents({ grupo, estudiantes, user }) {
 
   // Función para verificar si el usuario puede editar documentos
   const canEditDocuments = () => {
-    if (!user) return false;
-    return user.rol === 'admin' || user.usuario === 'logistica';
+    return true;
   };
 
   const loadDocumentos = useCallback(async () => {

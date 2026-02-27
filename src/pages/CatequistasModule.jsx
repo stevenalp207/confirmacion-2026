@@ -6,7 +6,8 @@ import { Search, Filter, MapPin, ArrowLeft, Users, Download } from 'lucide-react
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-function CatequistasModule({ onBack }) {
+// Recibe user como prop
+function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -116,11 +117,27 @@ function CatequistasModule({ onBack }) {
   };
 
   // Función para filtrar catequistas
-  const filteredCatequistas = catequistas.filter(catequista => {
+  let filteredCatequistas = catequistas.filter(catequista => {
     const matchesSearch = catequista.nombre.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGroup = selectedGroups.length === 0 || selectedGroups.includes(catequista.grupo);
     return matchesSearch && matchesGroup;
-  }).sort((a, b) => {
+  });
+
+  // Si el usuario pertenece a uno de los grupos especiales, filtrar catequistas por ese grupo
+  const gruposEspeciales = [
+    'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
+  ];
+  if (user && user.grupo && gruposEspeciales.includes(user.grupo)) {
+    filteredCatequistas = filteredCatequistas.filter(c => c.grupo === user.grupo);
+  } else if (user && user.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
+    // También filtrar si el usuario es por nombre de usuario
+    const grupoUsuario = gruposEspeciales.find(g => g.toLowerCase() === user.usuario.toLowerCase());
+    if (grupoUsuario) {
+      filteredCatequistas = filteredCatequistas.filter(c => c.grupo === grupoUsuario);
+    }
+  }
+
+  filteredCatequistas = filteredCatequistas.sort((a, b) => {
     if (a.grupo !== b.grupo) {
       return a.grupo.localeCompare(b.grupo);
     }
@@ -305,41 +322,44 @@ function CatequistasModule({ onBack }) {
               />
             </div>
 
-            {/* Filtro por grupo */}
-            <div>
-              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
-                <MapPin className="w-4 h-4" /> Filtrar por grupo
-              </label>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setSelectedGroups([])}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
-                    selectedGroups.length === 0
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  }`}
-                >
-                  Todos ({catequistas.length})
-                </button>
-                {uniqueGroups.map(grupo => {
-                  const count = catequistas.filter(c => c.grupo === grupo).length;
-                  const isSelected = selectedGroups.includes(grupo);
-                  return (
+            {/* Filtro por grupo: solo mostrar si el usuario NO pertenece a un grupo especial */}
+            {!(user && user.grupo && gruposEspeciales.includes(user.grupo)) &&
+              !(user && user.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) && (
+                <div>
+                  <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                    <MapPin className="w-4 h-4" /> Filtrar por grupo
+                  </label>
+                  <div className="flex flex-wrap gap-2">
                     <button
-                      key={grupo}
-                      onClick={() => toggleGroup(grupo)}
+                      onClick={() => setSelectedGroups([])}
                       className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
-                        isSelected
-                          ? 'bg-purple-600 text-white shadow-md'
+                        selectedGroups.length === 0
+                          ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                       }`}
                     >
-                      {grupo} <span className="text-xs bg-gray-300 px-2 py-1 rounded ml-1">({count})</span>
+                      Todos ({catequistas.length})
                     </button>
-                  );
-                })}
-              </div>
-            </div>
+                    {uniqueGroups.map(grupo => {
+                      const count = catequistas.filter(c => c.grupo === grupo).length;
+                      const isSelected = selectedGroups.includes(grupo);
+                      return (
+                        <button
+                          key={grupo}
+                          onClick={() => toggleGroup(grupo)}
+                          className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
+                            isSelected
+                              ? 'bg-purple-600 text-white shadow-md'
+                              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                          }`}
+                        >
+                          {grupo} <span className="text-xs bg-gray-300 px-2 py-1 rounded ml-1">({count})</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
             {/* Información de resultados */}
             <div className="mt-4 p-3 bg-blue-100 border border-blue-300 rounded-lg">

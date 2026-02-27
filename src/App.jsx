@@ -136,6 +136,16 @@ function AppContent() {
     if (user?.rol === 'catequista') {
       return ['tareas', 'calendario', 'dashboard-financiero', 'participaciones', 'seguridad'];
     }
+    // Si el usuario pertenece a un grupo especial, agregar catequistas
+    const gruposEspeciales = [
+      'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
+    ];
+    if (user?.grupo && gruposEspeciales.includes(user.grupo)) {
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones', 'catequistas'];
+    }
+    if (user?.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones', 'catequistas'];
+    }
     return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'tareas', 'dashboard-financiero', 'participaciones'];
   })();
 
