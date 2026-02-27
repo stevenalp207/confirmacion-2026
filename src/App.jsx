@@ -26,7 +26,6 @@ const BoletasModule = lazy(() => import('./pages/BoletasModule'));
 const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
 const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssignmentModule'));
-const TodoModule = lazy(() => import('./pages/TodoModule'));
 const DashboardFinancieroModule = lazy(() => import('./pages/DashboardFinancieroModule'));
 const ParticipacionesModule = lazy(() => import('./pages/ParticipacionesModule'));
 const SeguridadModule = lazy(() => import('./pages/SeguridadModule'));

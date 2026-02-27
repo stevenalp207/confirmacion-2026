@@ -33,14 +33,6 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'gray',
       roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
-    // === ORGANIZACIÓN ===
-    {
-      id: 'tareas',
-      name: 'Tareas',
-      icon: ListTodo,
-      color: 'indigo',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
-    },
     {
       id: 'calendario',
       name: 'Calendario',
