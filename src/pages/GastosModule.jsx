@@ -32,14 +32,22 @@ function GastosModule({ onBack, user }) {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-rose-600 hover:text-rose-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            Volver al Menú Principal
-          </button>
-          
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-rose-600 hover:text-rose-800 font-semibold transition text-sm sm:text-base"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              Volver al Menú Principal
+            </button>
+            <button
+              className="inline-flex items-center gap-2 bg-rose-100 hover:bg-rose-200 text-rose-700 font-semibold py-1.5 px-4 rounded-lg transition-colors border border-rose-200 text-xs sm:text-sm"
+              // TODO: Implementar lógica de navegación a comprobantes de gastos
+              type="button"
+            >
+              📄 Comprobantes
+            </button>
+          </div>
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
             <div className="text-center mb-4">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2 sm:gap-3">

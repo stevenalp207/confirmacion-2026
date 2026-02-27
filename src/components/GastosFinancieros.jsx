@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { supabase } from '../config/supabase';
-import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText, Download } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, X, DollarSign, Calendar, FileText, Download, Link as Link2 } from 'lucide-react';
 import ConfirmationModal from './ConfirmationModal';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -40,8 +40,19 @@ const GastoRow = memo(({ gasto, categorias, onEdit, onDelete, getCategoriaColor 
         ₡{gasto.monto.toLocaleString()}
       </span>
     </td>
-    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
-      <div className="flex justify-end gap-1 sm:gap-2">
+    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right align-middle">
+      <div className="flex items-center justify-end gap-1 sm:gap-2">
+        {gasto.comprobante_url && (
+          <a
+            href={gasto.comprobante_url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors"
+            title="Ver comprobante"
+          >
+            <Link2 size={16} className="sm:w-5 sm:h-5" />
+          </a>
+        )}
         <button
           onClick={() => onEdit(gasto)}
           className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
@@ -74,8 +85,11 @@ function GastosFinancieros({ user }) {
     fecha: new Date().toISOString().split('T')[0],
     categoria: 'transporte',
     descripcion: '',
-    pagado_por: user?.usuario || ''
+    pagado_por: user?.usuario || '',
+    comprobante_url: ''
   });
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const loadGastos = useCallback(async () => {
     setLoading(true);
@@ -100,9 +114,24 @@ function GastosFinancieros({ user }) {
     // Solo cargar una vez al montar el componente
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const uploadComprobante = useCallback(async (selectedFile) => {
+    if (!selectedFile) return formData.comprobante_url || '';
+    const fileExt = selectedFile.name.split('.').pop();
+    const fileName = `gasto-${Date.now()}.${fileExt}`;
+    const filePath = `${user?.usuario || 'anon'}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('gastos_comprobantes')
+      .upload(filePath, selectedFile, { cacheControl: '3600', upsert: false });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage.from('gastos_comprobantes').getPublicUrl(filePath);
+    return data?.publicUrl || '';
+  }, [formData.comprobante_url, user]);
+
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    
     if (!formData.concepto || !formData.monto) {
       setModal({
         isOpen: true,
@@ -112,21 +141,21 @@ function GastosFinancieros({ user }) {
       });
       return;
     }
-
     try {
+      setUploading(true);
+      const comprobanteUrl = await uploadComprobante(file);
       const gastoData = {
         ...formData,
         monto: parseFloat(formData.monto),
-        fecha: formData.fecha || new Date().toISOString().split('T')[0]
+        fecha: formData.fecha || new Date().toISOString().split('T')[0],
+        comprobante_url: comprobanteUrl
       };
-
       if (editingId) {
         // Actualizar gasto existente
         const { error } = await supabase
           .from('gastos_confirmacion')
           .update(gastoData)
           .eq('id', editingId);
-
         if (error) throw error;
         setModal({
           isOpen: true,
@@ -139,7 +168,6 @@ function GastosFinancieros({ user }) {
         const { error } = await supabase
           .from('gastos_confirmacion')
           .insert([gastoData]);
-
         if (error) throw error;
         setModal({
           isOpen: true,
@@ -148,9 +176,8 @@ function GastosFinancieros({ user }) {
           message: 'El nuevo gasto ha sido registrado exitosamente.'
         });
       }
-
       resetForm();
-      await loadGastos(); // Esperar a que se carguen los datos
+      await loadGastos();
     } catch (error) {
       console.error('Error guardando gasto:', error);
       setModal({
@@ -159,8 +186,10 @@ function GastosFinancieros({ user }) {
         title: 'Error al guardar',
         message: 'Ocurrió un error al guardar el gasto. Intenta nuevamente.'
       });
+    } finally {
+      setUploading(false);
     }
-  }, [editingId, formData]);
+  }, [editingId, formData, file, uploadComprobante]);
 
   const handleEdit = useCallback((gasto) => {
     setFormData({
@@ -169,10 +198,12 @@ function GastosFinancieros({ user }) {
       fecha: gasto.fecha,
       categoria: gasto.categoria,
       descripcion: gasto.descripcion || '',
-      pagado_por: gasto.pagado_por
+      pagado_por: gasto.pagado_por,
+      comprobante_url: gasto.comprobante_url || ''
     });
     setEditingId(gasto.id);
     setShowForm(true);
+    setFile(null);
   }, [user]);
 
   const handleDelete = useCallback((id) => {
@@ -221,10 +252,12 @@ function GastosFinancieros({ user }) {
       fecha: new Date().toISOString().split('T')[0],
       categoria: 'transporte',
       descripcion: '',
-      pagado_por: user?.usuario || ''
+      pagado_por: user?.usuario || '',
+      comprobante_url: ''
     });
     setEditingId(null);
     setShowForm(false);
+    setFile(null);
   }, [user?.usuario]);
 
   const totalGastos = useMemo(() => 
@@ -443,18 +476,49 @@ function GastosFinancieros({ user }) {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Comprobante (imagen/pdf)</label>
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="comprobante-input"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-600 text-white text-xs sm:text-sm font-semibold cursor-pointer hover:bg-rose-700 transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  {file ? 'Cambiar archivo' : 'Elegir archivo'}
+                </label>
+                <input
+                  id="comprobante-input"
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  className="hidden"
+                />
+                {formData.comprobante_url && (
+                  <a
+                    href={formData.comprobante_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-rose-600 underline text-xs sm:text-sm ml-2"
+                  >
+                    Ver actual
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <button
                 type="submit"
-                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
+                className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base disabled:opacity-60"
+                disabled={uploading}
               >
                 <Save size={18} className="sm:w-5 sm:h-5" />
-                {editingId ? 'Actualizar' : 'Guardar'} Gasto
+                {uploading ? 'Guardando...' : editingId ? 'Actualizar' : 'Guardar'} Gasto
               </button>
               <button
                 type="button"
                 onClick={resetForm}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                disabled={uploading}
               >
                 Cancelar
               </button>
