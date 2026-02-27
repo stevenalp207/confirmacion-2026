@@ -121,13 +121,6 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'indigo',
       roles: ['admin', 'formacion']
     },
-    {
-      id: 'participaciones',
-      name: 'Participaciones',
-      icon: Mic,
-      color: 'purple',
-      roles: ['admin', 'retiro', 'formacion', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
-    },
     // === HERRAMIENTAS ADMIN ===
     {
       id: 'boletas',

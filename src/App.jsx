@@ -27,7 +27,6 @@ const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
 const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssignmentModule'));
 const DashboardFinancieroModule = lazy(() => import('./pages/DashboardFinancieroModule'));
-const ParticipacionesModule = lazy(() => import('./pages/ParticipacionesModule'));
 const SeguridadModule = lazy(() => import('./pages/SeguridadModule'));
 
 // Loading component - ahora usa SkeletonLoader mejorado
@@ -118,7 +117,7 @@ function AppContent() {
 
   const allowedModules = (() => {
     if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'participaciones', 'seguridad'];
+      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'seguridad'];
     }
     if (user?.rol === 'financiero') {
       return ['pagos', 'gastos', 'ingresos', 'calendario', 'dashboard-financiero'];
@@ -127,25 +126,25 @@ function AppContent() {
       return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'seguridad'];
     }
     if (user?.rol === 'formacion') {
-      return ['formacion', 'catequistas', 'calendario', 'participaciones'];
+      return ['formacion', 'catequistas', 'calendario'];
     }
     if (user?.rol === 'retiro') {
-      return ['calendario', 'dashboard-financiero', 'participaciones'];
+      return ['calendario', 'dashboard-financiero'];
     }
     if (user?.rol === 'catequista') {
-      return ['calendario', 'dashboard-financiero', 'participaciones', 'seguridad'];
+      return ['calendario', 'dashboard-financiero', 'seguridad'];
     }
     // Si el usuario pertenece a un grupo especial, agregar catequistas
     const gruposEspeciales = [
       'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
     ];
     if (user?.grupo && gruposEspeciales.includes(user.grupo)) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones', 'catequistas'];
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'catequistas'];
     }
     if (user?.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones', 'catequistas'];
+      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'catequistas'];
     }
-    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'participaciones'];
+    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero'];
   })();
 
   const handleSelectModule = (module) => {
@@ -263,9 +262,7 @@ function AppContent() {
               {currentModule === 'calendario' && <CalendarioModule onBack={handleBack} user={user} />}
               {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
               {currentModule === 'asignacion-personalidad' && <PersonalityAssignmentModule onBack={handleBack} user={user} />}
-              {currentModule === 'tareas' && <TodoModule onBack={handleBack} user={user} />}
               {currentModule === 'dashboard-financiero' && <DashboardFinancieroModule onBack={handleBack} user={user} />}
-              {currentModule === 'participaciones' && <ParticipacionesModule onBack={handleBack} user={user} />}
               {currentModule === 'seguridad' && <SeguridadModule onBack={handleBack} user={user} />}
             </Suspense>
           </main>
