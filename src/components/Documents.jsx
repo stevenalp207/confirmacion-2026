@@ -157,17 +157,102 @@ function Documents({ grupo, estudiantes, user }) {
     doc.save(`Documentos_${grupo}_2026.pdf`);
   };
 
+  const descargarPDFAcuseRecibido = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Acuse de Recibido - ${grupo}`, pageWidth / 2, 15, { align: 'center' });
+
+    const headers = [[
+      'Estudiante',
+      'Firma del estudiante que confirma entregado',
+      'Firma de la persona que recibe'
+    ]];
+
+    const tableData = Object.values(estudiantes)
+      .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }))
+      .map((est) => [est.nombre, '', '']);
+
+    const numRows = tableData.length;
+    let fontSize = 9;
+    let cellPadding = 2.5;
+    let minCellHeight = 14;
+
+    if (numRows > 16) {
+      fontSize = 8;
+      cellPadding = 2;
+      minCellHeight = 11;
+    }
+    if (numRows > 24) {
+      fontSize = 9;
+      cellPadding = 1.5;
+      minCellHeight = 10;
+    }
+
+    const colWidths = { col0: 50, col1: 65, col2: 65 };
+    const tableWidth = colWidths.col0 + colWidths.col1 + colWidths.col2;
+    const marginLeft = (pageWidth - tableWidth) / 2;
+
+    autoTable(doc, {
+      head: headers,
+      body: tableData,
+      startY: 18,
+      theme: 'grid',
+      styles: {
+        fontSize,
+        cellPadding,
+        minCellHeight,
+        valign: 'middle',
+        lineColor: [0, 0, 0],
+        lineWidth: 0.2,
+        textColor: [0, 0, 0]
+      },
+      headStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+        halign: 'center',
+        valign: 'middle',
+        lineWidth: 0.2,
+        lineColor: [0, 0, 0],
+        fontSize: fontSize + 1
+      },
+      bodyStyles: {
+        textColor: [0, 0, 0]
+      },
+      columnStyles: {
+        0: { cellWidth: colWidths.col0, halign: 'left' },
+        1: { cellWidth: colWidths.col1, halign: 'left' },
+        2: { cellWidth: colWidths.col2, halign: 'left' }
+      },
+      margin: { left: marginLeft, right: marginLeft, top: 18, bottom: 10 }
+    });
+
+    doc.save(`Acuse_Recibido_Documentos_${grupo}_2026.pdf`);
+  };
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h2 className="text-2xl sm:text-2xl font-bold text-gray-800">Entrega de Documentos</h2>
-        <button
-          onClick={descargarPDF}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
-        >
-          <Download size={16} />
-          PDF
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={descargarPDF}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+          >
+            <Download size={16} />
+            PDF
+          </button>
+          <button
+            onClick={descargarPDFAcuseRecibido}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+          >
+            <Download size={16} />
+            Acuse PDF
+          </button>
+        </div>
       </div>
       
       <div className="overflow-x-auto -mx-4 sm:mx-0">
