@@ -2,9 +2,62 @@ import { useState, useEffect } from 'react';
 import { User, LogOut, X, Menu } from 'lucide-react';
 import NotificationManager from './NotificationManager';
 
+const GROUP_STYLES = {
+  piedad: {
+    text: 'text-orange-700',
+    badge: 'bg-orange-100 text-orange-800'
+  },
+  consejo: {
+    text: 'text-purple-700',
+    badge: 'bg-purple-100 text-purple-800'
+  },
+  fortaleza: {
+    text: 'text-red-700',
+    badge: 'bg-red-100 text-red-800'
+  },
+  sabiduria: {
+    text: 'text-yellow-700',
+    badge: 'bg-yellow-100 text-yellow-800'
+  },
+  ciencia: {
+    text: 'text-green-700',
+    badge: 'bg-green-100 text-green-800'
+  },
+  temor: {
+    text: 'text-amber-800',
+    badge: 'bg-amber-100 text-amber-900'
+  },
+  entendimiento: {
+    text: 'text-blue-700',
+    badge: 'bg-blue-100 text-blue-800'
+  }
+};
+
+const normalizeGroupName = (value = '') => {
+  return value
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+};
+
+const getGroupStyle = (account) => {
+  const rolKey = normalizeGroupName(account?.rol);
+  const userKey = normalizeGroupName(account?.usuario);
+
+  if (GROUP_STYLES[rolKey]) return GROUP_STYLES[rolKey];
+  if (rolKey.includes('temor')) return GROUP_STYLES.temor;
+  if (GROUP_STYLES[userKey]) return GROUP_STYLES[userKey];
+  if (userKey.includes('temor')) return GROUP_STYLES.temor;
+
+  return null;
+};
+
 function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccount, onToggleMobileSidebar }) {
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
+  const userGroupStyle = getGroupStyle(user);
 
   useEffect(() => {
     if (showSwitcher) {
@@ -39,7 +92,7 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
       {/* User Info */}
       <div className="flex items-center gap-3 flex-1 lg:flex-initial">
         <div className="hidden sm:block">
-          <p className="text-sm font-semibold text-gray-800">
+          <p className={`text-sm font-semibold ${userGroupStyle?.text || 'text-gray-800'}`}>
             {user?.usuario}
           </p>
           <p className="text-xs text-gray-500">
@@ -53,6 +106,8 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
               <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">RETIRO</span>
             ) : user?.usuario === 'logistica' ? (
               <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">LOGÍSTICA</span>
+            ) : userGroupStyle ? (
+              <span className={`${userGroupStyle.badge} px-2 py-0.5 rounded font-bold`}>{user?.rol}</span>
             ) : (
               user?.rol
             )}
@@ -103,33 +158,43 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
                       No hay cuentas guardadas
                     </p>
                   ) : (
-                    savedAccounts.map((account, index) => (
-                      <div
-                        key={index}
-                        className={`flex items-center justify-between p-2 rounded-lg transition ${
-                          account.usuario === user?.usuario
-                            ? 'bg-blue-50 border border-blue-200'
-                            : 'hover:bg-gray-50 border border-transparent'
-                        }`}
-                      >
-                        <button
-                          onClick={() => handleSwitch(account.usuario)}
-                          className="flex-1 text-left"
+                    savedAccounts.map((account, index) => {
+                      const accountGroupStyle = getGroupStyle(account);
+
+                      return (
+                        <div
+                          key={index}
+                          className={`flex items-center justify-between p-2 rounded-lg transition ${
+                            account.usuario === user?.usuario
+                              ? 'bg-blue-50 border border-blue-200'
+                              : 'hover:bg-gray-50 border border-transparent'
+                          }`}
                         >
-                          <p className="text-sm font-medium text-gray-900">{account.usuario}</p>
-                          <p className="text-xs text-gray-500">{account.rol}</p>
-                        </button>
-                        {account.usuario !== user?.usuario && (
                           <button
-                            onClick={() => onRemoveAccount(account.usuario)}
-                            className="ml-2 p-1 text-red-500 hover:bg-red-50 rounded"
-                            title="Eliminar cuenta"
+                            onClick={() => handleSwitch(account.usuario)}
+                            className="flex-1 text-left"
                           >
-                            <X className="w-4 h-4" />
+                            <p className={`text-sm font-medium ${accountGroupStyle?.text || 'text-gray-900'}`}>{account.usuario}</p>
+                            {accountGroupStyle ? (
+                              <span className={`inline-block mt-0.5 text-xs px-2 py-0.5 rounded font-bold ${accountGroupStyle.badge}`}>
+                                {account.rol}
+                              </span>
+                            ) : (
+                              <p className="text-xs text-gray-500">{account.rol}</p>
+                            )}
                           </button>
-                        )}
-                      </div>
-                    ))
+                          {account.usuario !== user?.usuario && (
+                            <button
+                              onClick={() => onRemoveAccount(account.usuario)}
+                              className="ml-2 p-1 text-red-500 hover:bg-red-50 rounded"
+                              title="Eliminar cuenta"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })
                   )}
                 </div>
                 <div className="p-3 border-t border-gray-100">
@@ -170,33 +235,43 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
                         No hay cuentas guardadas
                       </p>
                     ) : (
-                      savedAccounts.map((account, index) => (
-                        <div
-                          key={index}
-                          className={`flex items-center justify-between p-3 rounded-lg transition ${
-                            account.usuario === user?.usuario
-                              ? 'bg-blue-50 border border-blue-200'
-                              : 'hover:bg-gray-50 border border-transparent'
-                          }`}
-                        >
-                          <button
-                            onClick={() => handleSwitch(account.usuario)}
-                            className="flex-1 text-left"
+                      savedAccounts.map((account, index) => {
+                        const accountGroupStyle = getGroupStyle(account);
+
+                        return (
+                          <div
+                            key={index}
+                            className={`flex items-center justify-between p-3 rounded-lg transition ${
+                              account.usuario === user?.usuario
+                                ? 'bg-blue-50 border border-blue-200'
+                                : 'hover:bg-gray-50 border border-transparent'
+                            }`}
                           >
-                            <p className="text-sm font-medium text-gray-900">{account.usuario}</p>
-                            <p className="text-xs text-gray-500">{account.rol}</p>
-                          </button>
-                          {account.usuario !== user?.usuario && (
                             <button
-                              onClick={() => onRemoveAccount(account.usuario)}
-                              className="ml-2 p-2 text-red-500 hover:bg-red-50 rounded"
-                              title="Eliminar cuenta"
+                              onClick={() => handleSwitch(account.usuario)}
+                              className="flex-1 text-left"
                             >
-                              <X className="w-5 h-5" />
+                              <p className={`text-sm font-medium ${accountGroupStyle?.text || 'text-gray-900'}`}>{account.usuario}</p>
+                              {accountGroupStyle ? (
+                                <span className={`inline-block mt-0.5 text-xs px-2 py-0.5 rounded font-bold ${accountGroupStyle.badge}`}>
+                                  {account.rol}
+                                </span>
+                              ) : (
+                                <p className="text-xs text-gray-500">{account.rol}</p>
+                              )}
                             </button>
-                          )}
-                        </div>
-                      ))
+                            {account.usuario !== user?.usuario && (
+                              <button
+                                onClick={() => onRemoveAccount(account.usuario)}
+                                className="ml-2 p-2 text-red-500 hover:bg-red-50 rounded"
+                                title="Eliminar cuenta"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })
                     )}
                   </div>
                   <div className="p-4 border-t border-gray-100">
