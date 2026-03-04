@@ -1196,7 +1196,7 @@ export const catequesisGrupos = [
   { numero: 3, nombre: 'Jesucristo el Hijo de Dios Vivo', encargado: 'Entendimiento' },
   { numero: 4, nombre: 'Tú tienes palabras de vida eterna', encargado: 'Fortaleza' },
   { numero: 5, nombre: 'Jesús muere y resucita para darnos vida', encargado: 'Consejo' },
-  { numero: 6, nombre: '¿Quién es el Espíritu Santo? Y ¿Quién es el Espíritu Santo? (fusión)', encargado: 'Sabiduria' },
+  { numero: 6, nombre: 'El espíritu Santo en la vida de Jesús Y ¿Quién es el Espíritu Santo? (fusión)', encargado: 'Sabiduria' },
   { numero: 7, nombre: 'El Espíritu Santo nos une a la iglesia', encargado: 'Temor de Dios' },
   { numero: 8, nombre: 'El espíritu nos fortalece en las luchas', encargado: 'Piedad' },
   { numero: 9, nombre: 'Nacidos por el agua y el espíritu', encargado: 'Ciencia' },

@@ -8,7 +8,7 @@ export const calendarioSeguridad = [
   { numero: 3, nombre: 'Jesucristo el Hijo de Dios Vivo', grupoPresentador: 'Fortaleza' },
   { numero: 4, nombre: 'Tú tienes palabras de vida eterna', grupoPresentador: 'Consejo' },
   { numero: 5, nombre: 'Jesús muere y resucita para darnos vida', grupoPresentador: 'Sabiduria' },
-  { numero: 6, nombre: '¿Quién es el Espíritu Santo? Y ¿Quién es el Espíritu Santo? (fusión)', grupoPresentador: 'Temor de Dios' },
+  { numero: 6, nombre: 'El espíritu Santo en la vida de Jesús Y ¿Quién es el Espíritu Santo? (fusión)', grupoPresentador: 'Temor de Dios' },
   { numero: 7, nombre: 'El Espíritu Santo nos une a la iglesia', grupoPresentador: 'Piedad' },
   { numero: 8, nombre: 'El espíritu nos fortalece en las luchas', grupoPresentador: 'Ciencia' },
   { numero: 9, nombre: 'Nacidos por el agua y el espíritu', grupoPresentador: 'Entendimiento' },
