@@ -369,26 +369,32 @@ function StudentsModule({ onBack, user }) {
                 <button
                   key={`${student.grupo}-${student.id}`}
                   onClick={() => navigateToStudent(student)}
-                  className="w-full p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition text-left group"
+                  className="w-full p-3 sm:p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg sm:hover:-translate-y-1 transition text-left group"
                 >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
                       <StudentPhoto
                         email={student.correoInstitucional}
                         name={student.nombre}
-                        sizeClass="w-14 h-14 text-base"
+                        sizeClass="w-12 h-12 text-sm sm:w-14 sm:h-14 sm:text-base"
                       />
                       <div className="flex-1 min-w-0">
-                      <p className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition">
-                        {student.nombre}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
-                        <Phone className="w-4 h-4" /> {student.id} • <BookOpen className="w-4 h-4" /> {student.grupo}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {student.especialidad || 'Especialidad no registrada'} • {student.correoInstitucional || 'Correo no registrado'}
-                      </p>
-                      <div className="mt-3 flex items-center gap-2">
+                        <p className="font-bold text-gray-800 text-base sm:text-lg leading-tight group-hover:text-blue-600 transition">
+                          {student.nombre}
+                        </p>
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600">
+                          <span className="inline-flex items-center gap-1">
+                            <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {student.id}
+                          </span>
+                          <span className="inline-flex items-center gap-1">
+                            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {student.grupo}
+                          </span>
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-600 mt-1 leading-snug">
+                          <p>{student.especialidad || 'Especialidad no registrada'}</p>
+                          <p className="break-all">{student.correoInstitucional || 'Correo no registrado'}</p>
+                        </div>
+                        <div className="mt-2 sm:mt-3 flex items-center gap-2">
                         <div className="flex-1 bg-gray-200 rounded-full h-2">
                           <div
                             className={`h-2 rounded-full transition-all ${
@@ -407,7 +413,7 @@ function StudentsModule({ onBack, user }) {
                       </div>
                     </div>
                     </div>
-                    <ArrowRight className="w-8 h-8 text-gray-300 group-hover:text-blue-500 transition ml-4 flex-shrink-0" />
+                    <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-300 group-hover:text-blue-500 transition ml-2 sm:ml-4 flex-shrink-0 self-center" />
                   </div>
                 </button>
               );
