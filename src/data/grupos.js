@@ -249,7 +249,7 @@ export const estudiantesInfoAcademica = {
   },
   'Sabiduría': {
     'Valeria Vallejos Zamora': { correoInstitucional: '2017457@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
-    'Lara Herrera Sebastián': { correoInstitucional: 'teherflo8@gmail.com', especialidad: 'Electromecánica' },
+    'Lara Herrera Sebastián': { correoInstitucional: '2023076@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Alejandro Siles Corrales': { correoInstitucional: '2023129@est.cedesdonbosco.ed.cr', especialidad: 'Dibujo y Modelado' },
     'Mía Sofia Sánchez Chaves': { correoInstitucional: '2023118@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
     'Gabriel Campos Araya': { correoInstitucional: '2020411@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },

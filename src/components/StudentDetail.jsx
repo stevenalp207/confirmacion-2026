@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../config/supabase';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
-import { GraduationCap, Check, Circle, X, AlertCircle, Calendar, AlertTriangle, Edit, Save, ClipboardList, FileText, FolderOpen, DollarSign } from 'lucide-react';
+import StudentPhoto from './StudentPhoto';
+import { Check, Circle, X, AlertCircle, Calendar, AlertTriangle, Edit, Save, ClipboardList, FileText, FolderOpen, DollarSign } from 'lucide-react';
 
 function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [asistencias, setAsistencias] = useState({});
@@ -143,7 +144,12 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 break-words">{estudiante.nombre}</h2>
             <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Catequizando de {grupo}</p>
           </div>
-          <GraduationCap className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 text-blue-100" strokeWidth={1.5} />
+          <StudentPhoto
+            email={estudiante.correoInstitucional}
+            name={estudiante.nombre}
+            sizeClass="w-16 h-16 sm:w-20 sm:h-20 text-lg"
+            enableZoom
+          />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>

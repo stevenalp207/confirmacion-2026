@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import { supabase } from '../config/supabase';
 
-function Attendance({ grupo, estudiantes, user, onStudentClick }) {
+function Attendance({ grupo, estudiantes, user, maxEnabledCatequesis = 0 }) {
   const [asistenciasState, setAsistenciasState] = useState({});
   const [loading, setLoading] = useState(true);
   
@@ -167,28 +167,25 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
                 Estudiante
               </th>
               {catequesisIndices.map((catequesisNum) => (
-                <th key={catequesisNum} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold text-gray-700 min-w-max whitespace-nowrap">
-                  {getCatequesisLabel(catequesisNum)}
+                <th key={catequesisNum} className={`px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold min-w-max whitespace-nowrap ${catequesisNum > maxEnabledCatequesis ? 'text-gray-400' : 'text-gray-700'}`}>
+                  {getCatequesisLabel(catequesisNum)}{catequesisNum > maxEnabledCatequesis ? ' 🔒' : ''}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {Object.entries(estudiantes).map(([_key, estudiante]) => {
-              const estudianteId = estudiante.id; // Usar el ID real del estudiante
+            {Object.entries(estudiantes).map(([studentKey, estudiante]) => {
+              const estudianteId = estudiante.id || studentKey;
               return (
                 <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
                   <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium sticky left-0 bg-white hover:bg-gray-50 z-10 shadow-sm">
-                    <button
-                      onClick={() => onStudentClick && onStudentClick(estudianteId)}
-                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer text-left w-full"
-                      title="Ver perfil del estudiante"
-                    >
+                    <span className="text-gray-800 font-medium">
                       {estudiante.nombre}
-                    </button>
+                    </span>
                   </td>
                   {catequesisIndices.map(catequesisNum => {
                     const estado = asistenciasState[estudianteId]?.[catequesisNum] || 'ausente';
+                    const isLocked = catequesisNum > maxEnabledCatequesis;
                     
                     let bgColor, icon, label;
                     if (estado === 'presente') {
@@ -208,11 +205,16 @@ function Attendance({ grupo, estudiantes, user, onStudentClick }) {
                     return (
                       <td key={catequesisNum} className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-center">
                         <button
-                          onClick={() => handleEstadoChange(estudianteId, catequesisNum)}
-                          className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg font-bold text-white text-base sm:text-lg transition-all transform hover:scale-110 active:scale-95 shadow-md cursor-pointer ${bgColor}`}
-                          title={label}
+                          onClick={() => !isLocked && handleEstadoChange(estudianteId, catequesisNum)}
+                          disabled={isLocked}
+                          className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg font-bold text-white text-base sm:text-lg transition-all transform shadow-md ${
+                            isLocked
+                              ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
+                              : `${bgColor} hover:scale-110 active:scale-95 cursor-pointer`
+                          }`}
+                          title={isLocked ? 'Asistencia bloqueada. Habilita la siguiente sesión.' : label}
                         >
-                          {icon}
+                          {isLocked ? '🔒' : icon}
                         </button>
                       </td>
                     );

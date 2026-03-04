@@ -4,13 +4,13 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { grupos, gruposData, estudiantesInfoAcademica } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
-import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Filter, Users } from 'lucide-react';
+import StudentPhoto from '../components/StudentPhoto';
+import { ArrowLeft, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Users } from 'lucide-react';
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('Todos');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [filterStatus, setFilterStatus] = useState('todos'); // todos, documentos-pendientes, documentos-completos
 
   // Mostrar estudiantes directamente desde gruposData
 
@@ -58,19 +58,12 @@ function StudentsModule({ onBack, user }) {
 
   const totalDocumentos = 6; // Total de documentos requeridos
 
-  // Filtrar por grupo, búsqueda y estado de documentos
+  // Filtrar por grupo y búsqueda
   const filteredStudents = allStudents.filter(student => {
     const matchesGroup = selectedGroup === 'Todos' || student.grupo === selectedGroup;
     const matchesSearch = student.nombre.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    let matchesStatus = true;
-    if (filterStatus === 'documentos-pendientes') {
-      matchesStatus = countDocumentosEntregados(student) < totalDocumentos;
-    } else if (filterStatus === 'documentos-completos') {
-      matchesStatus = countDocumentosEntregados(student) === totalDocumentos;
-    }
-    
-    return matchesGroup && matchesSearch && matchesStatus;
+
+    return matchesGroup && matchesSearch;
   });
 
   const generarPDFListaGeneral = () => {
@@ -291,51 +284,11 @@ function StudentsModule({ onBack, user }) {
             </div>
           </div>
 
-          {/* Filtro por estado de documentos */}
-          <div className="mb-5 sm:mb-6">
-            <label className="block text-sm sm:text-sm font-bold text-gray-700 mb-3 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
-              <Filter className="w-4 h-4" /> Filtrar por documentos
-            </label>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilterStatus('todos')}
-                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
-                  filterStatus === 'todos'
-                    ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setFilterStatus('documentos-completos')}
-                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
-                  filterStatus === 'documentos-completos'
-                    ? 'bg-green-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                }`}
-              >
-                ✓ Documentos Completos
-              </button>
-              <button
-                onClick={() => setFilterStatus('documentos-pendientes')}
-                className={`px-4 sm:px-4 py-2 rounded-lg text-base sm:text-base font-bold transition ${
-                  filterStatus === 'documentos-pendientes'
-                    ? 'bg-orange-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                }`}
-              >
-                ⚠ Documentos Pendientes
-              </button>
-            </div>
-          </div>
-
           {/* Información de resultados */}
           <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
             <p className="text-gray-800 font-semibold text-lg flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-blue-600" /> Resultados: <span className="text-blue-600 text-2xl">{filteredStudents.length}</span> estudiante(s)
               {selectedGroup !== 'Todos' && ` en ${selectedGroup}`}
-              {filterStatus !== 'todos' && ` - ${filterStatus === 'documentos-completos' ? 'Documentos Completos' : 'Documentos Pendientes'}`}
             </p>
           </div>
         </div>
@@ -353,8 +306,14 @@ function StudentsModule({ onBack, user }) {
                   onClick={() => setSelectedStudent(student)}
                   className="w-full p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition text-left group"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <StudentPhoto
+                        email={student.correoInstitucional}
+                        name={student.nombre}
+                        sizeClass="w-14 h-14 text-base"
+                      />
+                      <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-800 text-lg group-hover:text-blue-600 transition">
                         {student.nombre}
                       </p>
@@ -381,6 +340,7 @@ function StudentsModule({ onBack, user }) {
                           {docCount}/{totalDocumentos}
                         </span>
                       </div>
+                    </div>
                     </div>
                     <ArrowRight className="w-8 h-8 text-gray-300 group-hover:text-blue-500 transition ml-4 flex-shrink-0" />
                   </div>

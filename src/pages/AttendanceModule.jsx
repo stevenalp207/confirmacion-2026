@@ -8,6 +8,8 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '../config/supabase';
 
+const GLOBAL_UNLOCK_KEY = 'GLOBAL';
+
 function AttendanceModule({ onBack, user }) {
   const [currentGroup, setCurrentGroup] = useState('');
   const [estudiantes, setEstudiantes] = useState(null);
@@ -15,6 +17,8 @@ function AttendanceModule({ onBack, user }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedEventForDownload, setSelectedEventForDownload] = useState(0);
   const [asistenciasData, setAsistenciasData] = useState({});
+  const [maxEnabledCatequesis, setMaxEnabledCatequesis] = useState(0);
+  const [savingUnlock, setSavingUnlock] = useState(false);
 
   // Generar array de índices de catequesis
   const catequesisIndices = Array.from({ length: numeroCatequesis }, (_, i) => i);
@@ -54,6 +58,30 @@ function AttendanceModule({ onBack, user }) {
   const gruposDisponibles = user?.rol === 'admin' || user?.usuario === 'logistica'
     ? grupos 
     : [user?.rol];
+
+  const canManageUnlock = user?.rol === 'admin' || user?.usuario === 'logistica';
+
+  const loadUnlockState = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('asistencia_desbloqueo')
+        .select('max_enabled_catequesis')
+        .eq('grupo', GLOBAL_UNLOCK_KEY)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading unlock state:', error);
+        setMaxEnabledCatequesis(0);
+        return;
+      }
+
+      const value = typeof data?.max_enabled_catequesis === 'number' ? data.max_enabled_catequesis : 0;
+      setMaxEnabledCatequesis(Math.max(0, Math.min(value, numeroCatequesis - 1)));
+    } catch (error) {
+      console.error('Error loading unlock state:', error);
+      setMaxEnabledCatequesis(0);
+    }
+  };
 
   // Manejar navegación del historial para grupos
   useEffect(() => {
@@ -106,6 +134,10 @@ function AttendanceModule({ onBack, user }) {
     }
   }, [currentGroup]);
 
+  useEffect(() => {
+    loadUnlockState();
+  }, []);
+
   const loadEstudiantes = (grupo) => {
     setLoading(true);
     try {
@@ -129,16 +161,73 @@ function AttendanceModule({ onBack, user }) {
     );
   };
 
-  const handleStudentClick = (estudianteId) => {
-    // Buscar el estudiante por su ID real
-    let estudiante = null;
-    for (const key in estudiantes) {
-      if (estudiantes[key].id === estudianteId) {
-        estudiante = estudiantes[key];
-        break;
+  const saveUnlockState = async (nextValue) => {
+    const boundedValue = Math.max(0, Math.min(nextValue, numeroCatequesis - 1));
+    setSavingUnlock(true);
+
+    try {
+      const { error } = await supabase
+        .from('asistencia_desbloqueo')
+        .upsert({
+          grupo: GLOBAL_UNLOCK_KEY,
+          max_enabled_catequesis: boundedValue,
+          actualizado_por: user?.usuario || 'sistema',
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'grupo'
+        });
+
+      if (error) {
+        console.error('Error saving unlock state:', error);
+        alert('No se pudo guardar el desbloqueo en Supabase. Revisa la tabla asistencia_desbloqueo.');
+        return false;
       }
+
+      setMaxEnabledCatequesis(boundedValue);
+      return true;
+    } catch (error) {
+      console.error('Error saving unlock state:', error);
+      alert('No se pudo guardar el desbloqueo en Supabase.');
+      return false;
+    } finally {
+      setSavingUnlock(false);
     }
-    
+  };
+
+  const handleUnlockNextAsistencia = async () => {
+    if (maxEnabledCatequesis >= numeroCatequesis - 1) return;
+
+    await saveUnlockState(maxEnabledCatequesis + 1);
+  };
+
+  const handleUnlockPreviousAsistencia = async () => {
+    if (maxEnabledCatequesis <= 0) return;
+
+    await saveUnlockState(maxEnabledCatequesis - 1);
+  };
+
+  const handleResetUnlockAsistencia = async () => {
+    await saveUnlockState(0);
+  };
+
+  const handleStudentClick = (estudianteRef) => {
+    if (!estudiantes) return;
+
+    let estudiante = estudiantes[estudianteRef];
+    let estudianteId = estudianteRef;
+
+    if (!estudiante) {
+      for (const key in estudiantes) {
+        if (estudiantes[key].id === estudianteRef) {
+          estudiante = estudiantes[key];
+          estudianteId = estudiantes[key].id || key;
+          break;
+        }
+      }
+    } else {
+      estudianteId = estudiante.id || estudianteRef;
+    }
+
     if (estudiante) {
       setSelectedStudent({
         id: estudianteId,
@@ -413,6 +502,42 @@ function AttendanceModule({ onBack, user }) {
           </div>
         </div>
 
+        {canManageUnlock && (
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-800">Control Global de Asistencia</h2>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Habilitado hasta: {getCatequesisLabel(maxEnabledCatequesis)} ({maxEnabledCatequesis + 1}/{numeroCatequesis})
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                <button
+                  onClick={handleUnlockNextAsistencia}
+                  disabled={savingUnlock || maxEnabledCatequesis >= numeroCatequesis - 1}
+                  className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
+                >
+                  {savingUnlock ? 'Guardando...' : 'Habilitar siguiente asistencia'}
+                </button>
+                <button
+                  onClick={handleUnlockPreviousAsistencia}
+                  disabled={savingUnlock || maxEnabledCatequesis <= 0}
+                  className="flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
+                >
+                  Volver a la anterior
+                </button>
+                <button
+                  onClick={handleResetUnlockAsistencia}
+                  disabled={savingUnlock || maxEnabledCatequesis === 0}
+                  className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
+                >
+                  Resetear
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main Content */}
         {!currentGroup ? (
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
@@ -456,16 +581,18 @@ function AttendanceModule({ onBack, user }) {
                     Registra la asistencia de los estudiantes
                   </p>
                 </div>
-                <button
-                  onClick={generarPDFAsistencia}
-                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
-                  </svg>
-                  <span className="hidden sm:inline">Imprimir Lista PDF</span>
-                  <span className="sm:hidden">PDF</span>
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                  <button
+                    onClick={generarPDFAsistencia}
+                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-colors shadow-md whitespace-nowrap"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                    </svg>
+                    <span className="hidden sm:inline">Imprimir Lista PDF</span>
+                    <span className="sm:hidden">PDF</span>
+                  </button>
+                </div>
               </div>
 
               {/* Descargar asistencia por evento */}
@@ -506,7 +633,7 @@ function AttendanceModule({ onBack, user }) {
                   grupo={currentGroup} 
                   estudiantes={estudiantes} 
                   user={user}
-                  onStudentClick={handleStudentClick}
+                  maxEnabledCatequesis={maxEnabledCatequesis}
                 />
               )}
             </div>
