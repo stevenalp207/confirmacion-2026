@@ -145,7 +145,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
           </div>
           <GraduationCap className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 text-blue-100" strokeWidth={1.5} />
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>
             <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Teléfono</p>
             <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudiante.id || 'No registrado'}</p>
@@ -153,6 +153,14 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
           <div>
             <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Grupo</p>
             <p className="text-lg sm:text-xl lg:text-2xl font-bold">{grupo}</p>
+          </div>
+          <div>
+            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Especialidad</p>
+            <p className="text-base sm:text-lg lg:text-xl font-bold break-all">{estudiante.especialidad || 'No registrada'}</p>
+          </div>
+          <div>
+            <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Correo institucional</p>
+            <p className="text-sm sm:text-base lg:text-lg font-bold break-all">{estudiante.correoInstitucional || 'No registrado'}</p>
           </div>
         </div>
       </div>

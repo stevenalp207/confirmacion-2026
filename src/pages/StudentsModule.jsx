@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocalStorage } from '../utils/storage';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { grupos, gruposData } from '../data/grupos';
+import { grupos, gruposData, estudiantesInfoAcademica } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
 import { ArrowLeft, X, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Filter, Users } from 'lucide-react';
 
@@ -20,9 +20,12 @@ function StudentsModule({ onBack, user }) {
     const grupoInfo = gruposData[grupo];
     const estudiantesObj = grupoInfo?.estudiantes || {};
     Object.entries(estudiantesObj).forEach(([id, data]) => {
+      const infoAcademica = estudiantesInfoAcademica?.[grupo]?.[data.nombre] || {};
+
       allStudents.push({
         id,
         ...data,
+        ...infoAcademica,
         grupo: grupo
       });
     });
@@ -357,6 +360,9 @@ function StudentsModule({ onBack, user }) {
                       </p>
                       <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
                         <Phone className="w-4 h-4" /> {student.id} • <BookOpen className="w-4 h-4" /> {student.grupo}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {student.especialidad || 'Especialidad no registrada'} • {student.correoInstitucional || 'Correo no registrado'}
                       </p>
                       <div className="mt-3 flex items-center gap-2">
                         <div className="flex-1 bg-gray-200 rounded-full h-2">
