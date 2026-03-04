@@ -11,6 +11,13 @@ import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 import SkeletonLoader from './components/SkeletonLoader';
 
+const getModuleFromHash = () => {
+  const hash = window.location.hash.replace(/^#/, '').trim();
+  if (!hash) return null;
+  const [module] = hash.split('/');
+  return module || null;
+};
+
 // Lazy load all modules for better performance
 const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
 const DocumentsModule = lazy(() => import('./pages/DocumentsModule'));
@@ -85,7 +92,7 @@ function AppContent() {
       if (state?.module) {
         setCurrentModule(state.module);
       } else {
-        setCurrentModule(null);
+        setCurrentModule(getModuleFromHash());
       }
     };
 
@@ -96,6 +103,8 @@ function AppContent() {
     const initialState = window.history.state;
     if (initialState?.module) {
       setCurrentModule(initialState.module);
+    } else {
+      setCurrentModule(getModuleFromHash());
     }
 
     return () => {

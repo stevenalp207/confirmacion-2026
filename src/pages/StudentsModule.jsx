@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalStorage } from '../utils/storage';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -6,6 +6,22 @@ import { grupos, gruposData, estudiantesInfoAcademica } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
 import StudentPhoto from '../components/StudentPhoto';
 import { ArrowLeft, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Users } from 'lucide-react';
+
+const slugifyStudentName = (name = '') => {
+  return name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '_');
+};
+
+const getStudentSlugFromHash = () => {
+  const hash = window.location.hash.replace(/^#/, '').trim();
+  if (!hash.toLowerCase().startsWith('estudiantes')) return '';
+  const [, studentSlug = ''] = hash.split('/');
+  return decodeURIComponent(studentSlug);
+};
 
 function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +48,55 @@ function StudentsModule({ onBack, user }) {
   });
   // Ordenar alfabéticamente por nombre
   allStudents = allStudents.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+
+  const getStudentBySlug = (slug) => {
+    if (!slug) return null;
+    return allStudents.find(student => slugifyStudentName(student.nombre) === slug) || null;
+  };
+
+  const navigateToStudent = (student) => {
+    const slug = slugifyStudentName(student.nombre);
+    window.history.pushState(
+      { module: 'estudiantes', studentSlug: slug },
+      '',
+      `#estudiantes/${encodeURIComponent(slug)}`
+    );
+    setSelectedStudent(student);
+  };
+
+  const backToStudentsList = () => {
+    window.history.pushState(
+      { module: 'estudiantes' },
+      '',
+      '#estudiantes'
+    );
+    setSelectedStudent(null);
+  };
+
+  useEffect(() => {
+    const syncSelectedStudentWithHash = () => {
+      const studentSlug = getStudentSlugFromHash();
+
+      if (!studentSlug) {
+        setSelectedStudent(null);
+        return;
+      }
+
+      const matchedStudent = getStudentBySlug(studentSlug);
+      if (matchedStudent) {
+        setSelectedStudent(matchedStudent);
+      }
+    };
+
+    syncSelectedStudentWithHash();
+    window.addEventListener('popstate', syncSelectedStudentWithHash);
+    window.addEventListener('hashchange', syncSelectedStudentWithHash);
+
+    return () => {
+      window.removeEventListener('popstate', syncSelectedStudentWithHash);
+      window.removeEventListener('hashchange', syncSelectedStudentWithHash);
+    };
+  }, []);
 
   // Función para contar documentos entregados
   const countDocumentosEntregados = (student) => {
@@ -161,7 +226,7 @@ function StudentsModule({ onBack, user }) {
           {/* Header */}
           <div className="mb-4 sm:mb-6">
             <button
-              onClick={() => setSelectedStudent(null)}
+              onClick={backToStudentsList}
               className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition mb-3 sm:mb-4 text-sm sm:text-base"
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -303,7 +368,7 @@ function StudentsModule({ onBack, user }) {
               return (
                 <button
                   key={`${student.grupo}-${student.id}`}
-                  onClick={() => setSelectedStudent(student)}
+                  onClick={() => navigateToStudent(student)}
                   className="w-full p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition text-left group"
                 >
                   <div className="flex items-center justify-between gap-4">
