@@ -209,10 +209,10 @@ export const getCatequesisLabelCatequistas = (index) => {
   if (index === 14) return 'Retiro Familia';
   if (index === 23) return 'Retiro Padrinos';
   if (index === 27) return 'Ensayo Confirma';
-  if (index < 14) return `Catequesis ${index - 2}`;
-  if (index < 23) return `Catequesis ${index - 3}`;
-  if (index < 27) return `Catequesis ${index - 4}`;
-  return `Catequesis ${index - 5}`;
+  if (index < 14) return \`Catequesis \${index - 2}\`;
+  if (index < 23) return \`Catequesis \${index - 3}\`;
+  if (index < 27) return \`Catequesis \${index - 4}\`;
+  return \`Catequesis \${index - 5}\`;
 };
 `
     
