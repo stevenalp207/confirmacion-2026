@@ -331,7 +331,7 @@ export const numeroCatequesisCatequistas = 28;
 // Índice 0: Reunion 0 (5/2/2026) - exclusiva de catequistas
 // Índice 14: Retiro Familia (después de Catequesis 11)
 // Índice 23: Retiro Padrinos (después de Catequesis 19)
-// Índice 27: Ensayo Confirma (después de Catequesis 22)
+// Índice 27: Ensayo Confirma (después de Catequesis 21)
 export const getCatequesisLabelCatequistas = (index) => {
   if (index === 0) {
     return 'Reunion 0 (5/2/2026)';
@@ -346,12 +346,12 @@ export const getCatequesisLabelCatequistas = (index) => {
   } else if (index === 27) {
     return 'Ensayo Confirma';
   } else if (index < 14) {
-    return `Catequesis ${index - 2}`;
-  } else if (index < 23) {
     return `Catequesis ${index - 3}`;
-  } else if (index < 27) {
+  } else if (index < 23) {
     return `Catequesis ${index - 4}`;
-  } else {
+  } else if (index < 27) {
     return `Catequesis ${index - 5}`;
+  } else {
+    return `Catequesis ${index - 6}`;
   }
 };
