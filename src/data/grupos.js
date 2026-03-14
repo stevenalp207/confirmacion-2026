@@ -29,6 +29,7 @@ export const gruposData = {
       '13': { id: 63397166, nombre: 'Sandra Tanisha Haylock Agüero', documentos: {}, asistencias: {} },
       '14': { id: 87464069, nombre: 'Maria Fernanda Torres Retana', documentos: {}, asistencias: {} },
       '15': { id: 70773055, nombre: 'Allison Samantha Montero Meléndez', documentos: {}, asistencias: {} },
+      '16': { id: 85324313, nombre: 'Gabriel Steven Arias Ramirez', documentos: {}, asistencias: {} },
     }
   },
   'Piedad': {
@@ -174,7 +175,8 @@ export const estudiantesInfoAcademica = {
     'Alison Ariana Retana Zúñiga': { correoInstitucional: '2023111@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Sandra Tanisha Haylock Agüero': { correoInstitucional: '2017428@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Maria Fernanda Torres Retana': { correoInstitucional: '2023140@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
-    'Allison Samantha Montero Meléndez': { correoInstitucional: '2024175@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' }
+    'Allison Samantha Montero Meléndez': { correoInstitucional: '2024175@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
+    'Gabriel Steven Arias Ramirez': { correoInstitucional: '2017406@est.cedesdonbosco.ed.cr', especialidad: 'Mecanica' }
   },
   'Consejo': {
     'Mariana de los Ángeles Rodríguez Pérez': { correoInstitucional: '2017444@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
