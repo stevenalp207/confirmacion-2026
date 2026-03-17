@@ -4,6 +4,16 @@ import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
 import StudentPhoto from './StudentPhoto';
 import { Check, Circle, X, AlertCircle, Calendar, AlertTriangle, Edit, Save, ClipboardList, FileText, FolderOpen, DollarSign } from 'lucide-react';
 
+const normalizePhoneForWhatsApp = (phone = '') => {
+  const cleanPhone = String(phone).replace(/\D/g, '');
+  if (!cleanPhone) return '';
+
+  // Si viene solo con 8 dígitos, se asume Costa Rica (+506)
+  if (cleanPhone.length === 8) return `506${cleanPhone}`;
+
+  return cleanPhone;
+};
+
 function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const [asistencias, setAsistencias] = useState({});
   const [documentos, setDocumentos] = useState({});
@@ -130,6 +140,8 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
   const documentosCount = Object.values(documentos).filter(d => d === true).length;
   const pagoCuota = pagos?.monto_pagado || 0;
   const totalSesiones = numeroCatequesis; // 25 sesiones totales
+  const whatsappPhone = normalizePhoneForWhatsApp(estudiante.id);
+  const whatsappUrl = whatsappPhone ? `https://wa.me/${whatsappPhone}` : '';
 
   if (loadingData) {
     return <div className="text-gray-600">Cargando datos del catequizando...</div>;
@@ -154,7 +166,19 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-blue-400">
           <div>
             <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Teléfono</p>
-            <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudiante.id || 'No registrado'}</p>
+            {whatsappUrl ? (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg sm:text-xl lg:text-2xl font-bold underline underline-offset-4 hover:text-blue-100 transition"
+                title="Abrir chat en WhatsApp"
+              >
+                {estudiante.id}
+              </a>
+            ) : (
+              <p className="text-lg sm:text-xl lg:text-2xl font-bold">{estudiante.id || 'No registrado'}</p>
+            )}
           </div>
           <div>
             <p className="text-blue-100 text-xs sm:text-sm uppercase tracking-wide">Grupo</p>

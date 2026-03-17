@@ -5,7 +5,7 @@ import autoTable from 'jspdf-autotable';
 import { grupos, gruposData, estudiantesInfoAcademica } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
 import StudentPhoto from '../components/StudentPhoto';
-import { ArrowLeft, Search, MapPin, Printer, BarChart3, Phone, BookOpen, ArrowRight, Users } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Printer, BarChart3, ArrowRight, Users } from 'lucide-react';
 
 const slugifyStudentName = (name = '') => {
   return name
@@ -371,47 +371,44 @@ function StudentsModule({ onBack, user }) {
                   onClick={() => navigateToStudent(student)}
                   className="w-full p-3 sm:p-5 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg sm:hover:-translate-y-1 transition text-left group"
                 >
-                  <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
-                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
                       <StudentPhoto
                         email={student.correoInstitucional}
                         name={student.nombre}
                         sizeClass="w-12 h-12 text-sm sm:w-14 sm:h-14 sm:text-base"
                       />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-gray-800 text-base sm:text-lg leading-tight group-hover:text-blue-600 transition">
-                          {student.nombre}
-                        </p>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600">
-                          <span className="inline-flex items-center gap-1">
-                            <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {student.id}
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {student.grupo}
-                          </span>
+                      <div className="flex-1 min-w-0 space-y-2 sm:space-y-3">
+                        <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
+                          <p className="font-bold text-gray-800 text-base sm:text-lg leading-tight group-hover:text-blue-600 transition truncate">
+                            {student.nombre}
+                          </p>
+                          <p className="text-gray-700 truncate">
+                            {(student.especialidad || 'Especialidad no registrada')} - {student.grupo}
+                          </p>
+                          <p className="text-gray-700 font-semibold truncate sm:break-all">
+                            {student.id} - {student.correoInstitucional || 'Correo no registrado'}
+                          </p>
                         </div>
-                        <div className="text-xs sm:text-sm text-gray-600 mt-1 leading-snug">
-                          <p>{student.especialidad || 'Especialidad no registrada'}</p>
-                          <p className="break-all">{student.correoInstitucional || 'Correo no registrado'}</p>
-                        </div>
+
                         <div className="mt-2 sm:mt-3 flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full transition-all ${
-                              isComplete ? 'bg-green-500' : 'bg-orange-500'
-                            }`}
-                            style={{ width: `${(docCount / totalDocumentos) * 100}%` }}
-                          ></div>
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all ${
+                                isComplete ? 'bg-green-500' : 'bg-orange-500'
+                              }`}
+                              style={{ width: `${(docCount / totalDocumentos) * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className={`text-xs font-bold px-2 py-1 rounded ${
+                            isComplete
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-orange-100 text-orange-800'
+                          }`}>
+                            {docCount}/{totalDocumentos}
+                          </span>
                         </div>
-                        <span className={`text-xs font-bold px-2 py-1 rounded ${
-                          isComplete
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-orange-100 text-orange-800'
-                        }`}>
-                          {docCount}/{totalDocumentos}
-                        </span>
                       </div>
-                    </div>
                     </div>
                     <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-300 group-hover:text-blue-500 transition ml-2 sm:ml-4 flex-shrink-0 self-center" />
                   </div>

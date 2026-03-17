@@ -91,7 +91,7 @@ export const gruposData = {
       '12': { id: 61151506, nombre: 'Daniel Alejando Alfaro Brenes', documentos: {}, asistencias: {} },
       '13': { id: 85427220, nombre: 'Stephanie Lucía Anchía Fuentes', documentos: {}, asistencias: {} },
       '14': { id: 71708153, nombre: 'Diego Cardoza Mendoza', documentos: {}, asistencias: {} },
-      '15': { id: 87405432, nombre: 'Valerie Obando Valverde', documentos: {}, asistencias: {} },
+      '15': { id: 87403040, nombre: 'Valerie Obando Valverde', documentos: {}, asistencias: {} },
     }
   },
   'Entendimiento': {
