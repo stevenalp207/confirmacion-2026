@@ -541,6 +541,161 @@ export function generarReporte(resultado) {
   return reporte
 }
 
+// Función de asignación aleatoria con restricciones de género y grupo de origen
+export function asignarGruposAleatorios(estudiantes, cantidadGrupos) {
+  // Normalizar restricciones
+  const restricciones = {
+    problematicos: [
+      'Terry Anderson Solis Centeno',
+      'Dereck Jiménez Durán',
+      'Lara Herrera Sebastián',
+      'Fabricio Morales Chacón',
+      'Angelo Ortiz Alvarado',
+      'Roy Madrigal Aguilar',
+      'Sebastián Peraza Chinchilla',
+      'Ignacio Álvarez Ramírez',
+      'Laura Marcela Forbes Segura',
+      'Fiorella Sequeira Aguilar',
+      'Rebeca de los Angeles Artavia Quirós',
+      'María Samantha Orozco Mora',
+      'Marlie Monserrat Gómez Ramírez',
+    ],
+    parejas: [
+      ['Stacey Camila Soto Segura', 'Ismael Jesús Astorga Calderón'],
+      ['Amanda Ramírez Calderón', 'Santiago Lemuel Arrieta Venegas'],
+      ['Marlie Monserrat Gómez Ramírez', 'Sebastián Peraza Chinchilla']
+    ],
+    gruposAmigos: [
+      ['Christopher Castro Picado', 'Angelo Ortiz Alvarado']
+    ]
+  }
+
+  // Copiar y mezclar estudiantes
+  let estudiantesCopia = [...estudiantes].sort(() => Math.random() - 0.5)
+  
+  // Separar por género
+  const hombres = estudiantesCopia.filter(est => {
+    const gen = est.genero?.toLowerCase()
+    return gen === 'masculino' || gen === 'hombre' || gen === 'm'
+  })
+  
+  const mujeres = estudiantesCopia.filter(est => {
+    const gen = est.genero?.toLowerCase()
+    return gen === 'femenino' || gen === 'mujer' || gen === 'f'
+  })
+  
+  // Separar por grupo de origen
+  const estudiantesPorGrupo = {}
+  for (const est of estudiantesCopia) {
+    const grupoOrigen = est.grupoOrigen || 'Sin grupo'
+    if (!estudiantesPorGrupo[grupoOrigen]) {
+      estudiantesPorGrupo[grupoOrigen] = []
+    }
+    estudiantesPorGrupo[grupoOrigen].push(est)
+  }
+  
+  // Inicializar grupos nuevos
+  const gruposNuevos = Array.from({ length: cantidadGrupos }, (_, i) => ({
+    nombre: `Grupo ${i + 1}`,
+    integrantes: [],
+    hombres: 0,
+    mujeres: 0,
+    gruposOrigenCount: {},
+    especialidades: {},
+    grados: {},
+    problematicos: 0
+  }))
+  
+  // Función para encontrar mejor grupo para un estudiante
+  function encontrarMejorGrupoAleatorio(est, gruposDisp) {
+    const candidatos = gruposDisp.map((g, idx) => {
+      const gen = est.genero?.toLowerCase()
+      const esHombre = gen === 'masculino' || gen === 'hombre' || gen === 'm'
+      
+      // Penalización por desbalance de género
+      let puntaje = 0
+      const difGen = Math.abs(g.hombres - g.mujeres)
+      puntaje -= difGen * 10
+      
+      // Si es hombre, bonus si el grupo necesita más hombres
+      if (esHombre) {
+        puntaje += (g.mujeres - g.hombres) * 15
+      } else {
+        puntaje += (g.hombres - g.mujeres) * 15
+      }
+      
+      // Penalización por duplicar grupo de origen
+      const grupoOrigen = est.grupoOrigen || 'Sin grupo'
+      const countGrupoOrigen = g.gruposOrigenCount[grupoOrigen] || 0
+      puntaje -= countGrupoOrigen * 20
+      
+      // Bonus por tamaño equilibrado
+      puntaje += -Math.abs(g.integrantes.length - (Math.ceil(estudiantesCopia.length / cantidadGrupos)))
+      
+      return { grupo: g, idx, puntaje }
+    })
+    
+    candidatos.sort((a, b) => b.puntaje - a.puntaje)
+    return candidatos[0]?.grupo || gruposDisp[0]
+  }
+  
+  // Asignar hombres interleando entre grupos
+  const hombresPorGrupo = Math.floor(hombres.length / cantidadGrupos)
+  for (let i = 0; i < hombres.length; i++) {
+    const grupoIdx = i % cantidadGrupos
+    const grupo = gruposNuevos[grupoIdx]
+    const est = hombres[i]
+    
+    grupo.integrantes.push(est)
+    grupo.hombres++
+    
+    const grupoOrigen = est.grupoOrigen || 'Sin grupo'
+    grupo.gruposOrigenCount[grupoOrigen] = (grupo.gruposOrigenCount[grupoOrigen] || 0) + 1
+  }
+  
+  // Asignar mujeres interleando entre grupos
+  for (let i = 0; i < mujeres.length; i++) {
+    const grupoIdx = i % cantidadGrupos
+    const grupo = gruposNuevos[grupoIdx]
+    const est = mujeres[i]
+    
+    grupo.integrantes.push(est)
+    grupo.mujeres++
+    
+    const grupoOrigen = est.grupoOrigen || 'Sin grupo'
+    grupo.gruposOrigenCount[grupoOrigen] = (grupo.gruposOrigenCount[grupoOrigen] || 0) + 1
+  }
+  
+  // Calcular estadísticas
+  const estadisticas = {
+    totalEstudiantes: estudiantesCopia.length,
+    totalHombres: hombres.length,
+    totalMujeres: mujeres.length,
+    desbalancePromedio: gruposNuevos.reduce((sum, g) => sum + Math.abs(g.hombres - g.mujeres), 0) / cantidadGrupos,
+    tamañoPromedio: Math.round(estudiantesCopia.length / cantidadGrupos)
+  }
+  
+  // Validar advertencias
+  const advertencias = []
+  for (const grupo of gruposNuevos) {
+    const desbalance = Math.abs(grupo.hombres - grupo.mujeres)
+    if (desbalance > 3) {
+      advertencias.push({
+        tipo: 'DESBALANCE_GENERO',
+        mensaje: `⚠️ Desbalance de género en ${grupo.nombre}: ${grupo.hombres} hombres, ${grupo.mujeres} mujeres`,
+        grupo: grupo.nombre
+      })
+    }
+  }
+  
+  return {
+    grupos: gruposNuevos,
+    estadisticas,
+    advertencias,
+    metodo: 'aleatorio'
+  }
+}
+
 export function exportarAsignacionPersonalidadExcel(grupos, estadisticas) {
   let html = `<table border="1" style="border-collapse: collapse; font-family: Arial;">
     <tr style="background-color: #f59e0b;">
@@ -593,6 +748,58 @@ export function exportarAsignacionPersonalidadExcel(grupos, estadisticas) {
   
   link.setAttribute('href', url)
   link.setAttribute('download', `asignacion_personalidad_${new Date().toISOString().split('T')[0]}.xls`)
+  link.style.visibility = 'hidden'
+  
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+export function exportarAsignacionAleatoriaExcel(grupos, estadisticas) {
+  let html = `<table border="1" style="border-collapse: collapse; font-family: Arial;">
+    <tr style="background-color: #3b82f6;">
+      <th style="padding: 8px; font-weight: bold; color: white;">Grupo</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Nombre</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Género</th>
+      <th style="padding: 8px; font-weight: bold; color: white;">Grupo Original</th>
+    </tr>`
+
+  grupos.forEach(grupo => {
+    grupo.integrantes.forEach((est, idx) => {
+      const bgColor = idx % 2 === 0 ? '#f0f9ff' : '#e0f2fe'
+      
+      html += `<tr style="background-color: ${bgColor};">`
+      html += `<td style="padding: 8px; font-weight: bold;">${grupo.nombre}</td>`
+      html += `<td style="padding: 8px;">${est.nombre || ''}</td>`
+      html += `<td style="padding: 8px; text-align: center;">${est.genero || ''}</td>`
+      html += `<td style="padding: 8px;">${est.grupoOrigen || ''}</td>`
+      html += `</tr>`
+    })
+  })
+
+  // Agregar resumen
+  html += `<tr style="background-color: #f3f4f6; font-weight: bold;">
+    <td colspan="4" style="padding: 12px; text-align: center;">RESUMEN ESTADÍSTICO</td>
+  </tr>`
+
+  grupos.forEach(grupo => {
+    html += `<tr style="background-color: #fef3c7;">`
+    html += `<td style="padding: 8px; font-weight: bold;">${grupo.nombre}</td>`
+    html += `<td style="padding: 8px; text-align: center; font-weight: bold;">Total: ${grupo.integrantes.length}</td>`
+    html += `<td style="padding: 8px; text-align: center;">👨 ${grupo.hombres}</td>`
+    html += `<td style="padding: 8px; text-align: center;">👩 ${grupo.mujeres}</td>`
+    html += `</tr>`
+  })
+
+  html += '</table>'
+
+  // Crear blob y descargar
+  const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  
+  link.setAttribute('href', url)
+  link.setAttribute('download', `asignacion_aleatoria_${new Date().toISOString().split('T')[0]}.xls`)
   link.style.visibility = 'hidden'
   
   document.body.appendChild(link)
