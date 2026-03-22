@@ -270,8 +270,8 @@ function DashboardFinancieroModule({ onBack, user }) {
         </div>
 
         {/* Cards de resumen */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-          {/* Total Ingresos */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
+          {/* Total Ingresos (Ingresos + Pagos Retiro) */}
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-emerald-500">
             <div className="flex items-center justify-between">
               <div>
@@ -284,7 +284,39 @@ function DashboardFinancieroModule({ onBack, user }) {
                 <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Ingresos + Pagos retiro</p>
+            <p className="text-xs text-gray-400 mt-2">Ingresos + Pagos</p>
+          </div>
+
+          {/* Ingresos (Solo Ingresos) */}
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">Ingresos</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-600">
+                  ₡{totales.ingresos.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-green-100 p-2 sm:p-3 rounded-full">
+                <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-2">{ingresos.length} registros</p>
+          </div>
+
+          {/* Pagos Retiro */}
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-violet-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">Pagos Retiro</p>
+                <p className="text-lg sm:text-2xl font-bold text-violet-600">
+                  ₡{totales.pagosRetiro.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-violet-100 p-2 sm:p-3 rounded-full">
+                <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-2">{pagosEstudiantes.length + pagosCatequistas.length} total</p>
           </div>
 
           {/* Total Gastos */}
@@ -303,11 +335,11 @@ function DashboardFinancieroModule({ onBack, user }) {
             <p className="text-xs text-gray-400 mt-2">{gastos.length} registros</p>
           </div>
 
-          {/* Balance */}
+          {/* Balance Actual */}
           <div className={`bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 ${totales.balance >= 0 ? 'border-blue-500' : 'border-orange-500'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Balance Actual</p>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">Balance</p>
                 <p className={`text-lg sm:text-2xl font-bold ${totales.balance >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
                   ₡{totales.balance.toLocaleString()}
                 </p>
@@ -317,24 +349,6 @@ function DashboardFinancieroModule({ onBack, user }) {
               </div>
             </div>
             <p className="text-xs text-gray-400 mt-2">{totales.balance >= 0 ? 'Superávit' : 'Déficit'}</p>
-          </div>
-
-          {/* Pagos Retiro */}
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-violet-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">Pagos Retiro</p>
-                <p className="text-lg sm:text-2xl font-bold text-violet-600">
-                  ₡{totales.pagosRetiro.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-violet-100 p-2 sm:p-3 rounded-full">
-                <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-2">
-              Est: ₡{totales.pagosEstudiantes.toLocaleString()} | Cat: ₡{totales.pagosCatequistas.toLocaleString()}
-            </p>
           </div>
         </div>
 
