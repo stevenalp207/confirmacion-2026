@@ -159,6 +159,142 @@ export const gruposData = {
   }
 };
 
+export const carpasPorGrupo = {
+  'Ciencia': {
+    'Isaac Valverde Sandi': 'Carpa 3',
+    'Santiago Amador Ramirez': 'Carpa 7',
+    'Ignacio Alvarez Ramirez': 'Carpa 6',
+    'Matías Moya Dawkins': 'Carpa 4',
+    'Joshua Gabriel Vargas Pérez': 'Carpa 6',
+    'Terry Anderson Solis Centeno': 'Carpa 3',
+    'Alessandro Sanchez Portuguez': 'Carpa 6',
+    'Sara Merayo Chacón': 'Carpa 2',
+    'Liz Arianna Achi Mora': 'Carpa 1',
+    'Valeria Retana Corrales': 'Carpa 4',
+    'Valentina Chinchilla Araya': 'Carpa 7',
+    'Alison Ariana Retana Zúñiga': 'Carpa 4',
+    'Sandra Tanisha Haylock Agüero': 'Carpa 7',
+    'Maria Fernanda Torres Retana': 'Carpa 1',
+    'Gabriel Steven Arias Ramirez': 'Carpa 4',
+    'Allison Samantha Montero Meléndez': 'Carpa 4'
+  },
+  'Consejo': {
+    'Mariana de los Ángeles Rodríguez Pérez': 'Carpa 3',
+    'José Pablo Flores Rojas': 'Carpa 4',
+    'Rebeca de los Angeles Artavia Quirós': 'Carpa 1',
+    'Isaac Corrales Guzmán': 'Carpa 2',
+    'André Manzanares Leon': 'Carpa 5',
+    'Laura Marcela Forbes Segura': 'Carpa 6',
+    'Gabriel Steven Montero Jiménez': 'Carpa 2',
+    'Isaac Sibaja Alvarenga': 'Carpa 4',
+    'Sebastián Montero Palacios': 'Carpa 1',
+    'Jimena Maria Segura Estrada': 'Carpa 7',
+    'Camila Ruiz Peña': 'Carpa 2',
+    'Daniel Alejando Alfaro Brenes': 'Carpa 4',
+    'Stephanie Lucía Anchía Fuentes': 'Carpa 5',
+    'Diego Cardoza Mendoza': 'Carpa 1',
+    'Valerie Obando Valverde': 'Carpa 2'
+  },
+  'Entendimiento': {
+    'Rebeca Monge Segura': 'Carpa 6',
+    'Hilary Gomez': 'Carpa 4',
+    'Dereck Jiménez Durán': 'Carpa 1',
+    'Julián Andrés Quintero Cuenca': 'Carpa 7',
+    'Isabella Corrales Ramírez': 'Carpa 3',
+    'Adilio García Barquero': 'Carpa 2',
+    'Isaac Felipe Flores Chavarria': 'Carpa 6',
+    'Abigail Ugarte Araya': 'Carpa 2',
+    'Felipe Barboza Mena': 'Carpa 6',
+    'Maria Paula Morera Muñoz': 'Carpa 5',
+    'Mariel Vindas Montero': 'Carpa 4',
+    'Bayron Cubillo Arroyo': 'Carpa 3',
+    'Merribeth Jimenez Samudio': 'Carpa 1',
+    'Santiago Salas Alfaro': 'Carpa 2',
+    'Eva Mc Adam Umaña': 'Carpa 5',
+    'Josué Monge Mora': 'Carpa 4'
+  },
+  'Fortaleza': {
+    'Fabricio Daniel Rodríguez Carvajal': 'Carpa 5',
+    'Santiago Lemuel Arrieta Venegas': 'Carpa 2',
+    'María Samantha Orozco Mora': 'Carpa 6',
+    'Joaquín de Jesús Chinchilla Bonilla': 'Carpa 5',
+    'Fiorella Sequeira Aguilar': 'Carpa 7',
+    'Ian Gabriel Solano Monge': 'Carpa 5',
+    'José Miguel Arias Chacón': 'Carpa 5',
+    'Daniel Del Valle Portuguez': 'Carpa 5',
+    'Sebastián Chinchilla Solano': 'Carpa 1',
+    'Christopher Castro Picado': 'Carpa 7',
+    'Ismael Jesús Astorga Calderón': 'Carpa 1',
+    'Dereck Sebastian Marchena Cordero': 'Carpa 3',
+    'Ariana Acevedo Vargas': 'Carpa 2',
+    'Valentina Cerdas García': 'Carpa 3',
+    'Lucía Alvarez Quirós': 'Carpa 4',
+    'Jimena Valverde Rodríguez': 'Carpa 3'
+  },
+  'Piedad': {
+    'Kristel Guzmán Villalta': 'Carpa 4',
+    'Marvin Daniel Camacho Cerdas': 'Carpa 1',
+    'Nashelle Aguilar Dixon': 'Carpa 5',
+    'Sebastián Peraza Chinchilla': 'Carpa 2',
+    'Isaac Daniel Piedra Chaves': 'Carpa 4',
+    'Marypaz de los Ángeles García Campos': 'Carpa 3',
+    'Gimena Cantillano Valladares': 'Carpa 3',
+    'Oscar Andrés Saborío Fernández': 'Carpa 5',
+    'Roy Madrigal Aguilar': 'Carpa 3',
+    'Andrea Bermúdez Vega': 'Carpa 6',
+    'Tania Ramirez Romero': 'Carpa 1',
+    'Yaroth Paz Cerdas': 'Carpa 7',
+    'Melissa Aguilar Monge': 'Carpa 6',
+    'Noah Morales Fernández': 'Carpa 6',
+    'Bárbara Córdoba Córdoba': 'Carpa 2',
+    'Hubert Andrey Elizondo Bojorge': 'Carpa 5'
+  },
+  'Sabiduría': {
+    'Valeria Vallejos Zamora': 'Carpa 5',
+    'Sebastián Lara Herrera': 'Carpa 1',
+    'Alejandro Siles Corrales': 'Carpa 7',
+    'Mía Sofia Sánchez Chaves': 'Carpa 5',
+    'Gabriel Campos Araya': 'Carpa 7',
+    'Stacey Camila Soto Segura': 'Carpa 5',
+    'Gabriel Santiago Amador González': 'Carpa 3',
+    'Amanda Ramírez Calderón': 'Carpa 6',
+    'Jimena Solís Vargas': 'Carpa 7',
+    'Ariel Esteban Mora Calderon': 'Carpa 2',
+    'Tifany Rosales Castro': 'Carpa 6',
+    'Matías Corrales Guzmán': 'Carpa 1',
+    'María Jimena Bonilla Carpio': 'Carpa 1',
+    'Allan Gabriel Salazar Jiménez': 'Carpa 6',
+    'Hillary Abarca Sánchez': 'Carpa 7',
+    'Oscar Josué Pereira Camacho': 'Carpa 3'
+  },
+  'Temor de Dios': {
+    'Mariel Lacey Montero': 'Carpa 5',
+    'Mathias Andrés González Alvarado': 'Carpa 7',
+    'Fabricio Morales Chacón': 'Carpa 2',
+    'Nazareth García Calderon': 'Carpa 3',
+    'Adrián Alexander Calvo Araya': 'Carpa 3',
+    'Valerie Jimena Retana Mendez': 'Carpa 7',
+    'Marlie Monserrat Gomez Ramírez': 'Carpa 3',
+    'Adriel Aguilar Monge': 'Carpa 1',
+    'Isabella Segura Mora': 'Carpa 2',
+    'Angelo Ortiz Alvarado': 'Carpa 2',
+    'Valery Nicole Jiménez Batista': 'Carpa 4',
+    'Matías Pinzón Oconitrillo': 'Carpa 6',
+    'Valeria Vindas Montes': 'Carpa 6',
+    'José Julián Fallas Mora': 'Carpa 7',
+    'Jimena de Los Ángeles Chinchilla Bonilla': 'Carpa 1',
+    'César Solano Castillo': 'Carpa 4'
+  }
+};
+
+Object.entries(gruposData).forEach(([grupo, grupoInfo]) => {
+  const carpasGrupo = carpasPorGrupo[grupo] || {};
+
+  Object.values(grupoInfo.estudiantes).forEach((estudiante) => {
+    estudiante.carpa = carpasGrupo[estudiante.nombre] || null;
+  });
+});
+
 export const estudiantesInfoAcademica = {
   'Ciencia': {
     'Isaac Valverde Sandi': { correoInstitucional: '2023143@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
