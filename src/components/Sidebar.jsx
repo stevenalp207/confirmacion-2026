@@ -138,7 +138,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
     },
     {
       id: 'asignacion-personalidad',
-      name: 'Asignación Personalidad',
+      name: 'Asignación',
       icon: UserCheck,
       color: 'pink',
       roles: ['admin', 'logistica']
