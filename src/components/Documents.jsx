@@ -257,15 +257,15 @@ function Documents({ grupo, estudiantes, user }) {
       
       <div className="overflow-x-auto -mx-4 sm:mx-0">
         <div className="inline-block min-w-full align-middle px-4 sm:px-0">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg border-separate border-spacing-0 shadow-sm">
             <thead className="bg-blue-50 border-b-2 border-blue-200">
               <tr>
-                <th className="px-4 sm:px-4 py-4 text-left text-sm sm:text-base font-bold text-gray-800 sticky left-0 bg-blue-50 z-10 shadow-sm">Estudiante</th>
+                <th className="px-4 sm:px-4 py-4 min-w-45 text-left text-sm sm:text-base font-bold text-gray-800 sticky left-0 bg-blue-50 z-20 border-r border-gray-200">Estudiante</th>
                 {tiposDocumentos.map(doc => (
-                  <th key={doc.id} className="px-2 sm:px-4 py-4 text-center text-xs sm:text-sm font-bold text-gray-700 whitespace-normal sm:whitespace-nowrap min-w-[80px] sm:min-w-[120px]">
+                  <th key={doc.id} className="px-2 sm:px-4 py-4 text-center text-xs sm:text-sm font-bold text-gray-700 whitespace-normal sm:whitespace-nowrap min-w-20 sm:min-w-30">
                     <div className="flex flex-col gap-1">
                       <span className="hidden sm:block">{doc.nombre}</span>
-                      <span className="sm:hidden text-xs font-semibold break-words">{doc.nombre}</span>
+                      <span className="sm:hidden text-xs font-semibold wrap-break-word">{doc.nombre}</span>
                     </div>
                   </th>
                 ))}
@@ -275,8 +275,8 @@ function Documents({ grupo, estudiantes, user }) {
               {Object.entries(estudiantes).map(([_key, estudiante]) => {
                 const estudianteId = estudiante.id;
                 return (
-                  <tr key={estudianteId} className="border-t border-gray-200 hover:bg-blue-50">
-                    <td className="px-4 sm:px-4 py-4 text-sm sm:text-base text-gray-800 font-medium sticky left-0 bg-white hover:bg-blue-50 z-10 shadow-sm">
+                  <tr key={estudianteId} className="border-t border-gray-200 hover:bg-blue-50 group">
+                    <td className="px-4 sm:px-4 py-4 min-w-45 text-sm sm:text-base text-gray-800 font-medium sticky left-0 bg-white group-hover:bg-blue-50 z-10 border-r border-gray-200">
                       {estudiante.nombre}
                     </td>
                     {tiposDocumentos.map(doc => (

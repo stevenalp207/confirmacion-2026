@@ -154,10 +154,10 @@ function Cartas({ grupo, estudiantes }) {
       </div>
       
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg border-separate border-spacing-0">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Estudiante</th>
+              <th className="px-4 py-3 min-w-45 text-left text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-20 border-r border-gray-200">Estudiante</th>
               <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Carta Entregada</th>
             </tr>
           </thead>
@@ -165,8 +165,8 @@ function Cartas({ grupo, estudiantes }) {
             {Object.entries(estudiantes).map(([_key, estudiante]) => {
               const estudianteId = estudiante.id;
               return (
-                <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm text-gray-800 font-medium align-middle">
+                <tr key={estudianteId} className="border-t border-gray-200 hover:bg-gray-50 group">
+                  <td className="px-4 py-3 min-w-45 text-sm text-gray-800 font-medium align-middle sticky left-0 bg-white group-hover:bg-gray-50 z-10 border-r border-gray-200">
                     {estudiante.nombre}
                   </td>
                   <td className="px-4 py-3 text-center align-middle flex justify-center">

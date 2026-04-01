@@ -424,6 +424,7 @@ export const estudiantesInfoAcademica = {
 
 // Tipos de documentos requeridos
 export const tiposDocumentos = [
+  { id: 'reglamento', nombre: 'Reglamento Confirmación 2026' },
   { id: 'cedula_catequizando', nombre: 'Cédula Catequizando' },
   { id: 'fe_bautismo', nombre: 'Fe de Bautismo' },
   { id: 'constancia_comunion', nombre: 'Constancia Comunión' },
@@ -431,7 +432,6 @@ export const tiposDocumentos = [
   { id: 'fe_confirmacion_padrino', nombre: 'Fe Confirmación Padrino' },
   { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
   { id: 'permiso_retiro', nombre: 'Permiso Retiro' },
-  { id: 'reglamento', nombre: 'Reglamento Confirmación 2026' }
 ];
 
 // Número total de catequesis para Confirmación 2026 - CATEQUIZANDOS
