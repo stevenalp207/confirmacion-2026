@@ -4,17 +4,39 @@ import { grupos } from "../data/grupos";
 import { nombresCatequistas } from "../data/catequistas";
 import Pagos from "../components/Pagos";
 import { gruposData } from "../data/grupos";
+import { canAccess, isFinancialUser } from "../utils/permissions";
 
 function PagosModule({ onBack, user }) {
+  const canAccessPagos = canAccess('pagos', user);
   const [currentGroup, setCurrentGroup] = useState("");
   const [estudiantes, setEstudiantes] = useState(null);
   const [catequistas, setCatequistas] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  if (!canAccessPagos) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-lg w-full text-center space-y-4">
+          <h1 className="text-2xl font-bold text-gray-800">Acceso restringido</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            No tienes permisos para ver el modulo de pagos.
+          </p>
+          <button
+            onClick={onBack}
+            className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Filtrar grupos según el rol del usuario
   // admin y financiero pueden ver todos los grupos
   const gruposDisponibles =
-    user?.rol === "admin" || user?.rol === "financiero"
+    isFinancialUser(user)
       ? ["Catequistas", ...grupos]
       : [user?.rol]; // Usuarios de grupos específicos ven solo su grupo
 
@@ -25,7 +47,7 @@ function PagosModule({ onBack, user }) {
       if (state?.group && gruposDisponibles.includes(state.group)) {
         setCurrentGroup(state.group);
       } else if (state?.module === 'pagos' && !state?.group) {
-        const defaultGroup = user?.rol !== "admin" && user?.usuario !== "logistica" && user?.rol !== "financiero" 
+        const defaultGroup = !isFinancialUser(user) && user?.usuario !== "logistica"
           ? user?.rol 
           : "";
         setCurrentGroup(defaultGroup);
@@ -47,7 +69,7 @@ function PagosModule({ onBack, user }) {
 
   // Cargar automáticamente el grupo si el usuario no es admin ni logística
   useEffect(() => {
-    if (user && user.rol !== "admin" && user.usuario !== "logistica" && user.rol !== "financiero" && !currentGroup) {
+    if (user && !isFinancialUser(user) && user.usuario !== "logistica" && !currentGroup) {
       const defaultGroup = user.rol;
       setCurrentGroup(defaultGroup);
       
@@ -99,7 +121,7 @@ function PagosModule({ onBack, user }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -163,7 +185,7 @@ function PagosModule({ onBack, user }) {
                 <button
                   key={grupo}
                   onClick={() => handleGroupChange(grupo)}
-                  className="p-3 sm:p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg hover:border-indigo-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
+                  className="p-3 sm:p-4 bg-linear-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg hover:border-indigo-500 hover:shadow-lg transition-all transform hover:scale-105 text-left"
                 >
                   <div className="font-semibold text-gray-800 text-base sm:text-lg">{grupo}</div>
                   <div className="text-xs sm:text-sm text-gray-600 mt-1">Click para acceder</div>

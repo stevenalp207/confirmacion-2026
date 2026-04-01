@@ -1,5 +1,16 @@
 import { useDataSync } from '../hooks/useDataSync';
-import { useError } from '../context/ErrorContext';
+
+const formatLastSync = (value) => {
+  if (!value) return 'Sin sincronizacion reciente';
+
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Sin sincronizacion reciente';
+
+  return `Ultima sync: ${date.toLocaleTimeString('es-CR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`;
+};
 
 /**
  * Indicador de Sincronización para la TopBar
@@ -11,16 +22,22 @@ import { useError } from '../context/ErrorContext';
  * Uso: Agregar a TopBar.jsx
  */
 const SyncIndicator = () => {
-  const { pending, isSyncing, isOnline, syncAll } = useDataSync();
-  const { isOnline: isOnlineFromError } = useError();
+  const { pending, failed, isSyncing, isOnline, syncAll, lastSyncTime } = useDataSync();
 
   // No mostrar nada si todo está sincronizado y online
-  if (pending === 0 && isOnline) {
+  if (pending === 0 && failed === 0 && isOnline && !isSyncing) {
     return null;
   }
 
+  const statusTitle = [
+    formatLastSync(lastSyncTime),
+    failed > 0 ? `${failed} errores por reintentar` : null,
+  ]
+    .filter(Boolean)
+    .join(' | ');
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2" title={statusTitle}>
       {/* Indicador de conexión */}
       <div
         className={`w-2 h-2 rounded-full ${
@@ -50,6 +67,26 @@ const SyncIndicator = () => {
         </div>
       )}
 
+      {failed > 0 && (
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+            {failed}
+          </span>
+          <span className="text-xs text-amber-600 dark:text-amber-300">
+            error
+          </span>
+          {!isSyncing && isOnline && (
+            <button
+              onClick={syncAll}
+              className="ml-1 px-2 py-1 text-xs bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 rounded hover:bg-amber-200 dark:hover:bg-amber-800 transition"
+              title="Reintentar sincronizacion"
+            >
+              Reintentar
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Estado offline */}
       {!isOnline && (
         <span className="text-xs text-red-600 dark:text-red-400 font-semibold">
@@ -65,6 +102,12 @@ const SyncIndicator = () => {
             Sincronizando
           </span>
         </div>
+      )}
+
+      {!isSyncing && isOnline && (
+        <span className="hidden xl:inline text-[11px] text-gray-500 dark:text-gray-400">
+          {formatLastSync(lastSyncTime)}
+        </span>
       )}
     </div>
   );

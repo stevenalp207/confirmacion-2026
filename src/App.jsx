@@ -10,6 +10,7 @@ import OfflineIndicator from './components/OfflineIndicator';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 import SkeletonLoader from './components/SkeletonLoader';
+import { getAllowedModules } from './utils/permissions';
 
 const getModuleFromHash = () => {
   const hash = window.location.hash.replace(/^#/, '').trim();
@@ -124,37 +125,7 @@ function AppContent() {
     return <Login />;
   }
 
-  const allowedModules = (() => {
-    if (user?.rol === 'admin') {
-      return ['asistencia', 'documentos', 'sabanas', 'cartas', 'pagos', 'gastos', 'ingresos', 'catequistas', 'estudiantes', 'formacion', 'boletas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'seguridad'];
-    }
-    if (user?.rol === 'financiero') {
-      return ['pagos', 'gastos', 'ingresos', 'calendario', 'dashboard-financiero'];
-    }
-    if (user?.usuario === 'logistica') {
-      return ['asistencia', 'catequistas', 'documentos', 'estudiantes', 'sabanas', 'cartas', 'calendario', 'asignacion-grupos', 'asignacion-personalidad', 'dashboard-financiero', 'seguridad'];
-    }
-    if (user?.rol === 'formacion') {
-      return ['formacion', 'catequistas', 'calendario'];
-    }
-    if (user?.rol === 'retiro') {
-      return ['calendario', 'dashboard-financiero'];
-    }
-    if (user?.rol === 'catequista') {
-      return ['calendario', 'dashboard-financiero', 'seguridad'];
-    }
-    // Si el usuario pertenece a un grupo especial, agregar catequistas
-    const gruposEspeciales = [
-      'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
-    ];
-    if (user?.grupo && gruposEspeciales.includes(user.grupo)) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'catequistas'];
-    }
-    if (user?.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
-      return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero', 'catequistas'];
-    }
-    return ['asistencia', 'documentos', 'estudiantes', 'pagos', 'calendario', 'dashboard-financiero'];
-  })();
+  const allowedModules = getAllowedModules(user);
 
   const handleSelectModule = (module) => {
     // Si module es null, volver al inicio

@@ -5,14 +5,36 @@ import { catequistas } from '../data/catequistas';
 import { gruposData } from '../data/grupos';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { canAccess } from '../utils/permissions';
 
 function DashboardFinancieroModule({ onBack, user }) {
+  const canViewDashboard = canAccess('dashboard-financiero', user);
   const [ingresos, setIngresos] = useState([]);
   const [gastos, setGastos] = useState([]);
   const [pagosEstudiantes, setPagosEstudiantes] = useState([]);
   const [pagosCatequistas, setPagosCatequistas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('all');
+
+  if (!canViewDashboard) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-lg w-full text-center space-y-4">
+          <h1 className="text-2xl font-bold text-gray-800">Acceso restringido</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            No tienes permisos para ver el dashboard financiero.
+          </p>
+          <button
+            onClick={onBack}
+            className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     loadData();
@@ -231,7 +253,7 @@ function DashboardFinancieroModule({ onBack, user }) {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -396,7 +418,7 @@ function DashboardFinancieroModule({ onBack, user }) {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
+                className="bg-linear-to-r from-green-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${(pagosEstudiantesStats.completos / pagosEstudiantesStats.total) * 100 || 0}%` }}
               ></div>
             </div>
@@ -447,7 +469,7 @@ function DashboardFinancieroModule({ onBack, user }) {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className="bg-gradient-to-r from-indigo-500 to-violet-500 h-3 rounded-full transition-all duration-500"
+                className="bg-linear-to-r from-indigo-500 to-violet-500 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${(pagosCatequistasStats.completos / pagosCatequistasStats.total) * 100 || 0}%` }}
               ></div>
             </div>

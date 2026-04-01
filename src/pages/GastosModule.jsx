@@ -1,10 +1,11 @@
 import { Lock, ArrowLeft, TrendingDown } from 'lucide-react';
 import GastosFinancieros from '../components/GastosFinancieros';
+import { canAccess } from '../utils/permissions';
 
 function GastosModule({ onBack, user }) {
-  const canAccess = user?.rol === 'admin' || user?.rol === 'financiero';
+  const canAccessGastos = canAccess('gastos', user);
 
-  if (!canAccess) {
+  if (!canAccessGastos) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
         <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-lg w-full text-center space-y-4">
@@ -28,7 +29,7 @@ function GastosModule({ onBack, user }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">

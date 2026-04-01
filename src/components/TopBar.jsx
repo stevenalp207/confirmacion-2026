@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, LogOut, X, Menu } from 'lucide-react';
 import NotificationManager from './NotificationManager';
+import SyncIndicator from './SyncIndicator';
 
 const GROUP_STYLES = {
   piedad: {
@@ -125,6 +126,7 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        <SyncIndicator />
         <NotificationManager />
         
         {/* Account Switcher */}
