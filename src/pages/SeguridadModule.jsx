@@ -5,6 +5,46 @@ import { supabase } from '../config/supabase';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+const GROUP_STYLES = {
+  piedad: {
+    text: 'text-orange-700',
+    badge: 'bg-orange-100 text-orange-800'
+  },
+  consejo: {
+    text: 'text-purple-700',
+    badge: 'bg-purple-100 text-purple-800'
+  },
+  fortaleza: {
+    text: 'text-red-700',
+    badge: 'bg-red-100 text-red-800'
+  },
+  sabiduria: {
+    text: 'text-yellow-700',
+    badge: 'bg-yellow-100 text-yellow-800'
+  },
+  ciencia: {
+    text: 'text-green-700',
+    badge: 'bg-green-100 text-green-800'
+  },
+  temor: {
+    text: 'text-[oklch(28.6%_0.066_53.813)]',
+    badge: 'bg-[oklch(28.6%_0.066_53.813_/_0.18)] text-[oklch(28.6%_0.066_53.813)]'
+  },
+  entendimiento: {
+    text: 'text-blue-700',
+    badge: 'bg-blue-100 text-blue-800'
+  }
+};
+
+const normalizeGroupName = (value = '') => {
+  return value
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+};
+
 function SeguridadModule({ onBack, user }) {
   const [asignaciones, setAsignaciones] = useState({});
   const [loading, setLoading] = useState(true);
@@ -212,16 +252,11 @@ Favor estar en sus lugares correspondientes a la hora de la salida.`;
   };
 
   const getGrupoColor = (grupo) => {
-    const colores = {
-      'Piedad': 'bg-pink-100 text-pink-800',
-      'Ciencia': 'bg-blue-100 text-blue-800',
-      'Entendimiento': 'bg-purple-100 text-purple-800',
-      'Fortaleza': 'bg-orange-100 text-orange-800',
-      'Consejo': 'bg-yellow-100 text-yellow-800',
-      'Sabiduría': 'bg-green-100 text-green-800',
-      'Temor de Dios': 'bg-red-100 text-red-800'
-    };
-    return colores[grupo] || 'bg-gray-100 text-gray-800';
+    const groupKey = normalizeGroupName(grupo);
+
+    if (groupKey.includes('temor')) return GROUP_STYLES.temor.badge;
+
+    return GROUP_STYLES[groupKey]?.badge || 'bg-gray-100 text-gray-800';
   };
 
   return (

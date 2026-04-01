@@ -24,8 +24,8 @@ const GROUP_STYLES = {
     badge: 'bg-green-100 text-green-800'
   },
   temor: {
-    text: 'text-amber-800',
-    badge: 'bg-amber-100 text-amber-900'
+    text: 'text-[oklch(28.6%_0.066_53.813)]',
+    badge: 'bg-[oklch(28.6%_0.066_53.813_/_0.18)] text-[oklch(28.6%_0.066_53.813)]'
   },
   entendimiento: {
     text: 'text-blue-700',
@@ -52,6 +52,14 @@ const getGroupStyle = (account) => {
   if (userKey.includes('temor')) return GROUP_STYLES.temor;
 
   return null;
+};
+
+const formatRoleLabel = (role = '') => {
+  const roleKey = normalizeGroupName(role);
+
+  if (roleKey.includes('temor')) return 'Temor de Dios';
+
+  return role;
 };
 
 function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccount, onToggleMobileSidebar }) {
@@ -107,9 +115,9 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
             ) : user?.usuario === 'logistica' ? (
               <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">LOGÍSTICA</span>
             ) : userGroupStyle ? (
-              <span className={`${userGroupStyle.badge} px-2 py-0.5 rounded font-bold`}>{user?.rol}</span>
+              <span className={`${userGroupStyle.badge} px-2 py-0.5 rounded font-bold`}>{formatRoleLabel(user?.rol)}</span>
             ) : (
-              user?.rol
+              formatRoleLabel(user?.rol)
             )}
           </p>
         </div>
@@ -177,10 +185,10 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
                             <p className={`text-sm font-medium ${accountGroupStyle?.text || 'text-gray-900'}`}>{account.usuario}</p>
                             {accountGroupStyle ? (
                               <span className={`inline-block mt-0.5 text-xs px-2 py-0.5 rounded font-bold ${accountGroupStyle.badge}`}>
-                                {account.rol}
+                                {formatRoleLabel(account.rol)}
                               </span>
                             ) : (
-                              <p className="text-xs text-gray-500">{account.rol}</p>
+                              <p className="text-xs text-gray-500">{formatRoleLabel(account.rol)}</p>
                             )}
                           </button>
                           {account.usuario !== user?.usuario && (
@@ -254,10 +262,10 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
                               <p className={`text-sm font-medium ${accountGroupStyle?.text || 'text-gray-900'}`}>{account.usuario}</p>
                               {accountGroupStyle ? (
                                 <span className={`inline-block mt-0.5 text-xs px-2 py-0.5 rounded font-bold ${accountGroupStyle.badge}`}>
-                                  {account.rol}
+                                    {formatRoleLabel(account.rol)}
                                 </span>
                               ) : (
-                                <p className="text-xs text-gray-500">{account.rol}</p>
+                                  <p className="text-xs text-gray-500">{formatRoleLabel(account.rol)}</p>
                               )}
                             </button>
                             {account.usuario !== user?.usuario && (

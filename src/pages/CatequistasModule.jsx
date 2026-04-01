@@ -6,6 +6,63 @@ import { Search, Filter, MapPin, ArrowLeft, Users, Download } from 'lucide-react
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+const GROUP_STYLES = {
+  piedad: {
+    text: 'text-orange-700',
+    badge: 'bg-orange-100 text-orange-800'
+  },
+  consejo: {
+    text: 'text-purple-700',
+    badge: 'bg-purple-100 text-purple-800'
+  },
+  fortaleza: {
+    text: 'text-red-700',
+    badge: 'bg-red-100 text-red-800'
+  },
+  sabiduria: {
+    text: 'text-yellow-700',
+    badge: 'bg-yellow-100 text-yellow-800'
+  },
+  ciencia: {
+    text: 'text-green-700',
+    badge: 'bg-green-100 text-green-800'
+  },
+  temor: {
+    text: 'text-[oklch(28.6%_0.066_53.813)]',
+    badge: 'bg-[oklch(28.6%_0.066_53.813_/_0.18)] text-[oklch(28.6%_0.066_53.813)]'
+  },
+  entendimiento: {
+    text: 'text-blue-700',
+    badge: 'bg-blue-100 text-blue-800'
+  }
+};
+
+const normalizeGroupName = (value = '') => {
+  return value
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+};
+
+const getGroupStyle = (groupName = '') => {
+  const groupKey = normalizeGroupName(groupName);
+
+  if (GROUP_STYLES[groupKey]) return GROUP_STYLES[groupKey];
+  if (groupKey.includes('temor')) return GROUP_STYLES.temor;
+
+  return null;
+};
+
+const getGroupDisplayName = (groupName = '') => {
+  const groupKey = normalizeGroupName(groupName);
+
+  if (groupKey.includes('temor')) return 'Temor de Dios';
+
+  return groupName;
+};
+
 // Recibe user como prop
 function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
@@ -187,7 +244,7 @@ function CatequistasModule({ onBack, user }) {
     const tableData = filteredCatequistas.map(catequista => {
       const estado = catequistasState[catequista.nombre]?.[selectedEventForDownload] || 'ausente';
       const estadoTexto = estado === 'presente' ? 'Presente' : estado === 'justificado' ? 'Justificado' : 'Ausente';
-      return [catequista.nombre, catequista.grupo, estadoTexto];
+      return [catequista.nombre, getGroupDisplayName(catequista.grupo), estadoTexto];
     });
 
     // Crear PDF en formato carta
@@ -343,17 +400,27 @@ function CatequistasModule({ onBack, user }) {
                     {uniqueGroups.map(grupo => {
                       const count = catequistas.filter(c => c.grupo === grupo).length;
                       const isSelected = selectedGroups.includes(grupo);
+                      const groupStyle = getGroupStyle(grupo);
+
+                      const selectedClass = groupStyle
+                        ? `${groupStyle.badge} ring-2 ring-offset-1 ring-gray-300 shadow-md`
+                        : 'bg-purple-600 text-white shadow-md';
+
+                      const unselectedClass = groupStyle
+                        ? `${groupStyle.badge} opacity-90 hover:opacity-100`
+                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+
                       return (
                         <button
                           key={grupo}
                           onClick={() => toggleGroup(grupo)}
                           className={`px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-bold transition ${
                             isSelected
-                              ? 'bg-purple-600 text-white shadow-md'
-                              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                              ? selectedClass
+                              : unselectedClass
                           }`}
                         >
-                          {grupo} <span className="text-xs bg-gray-300 px-2 py-1 rounded ml-1">({count})</span>
+                          {getGroupDisplayName(grupo)} <span className="text-xs bg-gray-300 px-2 py-1 rounded ml-1">({count})</span>
                         </button>
                       );
                     })}
@@ -430,8 +497,12 @@ function CatequistasModule({ onBack, user }) {
                             {catequista.nombre}
                           </td>
                           <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-gray-600">
-                            <span className="inline-block px-2 py-1 bg-blue-50 text-blue-900 rounded-full font-medium">
-                              {catequista.grupo}
+                            <span
+                              className={`inline-block px-2 py-1 rounded-full font-medium whitespace-nowrap ${
+                                getGroupStyle(catequista.grupo)?.badge || 'bg-blue-50 text-blue-900'
+                              }`}
+                            >
+                              {getGroupDisplayName(catequista.grupo)}
                             </span>
                           </td>
                           {catequesisIndices.map((catequesisNum) => {
