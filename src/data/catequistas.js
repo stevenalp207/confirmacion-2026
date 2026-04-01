@@ -18,6 +18,7 @@ export const catequistas = [
   { nombre: 'Jeaustin Emanuel Fernández Arias', grupo: 'Sabiduría', comision: '' },
   { nombre: 'Ismael Josué Rivera Quesada', grupo: 'Sabiduría', comision: '' },
   { nombre: 'Mariana Segura Piedra', grupo: 'Sabiduría', comision: 'Financiero' },
+  { nombre: 'Amanda Villegas Centeno', grupo: 'Sabiduría', comision: 'Financiero' },
   
   // Ciencia
   { nombre: 'Luis Ángel Sánchez Badilla *', grupo: 'Ciencia', comision: 'Retiro' },

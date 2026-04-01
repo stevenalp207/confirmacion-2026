@@ -87,7 +87,6 @@ export const gruposData = {
       '8': { id: 71052950, nombre: 'Isaac Sibaja Alvarenga', genero: 'Masculino', documentos: {}, asistencias: {} },
       '9': { id: 72504910, nombre: 'Sebastián Montero Palacios', genero: 'Masculino', documentos: {}, asistencias: {} },
       '10': { id: 70958973, nombre: 'Jimena Maria Segura Estrada', genero: 'Femenino', documentos: {}, asistencias: {} },
-      '11': { id: 88113315, nombre: 'Camila Ruiz Peña', genero: 'Femenino', documentos: {}, asistencias: {} },
       '12': { id: 61151506, nombre: 'Daniel Alejando Alfaro Brenes', genero: 'Masculino', documentos: {}, asistencias: {} },
       '13': { id: 85427220, nombre: 'Stephanie Lucía Anchía Fuentes', genero: 'Femenino', documentos: {}, asistencias: {} },
       '14': { id: 71708153, nombre: 'Diego Cardoza Mendoza', genero: 'Masculino', documentos: {}, asistencias: {} },
@@ -432,6 +431,7 @@ export const tiposDocumentos = [
   { id: 'fe_confirmacion_padrino', nombre: 'Fe Confirmación Padrino' },
   { id: 'acta_matrimonio', nombre: 'Acta de Matrimonio' },
   { id: 'permiso_retiro', nombre: 'Permiso Retiro' },
+  { id: 'reglamento', nombre: 'Reglamento Confirmación 2026' }
 ];
 
 // Número total de catequesis para Confirmación 2026 - CATEQUIZANDOS
