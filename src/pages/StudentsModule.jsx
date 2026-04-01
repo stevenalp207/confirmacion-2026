@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useLocalStorage } from '../utils/storage';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { grupos, gruposData, estudiantesInfoAcademica } from '../data/grupos';
+import { grupos, gruposData, estudiantesInfoAcademica, tiposDocumentos } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
 import StudentPhoto from '../components/StudentPhoto';
 import { ArrowLeft, Search, MapPin, Printer, BarChart3, ArrowRight, Users } from 'lucide-react';
+import { supabase } from '../config/supabase';
 
 const slugifyStudentName = (name = '') => {
   return name
@@ -27,6 +27,7 @@ function StudentsModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('Todos');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [documentosCountByStudent, setDocumentosCountByStudent] = useState({});
 
   // Mostrar estudiantes directamente desde gruposData
 
@@ -98,30 +99,43 @@ function StudentsModule({ onBack, user }) {
     };
   }, []);
 
+  const loadDocumentosResumen = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('documentos_entregados')
+        .select('grupo,estudiante_id,entregado')
+        .eq('entregado', true);
+
+      if (error) {
+        console.error('Error loading documentos resumen:', error);
+        return;
+      }
+
+      const nextCounts = {};
+      (data || []).forEach((row) => {
+        const key = `${row.grupo}::${row.estudiante_id}`;
+        nextCounts[key] = (nextCounts[key] || 0) + 1;
+      });
+
+      setDocumentosCountByStudent(nextCounts);
+    } catch (error) {
+      console.error('Error loading documentos resumen:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedStudent) {
+      loadDocumentosResumen();
+    }
+  }, [selectedStudent]);
+
   // Función para contar documentos entregados
   const countDocumentosEntregados = (student) => {
-    return Object.values(student.documentos || {}).filter(Boolean).length;
+    const key = `${student.grupo}::${student.id}`;
+    return documentosCountByStudent[key] || 0;
   };
 
-  // Función para actualizar datos de un estudiante
-  const actualizarEstudiante = (grupo, estudianteId, nuevosDatos) => {
-    setLocalGruposData(prev => {
-      const nuevosGrupos = { ...prev };
-      nuevosGrupos[grupo] = {
-        ...nuevosGrupos[grupo],
-        estudiantes: {
-          ...nuevosGrupos[grupo].estudiantes,
-          [estudianteId]: {
-            ...nuevosGrupos[grupo].estudiantes[estudianteId],
-            ...nuevosDatos
-          }
-        }
-      };
-      return nuevosGrupos;
-    });
-  };
-
-  const totalDocumentos = 6; // Total de documentos requeridos
+  const totalDocumentos = tiposDocumentos.length;
 
   // Filtrar por grupo y búsqueda
   const filteredStudents = allStudents.filter(student => {
@@ -247,7 +261,6 @@ function StudentsModule({ onBack, user }) {
             estudianteId={selectedStudent.id}
             estudiante={selectedStudent}
             user={user}
-            actualizarEstudiante={actualizarEstudiante}
           />
         </div>
       </div>

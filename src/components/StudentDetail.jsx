@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../config/supabase';
-import { numeroCatequesis, getCatequesisLabel } from '../data/grupos';
+import { numeroCatequesis, getCatequesisLabel, tiposDocumentos } from '../data/grupos';
 import StudentPhoto from './StudentPhoto';
 import { Check, Circle, X, AlertCircle, Calendar, AlertTriangle, Edit, Save, ClipboardList, FileText, FolderOpen, DollarSign } from 'lucide-react';
 
@@ -138,6 +138,7 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
 
   const asistenciaCount = Object.values(asistencias).filter(a => a === 'presente').length;
   const documentosCount = Object.values(documentos).filter(d => d === true).length;
+  const totalDocumentos = tiposDocumentos.length;
   const pagoCuota = pagos?.monto_pagado || 0;
   const totalSesiones = numeroCatequesis; // 25 sesiones totales
   const whatsappPhone = normalizePhoneForWhatsApp(estudiante.id);
@@ -225,18 +226,21 @@ function StudentDetail({ grupo, estudianteId, estudiante, user }) {
             <FolderOpen className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" strokeWidth={1.5} />
           </div>
           <p className="text-3xl sm:text-4xl font-bold text-blue-600 mb-2">{documentosCount}</p>
-          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">entregados</p>
-          <div className="space-y-2">
-            {Object.entries(documentos).slice(0, 2).map(([tipo, entregado]) => (
-              <div key={tipo} className="flex items-center gap-2 text-xs sm:text-sm">
+          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">de {totalDocumentos} entregados</p>
+          <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
+            {tiposDocumentos.map((doc) => {
+              const entregado = documentos[doc.id] === true;
+              return (
+              <div key={doc.id} className="flex items-center gap-2 text-xs sm:text-sm">
                 {entregado ? (
                   <Check className="w-4 h-4 text-green-600" />
                 ) : (
                   <Circle className="w-4 h-4 text-gray-400" />
                 )}
-                <span className={entregado ? 'text-gray-800' : 'text-gray-500'}>{tipo}</span>
+                <span className={entregado ? 'text-gray-800' : 'text-gray-500'}>{doc.nombre}</span>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
