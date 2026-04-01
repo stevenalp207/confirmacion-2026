@@ -41,13 +41,6 @@ function GastosModule({ onBack, user }) {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               Volver al Menú Principal
             </button>
-            <button
-              className="inline-flex items-center gap-2 bg-rose-100 hover:bg-rose-200 text-rose-700 font-semibold py-1.5 px-4 rounded-lg transition-colors border border-rose-200 text-xs sm:text-sm"
-              // TODO: Implementar lógica de navegación a comprobantes de gastos
-              type="button"
-            >
-              📄 Comprobantes
-            </button>
           </div>
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
             <div className="text-center mb-4">
