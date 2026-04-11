@@ -87,7 +87,6 @@ export const gruposData = {
       '10': { id: 70958973, nombre: 'Jimena Maria Segura Estrada', genero: 'Femenino', documentos: {}, asistencias: {} },
       '12': { id: 61151506, nombre: 'Daniel Alejando Alfaro Brenes', genero: 'Masculino', documentos: {}, asistencias: {} },
       '13': { id: 85427220, nombre: 'Stephanie Lucía Anchía Fuentes', genero: 'Femenino', documentos: {}, asistencias: {} },
-      '14': { id: 71708153, nombre: 'Diego Cardoza Mendoza', genero: 'Masculino', documentos: {}, asistencias: {} },
       '15': { id: 87403040, nombre: 'Valerie Obando Valverde', genero: 'Femenino', documentos: {}, asistencias: {} },
       '16': { id: 89734414, nombre: 'Mariangel Sandoval Torres', genero: 'Femenino', documentos: {}, asistencias: {} },
     }
@@ -188,7 +187,6 @@ export const carpasPorGrupo = {
     'Camila Ruiz Peña': 'Carpa 2',
     'Daniel Alejando Alfaro Brenes': 'Carpa 4',
     'Stephanie Lucía Anchía Fuentes': 'Carpa 5',
-    'Diego Cardoza Mendoza': 'Carpa 1',
     'Valerie Obando Valverde': 'Carpa 2'
   },
   'Entendimiento': {
@@ -321,7 +319,6 @@ export const estudiantesInfoAcademica = {
     'Camila Ruiz Peña': { correoInstitucional: '2023116@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Daniel Alejando Alfaro Brenes': { correoInstitucional: '2017461@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
     'Stephanie Lucía Anchía Fuentes': { correoInstitucional: '2023012@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
-    'Diego Cardoza Mendoza': { correoInstitucional: '2026178@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Valerie Obando Valverde': { correoInstitucional: '2017439@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
     'Mariangel Sandoval Torres': { correoInstitucional: '2017448@est.cedesdonbosco.ed.cr', especialidad: 'N/A' }
   },

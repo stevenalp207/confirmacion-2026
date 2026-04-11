@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { 
   CheckCircle, 
   Users, 
@@ -23,6 +22,7 @@ import {
   Shield
 } from 'lucide-react';
 import logo from '../assets/logo.png';
+import { canAccess } from '../utils/permissions';
 
 function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCollapse }) {
   const modules = [
@@ -162,9 +162,8 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
   ];
 
   const hasAccess = (module) => {
-    if (user?.rol === 'admin') return true;
-    if (user?.usuario === 'logistica' && module.roles.includes('logistica')) return true;
-    return module.roles.includes(user?.rol);
+    if (module.id === null) return true;
+    return canAccess(module.id, user);
   };
 
   const visibleModules = modules.filter(hasAccess);
