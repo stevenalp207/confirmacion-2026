@@ -44,7 +44,6 @@ export const gruposData = {
       '7': { id: 84164509, nombre: 'Gimena Cantillano Valladares', genero: 'Femenino', documentos: {}, asistencias: {} },
       '8': { id: 83679774, nombre: 'Oscar Andrés Saborío Fernández', genero: 'Masculino', documentos: {}, asistencias: {} },
       '9': { id: 86012030, nombre: 'Roy Madrigal Aguilar', genero: 'Masculino', documentos: {}, asistencias: {} },
-      '10': { id: 86054888, nombre: 'Andrea Bermúdez Vega', genero: 'Femenino', documentos: {}, asistencias: {} },
       '11': { id: 83670232, nombre: 'Tania Ramirez Romero', genero: 'Femenino', documentos: {}, asistencias: {} },
       '12': { id: 83370942, nombre: 'Yaroth Paz Cerdas', genero: 'Masculino', documentos: {}, asistencias: {} },
       '13': { id: 85838473, nombre: 'Melissa Aguilar Monge', genero: 'Femenino', documentos: {}, asistencias: {} },
@@ -91,6 +90,7 @@ export const gruposData = {
       '13': { id: 85427220, nombre: 'Stephanie Lucía Anchía Fuentes', genero: 'Femenino', documentos: {}, asistencias: {} },
       '14': { id: 71708153, nombre: 'Diego Cardoza Mendoza', genero: 'Masculino', documentos: {}, asistencias: {} },
       '15': { id: 87403040, nombre: 'Valerie Obando Valverde', genero: 'Femenino', documentos: {}, asistencias: {} },
+      '16': { id: 89734414, nombre: 'Mariangel Sandoval Torres', genero: 'Femenino', documentos: {}, asistencias: {} },
     }
   },
   'Entendimiento': {
@@ -240,7 +240,6 @@ export const carpasPorGrupo = {
     'Gimena Cantillano Valladares': 'Carpa 3',
     'Oscar Andrés Saborío Fernández': 'Carpa 5',
     'Roy Madrigal Aguilar': 'Carpa 3',
-    'Andrea Bermúdez Vega': 'Carpa 6',
     'Tania Ramirez Romero': 'Carpa 1',
     'Yaroth Paz Cerdas': 'Carpa 7',
     'Melissa Aguilar Monge': 'Carpa 6',
@@ -328,7 +327,8 @@ export const estudiantesInfoAcademica = {
     'Daniel Alejando Alfaro Brenes': { correoInstitucional: '2017461@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
     'Stephanie Lucía Anchía Fuentes': { correoInstitucional: '2023012@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
     'Diego Cardoza Mendoza': { correoInstitucional: '2026178@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
-    'Valerie Obando Valverde': { correoInstitucional: '2017439@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' }
+    'Valerie Obando Valverde': { correoInstitucional: '2017439@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
+    'Mariangel Sandoval Torres': { correoInstitucional: '2017448@est.cedesdonbosco.ed.cr', especialidad: 'N/A' }
   },
   'Entendimiento': {
     'Rebeca Monge Segura': { correoInstitucional: '2023087@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
@@ -376,7 +376,6 @@ export const estudiantesInfoAcademica = {
     'Gimena Cantillano Valladares': { correoInstitucional: '2023034@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
     'Oscar Andrés Saborío Fernández': { correoInstitucional: '2023117@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
     'Roy Madrigal Aguilar': { correoInstitucional: '2018462@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
-    'Andrea Bermúdez Vega': { correoInstitucional: '2025212@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
     'Tania Ramirez Romero': { correoInstitucional: '2023110@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Yaroth Paz Cerdas': { correoInstitucional: '2023101@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'Melissa Aguilar Monge': { correoInstitucional: '2023007@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
