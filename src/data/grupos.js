@@ -21,7 +21,6 @@ export const gruposData = {
       '5': { id: 60811105, nombre: 'Joshua Gabriel Vargas Pérez', genero: 'Masculino', documentos: {}, asistencias: {} },
       '6': { id: 71368341, nombre: 'Terry Anderson Solis Centeno', genero: 'Masculino', documentos: {}, asistencias: {} },
       '7': { id: 70795853, nombre: 'Alessandro Sanchez Portuguez', genero: 'Masculino', documentos: {}, asistencias: {} },
-      '8': { id: 70451859, nombre: 'Sara Merayo Chacón', genero: 'Femenino', documentos: {}, asistencias: {} },
       '9': { id: 89825888, nombre: 'Liz Arianna Achi Mora', genero: 'Femenino', documentos: {}, asistencias: {} },
       '10': { id: 70651326, nombre: 'Valeria Retana Corrales', genero: 'Femenino', documentos: {}, asistencias: {} },
       '11': { id: 71996645, nombre: 'Valentina Chinchilla Araya', genero: 'Femenino', documentos: {}, asistencias: {} },
@@ -131,7 +130,6 @@ export const gruposData = {
       '12': { id: 86877858, nombre: 'Matías Corrales Guzmán', genero: 'Masculino', documentos: {}, asistencias: {} },
       '13': { id: 83066170, nombre: 'María Jimena Bonilla Carpio', genero: 'Femenino', documentos: {}, asistencias: {} },
       '14': { id: 71074599, nombre: 'Allan Gabriel Salazar Jiménez', genero: 'Masculino', documentos: {}, asistencias: {} },
-      '15': { id: 70375037, nombre: 'Hillary Abarca Sánchez', genero: 'Femenino', documentos: {}, asistencias: {} },
       '16': { id: 88076149, nombre: 'Oscar Josué Pereira Camacho', genero: 'Masculino', documentos: {}, asistencias: {} },
     }
   },
@@ -167,7 +165,6 @@ export const carpasPorGrupo = {
     'Joshua Gabriel Vargas Pérez': 'Carpa 6',
     'Terry Anderson Solis Centeno': 'Carpa 3',
     'Alessandro Sanchez Portuguez': 'Carpa 6',
-    'Sara Merayo Chacón': 'Carpa 2',
     'Liz Arianna Achi Mora': 'Carpa 1',
     'Valeria Retana Corrales': 'Carpa 4',
     'Valentina Chinchilla Araya': 'Carpa 7',
@@ -262,7 +259,6 @@ export const carpasPorGrupo = {
     'Matías Corrales Guzmán': 'Carpa 1',
     'María Jimena Bonilla Carpio': 'Carpa 1',
     'Allan Gabriel Salazar Jiménez': 'Carpa 6',
-    'Hillary Abarca Sánchez': 'Carpa 7',
     'Oscar Josué Pereira Camacho': 'Carpa 3'
   },
   'Temor de Dios': {
@@ -302,7 +298,6 @@ export const estudiantesInfoAcademica = {
     'Joshua Gabriel Vargas Pérez': { correoInstitucional: '2023145@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
     'Terry Anderson Solis Centeno': { correoInstitucional: '2023135@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
     'Alessandro Sanchez Portuguez': { correoInstitucional: '2023119@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
-    'Sara Merayo Chacón': { correoInstitucional: '2023085@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
     'Liz Arianna Achi Mora': { correoInstitucional: '2023003@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
     'Valeria Retana Corrales': { correoInstitucional: '2026209@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
     'Valentina Chinchilla Araya': { correoInstitucional: '2017416@est.cedesdonbosco.ed.cr', especialidad: 'Dibujo y Modelado' },
@@ -398,7 +393,6 @@ export const estudiantesInfoAcademica = {
     'Matías Corrales Guzmán': { correoInstitucional: '2022250@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
     'María Jimena Bonilla Carpio': { correoInstitucional: '2025196@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
     'Allan Gabriel Salazar Jiménez': { correoInstitucional: '2017447@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
-    'Hillary Abarca Sánchez': { correoInstitucional: '2023001@est.cedesdonbosco.ed.cr', especialidad: 'Dibujo y Modelado' },
     'Oscar Josué Pereira Camacho': { correoInstitucional: '2019465@est.cedesdonbosco.ed.cr', especialidad: 'Dibujo y Modelado' }
   },
   'Temor de Dios': {

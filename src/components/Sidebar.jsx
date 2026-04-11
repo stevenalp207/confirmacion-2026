@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   LayoutGrid,
+  BarChart3,
   ListTodo,
   PieChart,
   Mic,
@@ -141,6 +142,13 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Asignación',
       icon: UserCheck,
       color: 'pink',
+      roles: ['admin', 'logistica']
+    },
+    {
+      id: 'dashboard-asistencia',
+      name: 'Dashboard Asistencia',
+      icon: BarChart3,
+      color: 'indigo',
       roles: ['admin', 'logistica']
     },
     // === LOGÍSTICA ===

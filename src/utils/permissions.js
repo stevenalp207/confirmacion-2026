@@ -25,6 +25,7 @@ const MODULE_ACCESS = {
   calendario: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'grupo'],
   'asignacion-grupos': ['admin', 'logistica'],
   'asignacion-personalidad': ['admin', 'logistica'],
+  'dashboard-asistencia': ['admin', 'logistica'],
   'dashboard-financiero': ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'grupo'],
   seguridad: ['admin', 'logistica', 'catequista'],
 };
@@ -44,6 +45,7 @@ const MODULE_ORDER = [
   'calendario',
   'asignacion-grupos',
   'asignacion-personalidad',
+  'dashboard-asistencia',
   'dashboard-financiero',
   'seguridad',
 ];

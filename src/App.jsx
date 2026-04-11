@@ -35,6 +35,7 @@ const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
 const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssignmentModule'));
 const DashboardFinancieroModule = lazy(() => import('./pages/DashboardFinancieroModule'));
+const AttendanceDashboardModule = lazy(() => import('./pages/AttendanceDashboardModule'));
 const SeguridadModule = lazy(() => import('./pages/SeguridadModule'));
 
 // Loading component - ahora usa SkeletonLoader mejorado
@@ -243,6 +244,7 @@ function AppContent() {
               {currentModule === 'asignacion-grupos' && <GroupAssignmentModule onBack={handleBack} user={user} />}
               {currentModule === 'asignacion-personalidad' && <PersonalityAssignmentModule onBack={handleBack} user={user} />}
               {currentModule === 'dashboard-financiero' && <DashboardFinancieroModule onBack={handleBack} user={user} />}
+              {currentModule === 'dashboard-asistencia' && <AttendanceDashboardModule onBack={handleBack} user={user} />}
               {currentModule === 'seguridad' && <SeguridadModule onBack={handleBack} user={user} />}
             </Suspense>
           </main>
