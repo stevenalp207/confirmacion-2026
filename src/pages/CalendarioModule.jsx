@@ -1,10 +1,244 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ArrowLeft, Calendar as CalendarIcon, Filter, Search, Clock, AlertCircle, ExternalLink, Download } from 'lucide-react'
-import { eventos, tiposEvento, prioridades, catequesisGrupos } from '../data/cronograma'
+import { tiposEvento, prioridades, catequesisGrupos } from '../data/cronograma'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
+const REMOTE_CALENDAR_DOC_URL =
+  import.meta.env.VITE_CALENDARIO_DOC_URL ||
+  'https://docs.google.com/document/d/1IfZsVTtBbXatAubrDTsxrz7eQvA3BY9B/edit?usp=sharing&ouid=112234919645278192952&rtpof=true&sd=true'
+const REMOTE_CALENDAR_DOC_ID = import.meta.env.VITE_CALENDARIO_DOC_ID || ''
+
+const MONTHS_ES = {
+  enero: 1,
+  febrero: 2,
+  marzo: 3,
+  abril: 4,
+  mayo: 5,
+  junio: 6,
+  julio: 7,
+  agosto: 8,
+  septiembre: 9,
+  setiembre: 9,
+  octubre: 10,
+  noviembre: 11,
+  diciembre: 12
+}
+
+function parseCSVRow(line) {
+  const result = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    const next = line[i + 1]
+
+    if (char === '"') {
+      if (inQuotes && next === '"') {
+        current += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+      continue
+    }
+
+    if (char === ',' && !inQuotes) {
+      result.push(current.trim())
+      current = ''
+      continue
+    }
+
+    current += char
+  }
+
+  result.push(current.trim())
+  return result
+}
+
+function extractGoogleDocId(value = '') {
+  if (!value) return ''
+  const match = value.match(/\/document\/d\/([a-zA-Z0-9_-]+)/)
+  return match?.[1] || ''
+}
+
+function buildGoogleDocTxtUrl() {
+  if (REMOTE_CALENDAR_DOC_URL.includes('/export?format=txt')) {
+    return REMOTE_CALENDAR_DOC_URL
+  }
+
+  const idFromUrl = extractGoogleDocId(REMOTE_CALENDAR_DOC_URL)
+  const docId = REMOTE_CALENDAR_DOC_ID || idFromUrl
+  if (!docId) return ''
+
+  return `https://docs.google.com/document/d/${docId}/export?format=txt`
+}
+
+function parseCalendarText(text) {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#') && !line.startsWith('//'))
+
+  if (lines.length === 0) return []
+
+  const pipeRows = lines.filter((line) => /^\d{4}-\d{2}-\d{2}\s*\|/.test(line))
+  if (pipeRows.length > 0) {
+    return pipeRows
+      .map((line, index) => {
+        const [fecha, titulo, descripcion = '', tipo = 'administrativo', categoria = 'General', prioridad = 'media'] =
+          line.split('|').map((part) => part.trim())
+
+        return {
+          id: Date.now() + index,
+          fecha,
+          titulo,
+          descripcion,
+          tipo: tipo.toLowerCase(),
+          categoria,
+          prioridad: prioridad.toLowerCase()
+        }
+      })
+      .filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(item.fecha) && item.titulo)
+  }
+
+  if (lines.length < 2) return []
+
+  const headers = parseCSVRow(lines[0]).map((h) => h.toLowerCase())
+  const getIdx = (name) => headers.indexOf(name)
+
+  const idxFecha = getIdx('fecha')
+  const idxTitulo = getIdx('titulo')
+  const idxDescripcion = getIdx('descripcion')
+  const idxTipo = getIdx('tipo')
+  const idxCategoria = getIdx('categoria')
+  const idxPrioridad = getIdx('prioridad')
+
+  if (idxFecha >= 0 && idxTitulo >= 0) {
+    return lines
+      .slice(1)
+      .map((line, index) => {
+        const cols = parseCSVRow(line)
+        return {
+          id: Date.now() + index,
+          fecha: cols[idxFecha] || '',
+          titulo: cols[idxTitulo] || '',
+          descripcion: idxDescripcion >= 0 ? (cols[idxDescripcion] || '') : '',
+          tipo: idxTipo >= 0 ? ((cols[idxTipo] || 'administrativo').toLowerCase()) : 'administrativo',
+          categoria: idxCategoria >= 0 ? (cols[idxCategoria] || 'General') : 'General',
+          prioridad: idxPrioridad >= 0 ? ((cols[idxPrioridad] || 'media').toLowerCase()) : 'media'
+        }
+      })
+      .filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(item.fecha) && item.titulo)
+  }
+
+  // Fallback para calendarios visuales de Google Docs (tabla por mes/dias).
+  let currentMonth = null
+  let currentYear = null
+  let currentDay = null
+  const dayContentMap = new Map()
+
+  const isMeaningfulCalendarLine = (value = '') => {
+    const trimmed = value.trim()
+    if (!trimmed) return false
+    // Ignora líneas decorativas como "_____" o "----".
+    if (/^[\s_\-–—.=*~]+$/.test(trimmed)) return false
+    return true
+  }
+
+  const ensureDayContent = (year, month, day) => {
+    if (!year || !month || !day) return null
+    const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    if (!dayContentMap.has(dateKey)) dayContentMap.set(dateKey, [])
+    return dayContentMap.get(dateKey)
+  }
+
+  lines.forEach((line) => {
+    const monthMatch = line.match(/\b(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\b\s+(\d{4})/i)
+    if (monthMatch) {
+      currentMonth = MONTHS_ES[monthMatch[1].toLowerCase()] || null
+      currentYear = Number(monthMatch[2])
+      currentDay = null
+      return
+    }
+
+    const dayOnlyMatch = line.match(/^(\d{1,2})$/)
+    if (dayOnlyMatch) {
+      currentDay = Number(dayOnlyMatch[1])
+      return
+    }
+
+    const dayWithTextMatch = line.match(/^(\d{1,2})\s+(.+)$/)
+    if (dayWithTextMatch) {
+      currentDay = Number(dayWithTextMatch[1])
+      const list = ensureDayContent(currentYear, currentMonth, currentDay)
+      if (list) list.push(dayWithTextMatch[2])
+      return
+    }
+
+    if (!currentMonth || !currentYear || !currentDay) return
+
+    if (
+      /^(domingo|lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado)$/i.test(line) ||
+      /^cedes\s+/i.test(line)
+    ) {
+      return
+    }
+
+    if (!isMeaningfulCalendarLine(line)) return
+
+    const list = ensureDayContent(currentYear, currentMonth, currentDay)
+    if (list) list.push(line)
+  })
+
+  if (dayContentMap.size === 0) return []
+
+  const inferType = (textValue) => {
+    const t = textValue.toLowerCase()
+    if (t.includes('catequesis')) return 'catequesis'
+    if (t.includes('exposición') || t.includes('exposicion')) return 'exposicion'
+    if (t.includes('reunión') || t.includes('reunion')) return 'reunion'
+    if (t.includes('retiro')) return 'retiro'
+    if (t.includes('prueba')) return 'academico'
+    return 'administrativo'
+  }
+
+  const inferPriority = (textValue) => {
+    const t = textValue.toLowerCase()
+    if (t.includes('semana santa') || t.includes('retiro')) return 'alta'
+    if (t.includes('prueba')) return 'media'
+    return 'media'
+  }
+
+  const parsed = []
+  Array.from(dayContentMap.entries()).forEach(([dateStr, rawItems], idx) => {
+    const content = rawItems
+      .map((item) => item.trim())
+      .filter((item) => isMeaningfulCalendarLine(item))
+
+    if (content.length === 0) return
+
+    // Cada línea representa una actividad independiente del mismo día.
+    content.forEach((item, eventIdx) => {
+      parsed.push({
+        id: Date.now() + idx * 100 + eventIdx,
+        fecha: dateStr,
+        titulo: item,
+        descripcion: item,
+        tipo: inferType(item),
+        categoria: 'General',
+        prioridad: inferPriority(item)
+      })
+    })
+  })
+
+  return parsed.filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(item.fecha) && item.titulo)
+}
+
 function CalendarioModule({ onBack, user }) {
+  const [eventosData, setEventosData] = useState([])
+  const [syncSource, setSyncSource] = useState('loading')
   const [vistaActual, setVistaActual] = useState('lista') // 'lista', 'calendario', 'proximos'
   const [filtroTipo, setFiltroTipo] = useState('todos')
   const [filtroPrioridad, setFiltroPrioridad] = useState('todos')
@@ -15,6 +249,48 @@ function CalendarioModule({ onBack, user }) {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [modalGrupoAbierto, setModalGrupoAbierto] = useState(false)
   const [grupoSeleccionadoPDF, setGrupoSeleccionadoPDF] = useState('')
+
+  const eventos = eventosData
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function syncCalendarFromRemote() {
+      const remoteTxtUrl = buildGoogleDocTxtUrl()
+      if (!remoteTxtUrl) {
+        setEventosData([])
+        setSyncSource('error')
+        return
+      }
+
+      try {
+        const response = await fetch(remoteTxtUrl, { cache: 'no-store' })
+        if (!response.ok) throw new Error('No se pudo descargar calendario remoto')
+
+        const text = await response.text()
+        const parsed = parseCalendarText(text)
+
+        if (!cancelled && parsed.length > 0) {
+          setEventosData(parsed)
+          setSyncSource('remote')
+        } else if (!cancelled) {
+          setEventosData([])
+          setSyncSource('error')
+        }
+      } catch {
+        if (!cancelled) {
+          setEventosData([])
+          setSyncSource('error')
+        }
+      }
+    }
+
+    syncCalendarFromRemote()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // Lista de grupos únicos para el PDF
   const gruposUnicos = useMemo(() => {
@@ -49,7 +325,7 @@ function CalendarioModule({ onBack, user }) {
       return fechaEvento.getMonth() === mesSeleccionado && 
              fechaEvento.getFullYear() === añoSeleccionado
     })
-  }, [mesSeleccionado, añoSeleccionado])
+  }, [eventos, mesSeleccionado, añoSeleccionado])
 
   // Función para obtener próximos eventos (próximos 30 días)
   const proximosEventos = useMemo(() => {
@@ -64,7 +340,7 @@ function CalendarioModule({ onBack, user }) {
       })
       .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
       .slice(0, 10)
-  }, [])
+  }, [eventos])
 
   // Filtrar eventos según criterios
   const eventosFiltrados = useMemo(() => {
@@ -281,6 +557,9 @@ function CalendarioModule({ onBack, user }) {
                 </h1>
                 <p className="text-gray-600 mt-2 text-xs sm:text-sm lg:text-base">
                   Calendario completo de eventos, catequesis y actividades
+                </p>
+                <p className="text-gray-500 mt-1 text-xs">
+                  Fuente de datos: {syncSource === 'remote' ? 'Google Docs sincronizado' : syncSource === 'loading' ? 'Sincronizando...' : 'Sin conexión a Google Docs'}
                 </p>
                 <a
                   href="https://docs.google.com/document/d/1IfZsVTtBbXatAubrDTsxrz7eQvA3BY9B/edit?usp=sharing&ouid=112234919645278192952&rtpof=true&sd=true"

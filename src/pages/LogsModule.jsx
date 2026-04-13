@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, History, Search, Filter, RefreshCw, Trash2, Download } from 'lucide-react';
 import { clearAuditLogs, getModuleLabel, readAuditLogs } from '../utils/auditLogs';
 import { supabase } from '../config/supabase';
 import { gruposData } from '../data/grupos';
@@ -204,20 +203,14 @@ function LogsModule({ onBack }) {
             onClick={onBack}
             className="inline-flex items-center gap-2 text-slate-700 hover:text-slate-900 font-semibold"
           >
-            <ArrowLeft className="w-4 h-4" />
             Volver al Menu Principal
           </button>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <History className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Logs de Cambios</h1>
-              <p className="text-sm text-slate-600">Auditoria de cambios por modulo y tabla</p>
-            </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Logs de Cambios</h1>
+            <p className="text-sm text-slate-600">Auditoria de cambios por modulo y tabla</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -238,26 +231,24 @@ function LogsModule({ onBack }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
             <div className="lg:col-span-5">
               <label className="block text-xs font-semibold text-slate-600 mb-1">Buscar</label>
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <div>
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Actor, tabla, modulo o fecha"
-                  className="w-full border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm"
+                  className="w-full border border-slate-200 rounded-lg py-2 px-3 text-sm"
                 />
               </div>
             </div>
 
             <div className="lg:col-span-3">
               <label className="block text-xs font-semibold text-slate-600 mb-1">Modulo</label>
-              <div className="relative">
-                <Filter className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <div>
                 <select
                   value={moduleFilter}
                   onChange={(e) => setModuleFilter(e.target.value)}
-                  className="w-full border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm bg-white"
+                  className="w-full border border-slate-200 rounded-lg py-2 px-3 text-sm bg-white"
                 >
                   <option value="all">Todos</option>
                   {moduleOptions.map((module) => (
@@ -287,7 +278,6 @@ function LogsModule({ onBack }) {
                 onClick={refreshLogs}
                 className="flex-1 inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 py-2 px-3 rounded-lg text-sm font-semibold"
               >
-                <RefreshCw className="w-4 h-4" />
                 {loading ? 'Cargando...' : 'Recargar'}
               </button>
             </div>
@@ -299,7 +289,6 @@ function LogsModule({ onBack }) {
               disabled={logs.length === 0}
               className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-300 text-white py-2 px-3 rounded-lg text-sm font-semibold"
             >
-              <Download className="w-4 h-4" />
               Exportar JSON
             </button>
             <button
@@ -307,7 +296,6 @@ function LogsModule({ onBack }) {
               disabled={logs.length === 0}
               className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-300 text-white py-2 px-3 rounded-lg text-sm font-semibold"
             >
-              <Trash2 className="w-4 h-4" />
               Limpiar Logs
             </button>
           </div>
