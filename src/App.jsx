@@ -37,6 +37,7 @@ const PersonalityAssignmentModule = lazy(() => import('./pages/PersonalityAssign
 const DashboardFinancieroModule = lazy(() => import('./pages/DashboardFinancieroModule'));
 const AttendanceDashboardModule = lazy(() => import('./pages/AttendanceDashboardModule'));
 const SeguridadModule = lazy(() => import('./pages/SeguridadModule'));
+const LogsModule = lazy(() => import('./pages/LogsModule'));
 
 // Loading component - ahora usa SkeletonLoader mejorado
 function ModuleLoader() {
@@ -246,6 +247,7 @@ function AppContent() {
               {currentModule === 'dashboard-financiero' && <DashboardFinancieroModule onBack={handleBack} user={user} />}
               {currentModule === 'dashboard-asistencia' && <AttendanceDashboardModule onBack={handleBack} user={user} />}
               {currentModule === 'seguridad' && <SeguridadModule onBack={handleBack} user={user} />}
+              {currentModule === 'logs' && <LogsModule onBack={handleBack} user={user} />}
             </Suspense>
           </main>
         </div>

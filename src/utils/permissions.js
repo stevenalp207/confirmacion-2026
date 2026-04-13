@@ -28,6 +28,7 @@ const MODULE_ACCESS = {
   'dashboard-asistencia': ['admin', 'logistica'],
   'dashboard-financiero': ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'grupo'],
   seguridad: ['admin', 'logistica', 'catequista'],
+  logs: ['admin', 'logistica'],
 };
 
 const MODULE_ORDER = [
@@ -48,6 +49,7 @@ const MODULE_ORDER = [
   'dashboard-asistencia',
   'dashboard-financiero',
   'seguridad',
+  'logs',
 ];
 
 function normalize(value = '') {

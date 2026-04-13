@@ -184,14 +184,28 @@ function CatequistasModule({ onBack, user }) {
   const gruposEspeciales = [
     'Consejo', 'Temor de Dios', 'Ciencia', 'Fortaleza', 'Entendimiento', 'Piedad', 'Sabiduria'
   ];
-  if (user && user.grupo && gruposEspeciales.includes(user.grupo)) {
-    filteredCatequistas = filteredCatequistas.filter(c => c.grupo === user.grupo);
-  } else if (user && user.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) {
-    // También filtrar si el usuario es por nombre de usuario
-    const grupoUsuario = gruposEspeciales.find(g => g.toLowerCase() === user.usuario.toLowerCase());
-    if (grupoUsuario) {
-      filteredCatequistas = filteredCatequistas.filter(c => c.grupo === grupoUsuario);
+  const gruposEspecialesNormalizados = gruposEspeciales.map(normalizeGroupName);
+
+  const resolveUserGroup = () => {
+    if (!user) return null;
+
+    const candidates = [user.grupo, user.rol, user.usuario].filter(Boolean);
+
+    for (const candidate of candidates) {
+      const normalizedCandidate = normalizeGroupName(candidate);
+      const index = gruposEspecialesNormalizados.indexOf(normalizedCandidate);
+      if (index >= 0) return gruposEspeciales[index];
     }
+
+    return null;
+  };
+
+  const userScopedGroup = resolveUserGroup();
+
+  if (userScopedGroup) {
+    filteredCatequistas = filteredCatequistas.filter(
+      (c) => normalizeGroupName(c.grupo) === normalizeGroupName(userScopedGroup)
+    );
   }
 
   filteredCatequistas = filteredCatequistas.sort((a, b) => {
@@ -335,7 +349,7 @@ function CatequistasModule({ onBack, user }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -367,7 +381,7 @@ function CatequistasModule({ onBack, user }) {
           <div className="mb-6 p-5 bg-gray-50 rounded-lg border border-gray-200">
             {/* Búsqueda por nombre */}
             <div className="mb-5">
-              <label className="block text-sm sm:text-base font-bold text-gray-700 mb-3 uppercase tracking-wide flex items-center gap-2">
+              <label className="text-sm sm:text-base font-bold text-gray-700 mb-3 uppercase tracking-wide flex items-center gap-2">
                 <Search className="w-5 h-5" /> Buscar catequista por nombre
               </label>
               <input
@@ -380,10 +394,9 @@ function CatequistasModule({ onBack, user }) {
             </div>
 
             {/* Filtro por grupo: solo mostrar si el usuario NO pertenece a un grupo especial */}
-            {!(user && user.grupo && gruposEspeciales.includes(user.grupo)) &&
-              !(user && user.usuario && gruposEspeciales.map(g => g.toLowerCase()).includes(user.usuario.toLowerCase())) && (
+            {!userScopedGroup && (
                 <div>
-                  <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+                  <label className="text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
                     <MapPin className="w-4 h-4" /> Filtrar por grupo
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -437,7 +450,7 @@ function CatequistasModule({ onBack, user }) {
 
             {/* Descargar asistencia por evento */}
             <div className="mt-5 pt-5 border-t border-gray-200">
-              <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
+              <label className="text-xs sm:text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide flex items-center gap-2">
                 <Download className="w-4 h-4" /> Descargar asistencia por evento
               </label>
               <div className="flex flex-col sm:flex-row gap-3">

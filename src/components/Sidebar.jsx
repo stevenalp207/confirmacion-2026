@@ -19,7 +19,8 @@ import {
   ListTodo,
   PieChart,
   Mic,
-  Shield
+  Shield,
+  History
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { canAccess } from '../utils/permissions';
@@ -158,6 +159,13 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       icon: Shield,
       color: 'blue',
       roles: ['admin', 'logistica', 'catequista']
+    },
+    {
+      id: 'logs',
+      name: 'Logs',
+      icon: History,
+      color: 'teal',
+      roles: ['admin', 'logistica']
     }
   ];
 
