@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { GripVertical, Check, X, ArrowUp, ArrowDown } from 'lucide-react'
+import { ordenarRankingPorDefecto } from '../utils/introversionAssignment'
 
 export default function PersonalityRankingTool({ gruposOriginales, onRankingComplete }) {
   const [gruposConRanking, setGruposConRanking] = useState(
     gruposOriginales.map(grupo => ({
       ...grupo,
-      ranking: [...grupo.integrantes], // Copia inicial sin orden
+      ranking: ordenarRankingPorDefecto(grupo.nombre, grupo.integrantes),
       completado: false
     }))
   )
@@ -244,7 +245,7 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
               Coloca a los <strong>MÁS EXTROVERTIDOS</strong> <span className="text-orange-600">arriba</span> y los <strong>MÁS INTROVERTIDOS</strong> <span className="text-blue-600">abajo</span>.
             </p>
             <p className="text-xs text-gray-500 font-medium">
-              💡 Arrastra las tarjetas o usa las flechas ↑↓ • Marca ✓ cuando termines cada grupo
+              💡 Se cargan valores por defecto segun personalidad • Arrastra las tarjetas o usa las flechas ↑↓ • Marca ✓ cuando termines cada grupo
             </p>
           </div>
         </div>
@@ -331,9 +332,9 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
                   {/* Número de posición */}
                   <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm text-white transition-all ${
                     index === 0 
-                      ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm'
+                      ? 'bg-linear-to-br from-orange-500 to-orange-600 shadow-sm'
                       : index === grupoData.ranking.length - 1
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm'
+                      ? 'bg-linear-to-br from-blue-500 to-blue-600 shadow-sm'
                       : 'bg-gray-400'
                   }`}>
                     {index + 1}
@@ -408,7 +409,7 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
             className={`flex-1 py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 text-base ${
               grupoData.completado
                 ? 'bg-gray-100 text-gray-400 cursor-default'
-                : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg scale-100 hover:scale-105'
+                : 'bg-linear-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg scale-100 hover:scale-105'
             }`}
           >
             <Check className="w-5 h-5" />
@@ -427,7 +428,7 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
         </div>
         <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
           <div
-            className="h-3 rounded-full transition-all duration-500 bg-gradient-to-r from-green-400 to-green-600"
+            className="h-3 rounded-full transition-all duration-500 bg-linear-to-r from-green-400 to-green-600"
             style={{
               width: `${(gruposConRanking.filter(g => g.completado).length / gruposConRanking.length) * 100}%`
             }}
@@ -440,7 +441,7 @@ export default function PersonalityRankingTool({ gruposOriginales, onRankingComp
         <div className="mt-6 flex justify-center">
           <button
             onClick={() => onRankingComplete(gruposConRanking)}
-            className="w-full sm:w-auto sm:px-8 py-4 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:via-green-700 hover:to-green-800 transition-colors duration-150 shadow-lg flex items-center justify-center gap-2"
+            className="w-full sm:w-auto sm:px-8 py-4 bg-linear-to-r from-green-500 via-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-600 hover:via-green-700 hover:to-green-800 transition-colors duration-150 shadow-lg flex items-center justify-center gap-2"
           >
             <Check className="w-6 h-6" />
             Continuar con Asignación de Nuevos Grupos

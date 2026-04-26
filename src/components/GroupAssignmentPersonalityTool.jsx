@@ -6,9 +6,10 @@ import PersonalityAssignmentResults from './PersonalityAssignmentResults'
 import { asignarPorPersonalidad, validarRankings } from '../utils/introversionAssignment'
 
 export default function GroupAssignmentPersonalityTool() {
+  const CANTIDAD_SUBGRUPOS_FIJA = 7
   const [paso, setPaso] = useState(1) // 1: seleccionar grupos, 2: ranking, 3: resultados
   const [gruposSeleccionados, setGruposSeleccionados] = useState([])
-  const [cantidadNuevosGrupos, setCantidadNuevosGrupos] = useState(3)
+  const [cantidadNuevosGrupos] = useState(CANTIDAD_SUBGRUPOS_FIJA)
   const [resultado, setResultado] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -91,8 +92,8 @@ export default function GroupAssignmentPersonalityTool() {
               <h3 className="font-bold text-blue-900 mb-1">¿Cómo funciona?</h3>
               <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
                 <li>Selecciona los grupos que participarán</li>
-                <li>Cada grupo rankea sus integrantes (más introvertido → más extrovertido)</li>
-                <li>El sistema asigna nuevos grupos con balance 50/50</li>
+                <li>Cada grupo rankea sus integrantes (1 más extrovertido → último más introvertido)</li>
+                <li>El sistema crea 7 subgrupos balanceando personalidad, género y grupo origen</li>
                 <li>Descarga los resultados en Excel</li>
               </ol>
             </div>
@@ -130,20 +131,10 @@ export default function GroupAssignmentPersonalityTool() {
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-lg font-bold text-gray-800">2️⃣ ¿Cuántos nuevos grupos quieres crear?</h3>
+          <h3 className="text-lg font-bold text-gray-800">2️⃣ Cantidad de nuevos subgrupos</h3>
 
-          <div className="flex items-center gap-4">
-            <input
-              type="range"
-              min="1"
-              max={Math.min(15, Math.floor((gruposSeleccionados.reduce((sum, g) => sum + g.integrantes.length, 0)) / 2)) || 1}
-              value={cantidadNuevosGrupos}
-              onChange={(e) => setCantidadNuevosGrupos(parseInt(e.target.value))}
-              className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="bg-amber-600 text-white rounded-lg px-4 py-2 font-bold min-w-20 text-center">
-              {cantidadNuevosGrupos}
-            </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-amber-900 font-semibold">
+            Este modulo trabaja con <span className="font-bold">{CANTIDAD_SUBGRUPOS_FIJA}</span> subgrupos fijos.
           </div>
 
           <p className="text-sm text-gray-600">
