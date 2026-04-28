@@ -178,10 +178,15 @@ function SeguridadModule({ onBack, user }) {
     const [catequista1, catequista2, catequista3] = asignacion.catequistas;
 
     const texto = `-- Cronograma de Cuido Catequesis #${catequesis.numero} / ${fechaActual} --
-*Acceso a iglesia:* ${grupo}
-*Calle principal al patio:* ${catequista1 || 'Sin asignar'}
-*Soda Doña Reina:* ${grupo}
-*Escuela:* ${catequista2 || 'Sin asignar'}
+
+*Entrada de la iglesia (2 personas mínimo):*
+  • ${grupo} (1 del grupo que expone)
+  • ${catequista1 || 'Sin asignar'} (catequista)
+
+*Escuela:* ${grupo} (1 del grupo que expone)
+
+*Calle principal de la iglesia al patio y mural de peces:* ${catequista2 || 'Sin asignar'}
+
 *Pista de atletismo:* ${catequista3 || 'Sin asignar'}
 
 Favor estar en sus lugares correspondientes a la hora de la salida.`;
