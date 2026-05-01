@@ -104,6 +104,32 @@ const applyPdfEstadoStyle = (cell, estado) => {
   cell.styles.fontStyle = 'bold';
 };
 
+const parseBirthdayDate = (value = '') => {
+  const parts = value.split('/').map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+
+  const [day, month, year] = parts;
+  return { day, month, year };
+};
+
+const getCurrentMonthBirthdays = () => {
+  const currentMonth = new Date().getMonth() + 1;
+
+  return catequistas
+    .map((item) => ({ nombre: item.nombre, fecha: item.fechaNacimiento, parsed: parseBirthdayDate(item.fechaNacimiento) }))
+    .filter((item) => item.parsed?.month === currentMonth)
+    .sort((a, b) => a.parsed.day - b.parsed.day);
+};
+
+const formatBirthdayDate = (value = '') => {
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const parsed = parseBirthdayDate(value);
+  if (!parsed) return value;
+  
+  const { day, month } = parsed;
+  return `${day} de ${meses[month - 1]}`;
+};
+
 // Recibe user como prop
 function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
@@ -111,6 +137,8 @@ function CatequistasModule({ onBack, user }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [selectedEventForDownload, setSelectedEventForDownload] = useState(0);
+  const cumpleanerosDelMes = getCurrentMonthBirthdays();
+  const nombreMesActual = new Intl.DateTimeFormat('es-CR', { month: 'long' }).format(new Date());
   
   // Generar array de índices de catequesis [0, 1, 2, ..., numeroCatequesisCatequistas-1]
   const catequesisIndices = Array.from({ length: numeroCatequesisCatequistas }, (_, i) => i);
@@ -505,6 +533,45 @@ function CatequistasModule({ onBack, user }) {
           </div>
         </div>
 
+          <div className="mb-6 rounded-2xl border border-amber-200 bg-linear-to-r from-amber-50 via-orange-50 to-rose-50 p-4 sm:p-5 shadow-sm">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-bold text-amber-900">
+                    Cumpleañeros de {nombreMesActual}
+                  </h2>
+                  <p className="text-sm text-amber-800 mt-1">
+                    {cumpleanerosDelMes.length} catequista{cumpleanerosDelMes.length === 1 ? '' : 's'} cumplen años este mes.
+                  </p>
+                </div>
+                <div className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-700 shadow-sm">
+                  Mes actual
+                </div>
+              </div>
+
+              {cumpleanerosDelMes.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {cumpleanerosDelMes.map((persona) => (
+                    <div
+                      key={`${persona.nombre}-${persona.fecha}`}
+                      className="rounded-xl border border-amber-200 bg-white/85 px-4 py-3 shadow-sm"
+                    >
+                      <div className="text-sm sm:text-base font-semibold text-gray-900">
+                        {persona.nombre}
+                      </div>
+                      <div className="mt-1 text-xs sm:text-sm text-amber-700 font-medium">
+                        {formatBirthdayDate(persona.fecha)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-amber-300 bg-white/75 px-4 py-5 text-sm text-amber-800">
+                  No hay cumpleañeros en este mes.
+                </div>
+              )}
+            </div>
+          </div>
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
 
