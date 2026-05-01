@@ -63,6 +63,47 @@ const getGroupDisplayName = (groupName = '') => {
   return groupName;
 };
 
+const getPdfEstadoLabel = (estado) => {
+  switch (estado) {
+    case 'presente':
+      return 'P';
+    case 'justificado':
+      return 'J';
+    case 'ausente':
+    default:
+      return 'A';
+  }
+};
+
+const getPdfCatequesisShortLabel = (index) => {
+  if (index === 0) return 'R0';
+  if (index === 1) return 'COM';
+  if (index === 2) return 'ETM';
+  if (index === 14) return 'RF';
+  if (index === 23) return 'RP';
+  if (index === 27) return 'EC';
+
+  if (index < 14) return `C${index - 2}`;
+  if (index < 23) return `C${index - 3}`;
+  if (index < 27) return `C${index - 4}`;
+  return `C${index - 5}`;
+};
+
+const applyPdfEstadoStyle = (cell, estado) => {
+  if (estado === 'presente') {
+    cell.styles.textColor = [22, 163, 74];
+    cell.styles.fillColor = [220, 252, 231];
+  } else if (estado === 'justificado') {
+    cell.styles.textColor = [37, 99, 235];
+    cell.styles.fillColor = [219, 234, 254];
+  } else {
+    cell.styles.textColor = [220, 38, 38];
+    cell.styles.fillColor = [254, 226, 226];
+  }
+
+  cell.styles.fontStyle = 'bold';
+};
+
 // Recibe user como prop
 function CatequistasModule({ onBack, user }) {
   const [catequistasState, setCatequistasState] = useState({});
@@ -229,7 +270,7 @@ function CatequistasModule({ onBack, user }) {
       case 'presente':
         return 'bg-green-100 text-green-800 border-green-400';
       case 'justificado':
-        return 'bg-blue-100 text-blue-800 border-blue-400';
+        return 'bg-purple-100 text-purple-800 border-purple-400';
       case 'ausente':
         return 'bg-red-100 text-red-800 border-red-400';
       default:
@@ -242,7 +283,7 @@ function CatequistasModule({ onBack, user }) {
       case 'presente':
         return '✓';
       case 'justificado':
-        return 'J';
+        return '✓';
       case 'ausente':
         return '✗';
       default:
@@ -257,8 +298,7 @@ function CatequistasModule({ onBack, user }) {
     // Preparar datos para la tabla
     const tableData = filteredCatequistas.map(catequista => {
       const estado = catequistasState[catequista.nombre]?.[selectedEventForDownload] || 'ausente';
-      const estadoTexto = estado === 'presente' ? 'Presente' : estado === 'justificado' ? 'Justificado' : 'Ausente';
-      return [catequista.nombre, getGroupDisplayName(catequista.grupo), estadoTexto];
+      return [catequista.nombre, getGroupDisplayName(catequista.grupo), getPdfEstadoLabel(estado)];
     });
 
     // Crear PDF en formato carta
@@ -329,15 +369,14 @@ function CatequistasModule({ onBack, user }) {
       didParseCell: function(data) {
         if (data.section === 'body' && data.column.index === 2) {
           const estado = data.cell.raw;
-          if (estado === 'Presente') {
-            data.cell.styles.textColor = [22, 163, 74];
-            data.cell.styles.fontStyle = 'bold';
-          } else if (estado === 'Ausente') {
-            data.cell.styles.textColor = [220, 38, 38];
-            data.cell.styles.fontStyle = 'bold';
-          } else if (estado === 'Justificado') {
-            data.cell.styles.textColor = [37, 99, 235];
-            data.cell.styles.fontStyle = 'bold';
+          if (typeof estado === 'string') {
+            if (estado === 'P') {
+              applyPdfEstadoStyle(data.cell, 'presente');
+            } else if (estado === 'J') {
+              applyPdfEstadoStyle(data.cell, 'justificado');
+            } else {
+              applyPdfEstadoStyle(data.cell, 'ausente');
+            }
           }
         }
       }
@@ -346,6 +385,98 @@ function CatequistasModule({ onBack, user }) {
     // Guardar PDF
     const filename = `asistencia_catequistas_${eventLabel.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(filename);
+  };
+
+  const handleDownloadAsistenciaTodosEventos = () => {
+    try {
+      if (!filteredCatequistas.length) {
+        alert('No hay catequistas para exportar');
+        return;
+      }
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'letter'
+      });
+
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Registro Completo de Asistencia - Catequistas', 14, 14);
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Fecha de exportación: ${new Date().toLocaleDateString('es-CR')}`, 14, 20);
+
+      const tableData = filteredCatequistas.map(catequista => {
+        const row = [catequista.nombre, getGroupDisplayName(catequista.grupo)];
+
+        catequesisIndices.forEach((catequesisNum) => {
+          const estado = catequistasState[catequista.nombre]?.[catequesisNum] || 'ausente';
+          row.push(getPdfEstadoLabel(estado));
+        });
+
+        return row;
+      });
+
+      autoTable(doc, {
+        startY: 26,
+        head: [[
+          'Catequista',
+          'Grupo',
+          ...catequesisIndices.map((catequesisNum) => getPdfCatequesisShortLabel(catequesisNum))
+        ]],
+        body: tableData,
+        theme: 'grid',
+        styles: {
+          fontSize: 5.6,
+          cellPadding: 0.8,
+          overflow: 'linebreak',
+          valign: 'middle'
+        },
+        headStyles: {
+          fillColor: [59, 130, 246],
+          textColor: 255,
+          fontStyle: 'bold',
+          halign: 'center',
+          fontSize: 6.2,
+          cellPadding: 1
+        },
+        bodyStyles: {
+          halign: 'center'
+        },
+        columnStyles: {
+          0: { cellWidth: 52, halign: 'left' },
+          1: { cellWidth: 26, halign: 'center' },
+          ...catequesisIndices.reduce((acc, _, index) => {
+            acc[index + 2] = { cellWidth: 6.2, halign: 'center' };
+            return acc;
+          }, {})
+        },
+        alternateRowStyles: {
+          fillColor: [240, 248, 255]
+        },
+        margin: { left: 10, right: 10 },
+        didParseCell: function(data) {
+          if (data.section === 'body' && data.column.index >= 2) {
+            const estado = data.cell.raw;
+            if (estado === 'P') {
+              applyPdfEstadoStyle(data.cell, 'presente');
+            } else if (estado === 'J') {
+              applyPdfEstadoStyle(data.cell, 'justificado');
+            } else {
+              applyPdfEstadoStyle(data.cell, 'ausente');
+            }
+          }
+        }
+      });
+
+      const filename = `asistencia_catequistas_completa_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(filename);
+    } catch (error) {
+      console.error('Error generando PDF completo:', error);
+      alert('Error al generar el PDF completo: ' + error.message);
+    }
   };
 
   return (
@@ -472,6 +603,13 @@ function CatequistasModule({ onBack, user }) {
                   <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                   Descargar PDF
                 </button>
+                <button
+                  onClick={handleDownloadAsistenciaTodosEventos}
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-md"
+                >
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Descargar todos los eventos
+                </button>
               </div>
               <p className="text-xs text-gray-500 mt-2">
                 Se descargará la asistencia de los catequistas filtrados actualmente
@@ -561,7 +699,7 @@ function CatequistasModule({ onBack, user }) {
                 <span className="text-xs sm:text-sm text-gray-600">Presente</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 text-blue-800 border-2 border-blue-400 rounded font-bold flex items-center justify-center text-sm sm:text-base">J</div>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-100 text-purple-800 border-2 border-purple-400 rounded font-bold flex items-center justify-center text-sm sm:text-base">J</div>
                 <span className="text-xs sm:text-sm text-gray-600">Justificado</span>
               </div>
               <div className="flex items-center gap-2">

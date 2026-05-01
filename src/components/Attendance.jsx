@@ -152,7 +152,7 @@ function Attendance({ grupo, estudiantes, user, maxEnabledCatequesis = 0 }) {
             <span className="text-gray-700">Ausente</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-yellow-100 border-2 border-yellow-400 rounded text-center text-yellow-800 font-bold text-xs sm:text-sm flex items-center justify-center">!</div>
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-100 border-2 border-purple-400 rounded text-center text-purple-800 font-bold text-xs sm:text-sm flex items-center justify-center">!</div>
             <span className="text-gray-700">Justificado</span>
           </div>
         </div>
@@ -193,8 +193,8 @@ function Attendance({ grupo, estudiantes, user, maxEnabledCatequesis = 0 }) {
                       icon = '✓';
                       label = 'Presente';
                     } else if (estado === 'justificado') {
-                      bgColor = 'bg-yellow-500';
-                      icon = '!';
+                      bgColor = 'bg-purple-500';
+                      icon = '✓';
                       label = 'Justificado';
                     } else {
                       bgColor = 'bg-red-500';

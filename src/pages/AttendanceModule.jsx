@@ -10,6 +10,33 @@ import { supabase } from '../config/supabase';
 
 const GLOBAL_UNLOCK_KEY = 'GLOBAL';
 
+const getPdfEstadoLabel = (estado) => {
+  switch (estado) {
+    case 'presente':
+      return '✓ Presente';
+    case 'justificado':
+      return '✓ Justificado';
+    case 'ausente':
+    default:
+      return '✗ Ausente';
+  }
+};
+
+const applyPdfEstadoStyle = (cell, estado) => {
+  if (estado === 'presente') {
+    cell.styles.textColor = [22, 163, 74];
+    cell.styles.fillColor = [220, 252, 231];
+  } else if (estado === 'justificado') {
+    cell.styles.textColor = [37, 99, 235];
+    cell.styles.fillColor = [219, 234, 254];
+  } else {
+    cell.styles.textColor = [220, 38, 38];
+    cell.styles.fillColor = [254, 226, 226];
+  }
+
+  cell.styles.fontStyle = 'bold';
+};
+
 function AttendanceModule({ onBack, user }) {
   const [currentGroup, setCurrentGroup] = useState('');
   const [estudiantes, setEstudiantes] = useState(null);
@@ -330,8 +357,7 @@ function AttendanceModule({ onBack, user }) {
     // Preparar datos para la tabla
     const tableData = Object.entries(estudiantes).map(([key, estudiante]) => {
       const estado = asistenciasData[estudiante.id]?.[selectedEventForDownload] || 'ausente';
-      const estadoTexto = estado === 'presente' ? 'Presente' : estado === 'justificado' ? 'Justificado' : 'Ausente';
-      return [estudiante.nombre, estadoTexto];
+      return [estudiante.nombre, getPdfEstadoLabel(estado)];
     });
 
     // Crear PDF
@@ -387,15 +413,14 @@ function AttendanceModule({ onBack, user }) {
       didParseCell: function(data) {
         if (data.section === 'body' && data.column.index === 1) {
           const estado = data.cell.raw;
-          if (estado === 'Presente') {
-            data.cell.styles.textColor = [22, 163, 74];
-            data.cell.styles.fontStyle = 'bold';
-          } else if (estado === 'Ausente') {
-            data.cell.styles.textColor = [220, 38, 38];
-            data.cell.styles.fontStyle = 'bold';
-          } else if (estado === 'Justificado') {
-            data.cell.styles.textColor = [37, 99, 235];
-            data.cell.styles.fontStyle = 'bold';
+          if (typeof estado === 'string') {
+            if (estado.includes('Presente')) {
+              applyPdfEstadoStyle(data.cell, 'presente');
+            } else if (estado.includes('Justificado')) {
+              applyPdfEstadoStyle(data.cell, 'justificado');
+            } else {
+              applyPdfEstadoStyle(data.cell, 'ausente');
+            }
           }
         }
       }
@@ -406,9 +431,103 @@ function AttendanceModule({ onBack, user }) {
     doc.save(filename);
   };
 
+  const handleDownloadAsistenciaTodosEventos = () => {
+    try {
+      if (!currentGroup || !estudiantes) {
+        alert('No hay datos para exportar');
+        return;
+      }
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'letter'
+      });
+
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Registro Completo de Asistencia - ${currentGroup}`, 14, 16);
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Fecha de exportación: ${new Date().toLocaleDateString('es-CR')}`, 14, 22);
+
+      const tableData = Object.entries(estudiantes).map(([id, estudiante]) => {
+        const row = [estudiante.nombre];
+
+        catequesisIndices.forEach((catequesisNum) => {
+          const estado = asistenciasData[estudiante.id]?.[catequesisNum] || 'ausente';
+          row.push(getPdfEstadoLabel(estado));
+        });
+
+        return row;
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const nameColWidth = 42;
+      const remainingWidth = pageWidth - 28 - nameColWidth;
+      const eventColWidth = remainingWidth / catequesisIndices.length;
+
+      autoTable(doc, {
+        startY: 28,
+        head: [[
+          'Catequizando',
+          ...catequesisIndices.map((catequesisNum) => getCatequesisLabel(catequesisNum))
+        ]],
+        body: tableData,
+        theme: 'grid',
+        styles: {
+          fontSize: catequesisIndices.length > 12 ? 6 : 7,
+          cellPadding: 1.5,
+          lineColor: [0, 0, 0],
+          lineWidth: 0.2,
+          textColor: [0, 0, 0]
+        },
+        headStyles: {
+          fillColor: [34, 197, 94],
+          textColor: 255,
+          fontStyle: 'bold',
+          halign: 'center',
+          fontSize: 8
+        },
+        bodyStyles: {
+          halign: 'center'
+        },
+        columnStyles: {
+          0: { cellWidth: nameColWidth, halign: 'left' },
+          ...catequesisIndices.reduce((acc, _, index) => {
+            acc[index + 1] = { cellWidth: eventColWidth };
+            return acc;
+          }, {})
+        },
+        margin: { left: 14, right: 14 },
+        didParseCell: function(data) {
+          if (data.section === 'body' && data.column.index > 0) {
+            const estado = data.cell.raw;
+            if (typeof estado === 'string') {
+              if (estado.includes('Presente')) {
+                applyPdfEstadoStyle(data.cell, 'presente');
+              } else if (estado.includes('Justificado')) {
+                applyPdfEstadoStyle(data.cell, 'justificado');
+              } else {
+                applyPdfEstadoStyle(data.cell, 'ausente');
+              }
+            }
+          }
+        }
+      });
+
+      const filename = `asistencia_completa_${currentGroup}_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(filename);
+    } catch (error) {
+      console.error('Error generando PDF completo:', error);
+      alert('Error al generar el PDF completo: ' + error.message);
+    }
+  };
+
   if (selectedStudent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-4 sm:mb-6">
@@ -453,7 +572,7 @@ function AttendanceModule({ onBack, user }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -556,7 +675,7 @@ function AttendanceModule({ onBack, user }) {
                 <button
                   key={grupo}
                   onClick={() => handleGroupChange(grupo)}
-                  className="p-4 sm:p-5 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl hover:border-green-400 hover:shadow-lg transition-all transform hover:scale-105 text-left group"
+                  className="p-4 sm:p-5 bg-linear-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl hover:border-green-400 hover:shadow-lg transition-all transform hover:scale-105 text-left group"
                 >
                   <div className="font-bold text-gray-800 text-base sm:text-lg mb-1 group-hover:text-green-700 transition-colors">
                     {grupo}
@@ -618,6 +737,13 @@ function AttendanceModule({ onBack, user }) {
                   >
                     <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                     Descargar PDF
+                  </button>
+                  <button
+                    onClick={handleDownloadAsistenciaTodosEventos}
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-md"
+                  >
+                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Descargar todos los eventos
                   </button>
                 </div>
               </div>
