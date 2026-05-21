@@ -427,40 +427,45 @@ export const tiposDocumentos = [
 
 // Número total de catequesis para Confirmación 2026 - CATEQUIZANDOS
 // 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 25 sesiones
-export const numeroCatequesis = 25;
-
 // Función para obtener el label de cada catequesis - CATEQUIZANDOS
 // Índice 11: Retiro Familia (después de Catequesis 10)
 // Índice 20: Retiro Padrinos (después de Catequesis 18)
 // Índice 24: Ensayo Confirma (después de Catequesis 21)
+export const numeroCatequesis = 26;
+
 export const getCatequesisLabel = (index) => {
-  if (index === 11) {
+  if (index === 8) {
+    return 'Taller de Padrinos';
+  } else if (index === 12) {
     return 'Retiro Familia';
-  } else if (index === 20) {
+  } else if (index === 21) {
     return 'Retiro Padrinos';
-  } else if (index === 24) {
+  } else if (index === 25) {
     return 'Ensayo Confirma';
-  } else if (index < 11) {
+  } else if (index < 8) {
     return `Catequesis ${index}`;
-  } else if (index < 20) {
+  } else if (index < 12) {
     return `Catequesis ${index - 1}`;
-  } else if (index < 24) {
+  } else if (index < 21) {
     return `Catequesis ${index - 2}`;
-  } else {
+  } else if (index < 25) {
     return `Catequesis ${index - 3}`;
+  } else {
+    return `Catequesis ${index - 4}`;
   }
 };
+
 
 // Número total de sesiones para CATEQUISTAS (incluye sesiones exclusivas)
 // Reunion 0 + Reunion Comisiones / Formación + Formación Etica y Moral
 // + 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 28 sesiones
-export const numeroCatequesisCatequistas = 28;
-
 // Función para obtener el label de cada sesión - CATEQUISTAS
 // Índice 0: Reunion 0 (5/2/2026) - exclusiva de catequistas
 // Índice 14: Retiro Familia (después de Catequesis 11)
 // Índice 23: Retiro Padrinos (después de Catequesis 19)
 // Índice 27: Ensayo Confirma (después de Catequesis 21)
+export const numeroCatequesisCatequistas = 29;
+
 export const getCatequesisLabelCatequistas = (index) => {
   if (index === 0) {
     return 'Reunion 0 (5/2/2026)';
@@ -468,19 +473,24 @@ export const getCatequesisLabelCatequistas = (index) => {
     return 'Reunion Comisiones / Formación';
   } else if (index === 2) {
     return 'Formación Etica y Moral';
-  } else if (index === 14) {
+  } else if (index === 11) {
+    return 'Taller de Padrinos';
+  } else if (index === 15) {
     return 'Retiro Familia';
-  } else if (index === 23) {
+  } else if (index === 24) {
     return 'Retiro Padrinos';
-  } else if (index === 27) {
+  } else if (index === 28) {
     return 'Ensayo Confirma';
-  } else if (index < 14) {
+  } else if (index < 11) {
     return `Catequesis ${index - 3}`;
-  } else if (index < 23) {
+  } else if (index < 15) {
     return `Catequesis ${index - 4}`;
-  } else if (index < 27) {
+  } else if (index < 24) {
     return `Catequesis ${index - 5}`;
-  } else {
+  } else if (index < 28) {
     return `Catequesis ${index - 6}`;
+  } else {
+    return `Catequesis ${index - 7}`;
   }
 };
+
