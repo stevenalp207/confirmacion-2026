@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { grupos, gruposData, estudiantesInfoAcademica, tiposDocumentos } from '../data/grupos';
+import { grupos, gruposData, tiposDocumentos } from '../data/grupos';
 import StudentDetail from '../components/StudentDetail';
 import StudentPhoto from '../components/StudentPhoto';
 import { ArrowLeft, Search, MapPin, Printer, BarChart3, ArrowRight, Users } from 'lucide-react';
@@ -37,12 +37,9 @@ function StudentsModule({ onBack, user }) {
     const grupoInfo = gruposData[grupo];
     const estudiantesObj = grupoInfo?.estudiantes || {};
     Object.entries(estudiantesObj).forEach(([id, data]) => {
-      const infoAcademica = estudiantesInfoAcademica?.[grupo]?.[data.nombre] || {};
-
       allStudents.push({
         id,
         ...data,
-        ...infoAcademica,
         grupo: grupo
       });
     });

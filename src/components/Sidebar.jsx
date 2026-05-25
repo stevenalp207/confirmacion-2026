@@ -7,7 +7,6 @@ import {
   Mail, 
   DollarSign,
   Wallet,
-  BookOpen,
   FileCheck,
   Calendar,
   Shuffle,
@@ -33,14 +32,14 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Inicio',
       icon: LayoutGrid,
       color: 'gray',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'calendario',
       name: 'Calendario',
       icon: Calendar,
       color: 'violet',
-      roles: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     // === PERSONAS ===
     {
@@ -55,7 +54,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Catequistas',
       icon: Users,
       color: 'blue',
-      roles: ['admin', 'logistica', 'formacion', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
+      roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
     {
       id: 'asistencia',
@@ -114,14 +113,6 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       icon: FileText,
       color: 'rose',
       roles: ['admin', 'financiero']
-    },
-    // === FORMACIÓN ===
-    {
-      id: 'formacion',
-      name: 'Formación',
-      icon: BookOpen,
-      color: 'indigo',
-      roles: ['admin', 'formacion']
     },
     // === HERRAMIENTAS ADMIN ===
     {

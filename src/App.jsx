@@ -29,7 +29,6 @@ const CatequistasModule = lazy(() => import('./pages/CatequistasModule'));
 const StudentsModule = lazy(() => import('./pages/StudentsModule'));
 const GastosModule = lazy(() => import('./pages/GastosModule'));
 const IngresosModule = lazy(() => import('./pages/IngresosModule'));
-const FormacionModule = lazy(() => import('./pages/FormacionModule'));
 const BoletasModule = lazy(() => import('./pages/BoletasModule'));
 const CalendarioModule = lazy(() => import('./pages/CalendarioModule'));
 const GroupAssignmentModule = lazy(() => import('./pages/GroupAssignmentModule'));
@@ -237,7 +236,6 @@ function AppContent() {
               {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
               {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
               {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
-              {currentModule === 'formacion' && <FormacionModule onBack={handleBack} user={user} />}
               {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
               {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
               {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}

@@ -109,8 +109,6 @@ function TopBar({ user, onLogout, savedAccounts, onSwitchAccount, onRemoveAccoun
               <span className="bg-red-100 text-red-800 px-2 py-0.5 rounded font-bold">ADMIN</span>
             ) : user?.rol === 'financiero' ? (
               <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">FINANCIERO</span>
-            ) : user?.rol === 'formacion' ? (
-              <span className="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">FORMACIÓN</span>
             ) : user?.rol === 'retiro' ? (
               <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">RETIRO</span>
             ) : user?.usuario === 'logistica' ? (

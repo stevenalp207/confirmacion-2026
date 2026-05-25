@@ -18,11 +18,10 @@ const MODULE_ACCESS = {
   pagos: ['admin', 'financiero', 'grupo'],
   gastos: FINANCIAL_ROLES,
   ingresos: FINANCIAL_ROLES,
-  catequistas: ['admin', 'logistica', 'formacion', 'grupo'],
+  catequistas: ['admin', 'logistica', 'grupo'],
   estudiantes: ['admin', 'logistica', 'grupo'],
-  formacion: ['admin', 'formacion'],
   boletas: ['admin'],
-  calendario: ['admin', 'financiero', 'logistica', 'formacion', 'retiro', 'catequista', 'grupo'],
+  calendario: ['admin', 'financiero', 'logistica', 'retiro', 'catequista', 'grupo'],
   'asignacion-grupos': ['admin', 'logistica'],
   'asignacion-personalidad': ['admin', 'logistica'],
   'dashboard-asistencia': ['admin', 'logistica'],
@@ -41,7 +40,6 @@ const MODULE_ORDER = [
   'ingresos',
   'catequistas',
   'estudiantes',
-  'formacion',
   'boletas',
   'calendario',
   'asignacion-grupos',
@@ -87,7 +85,7 @@ function isGroupRole(identity) {
     SPECIAL_GROUPS.includes(identity.role) ||
     (!isLogistica(identity) &&
       !ADMIN_ROLES.includes(identity.role) &&
-      !['financiero', 'formacion', 'retiro', 'catequista'].includes(identity.role))
+      !['financiero', 'retiro', 'catequista'].includes(identity.role))
   );
 }
 

@@ -12,7 +12,6 @@ const MODULE_LABELS = {
   ingresos: 'Ingresos',
   catequistas: 'Catequistas',
   estudiantes: 'Estudiantes',
-  formacion: 'Formacion',
   boletas: 'Boletas',
   calendario: 'Calendario',
   'asignacion-grupos': 'Asignacion de Grupos',
@@ -26,7 +25,6 @@ const MODULE_LABELS = {
 
 const TABLE_MODULE_MAP = {
   asistencias: 'asistencia',
-  asistencias_formacion: 'formacion',
   documentos: 'documentos',
   sabanas: 'sabanas',
   cartas: 'cartas',
@@ -35,7 +33,6 @@ const TABLE_MODULE_MAP = {
   ingresos: 'ingresos',
   catequistas: 'catequistas',
   estudiantes: 'estudiantes',
-  formaciones: 'formacion',
   boletas: 'boletas',
   calendario_eventos: 'calendario',
   tareas: 'calendario',

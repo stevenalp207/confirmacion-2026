@@ -200,19 +200,25 @@ export const getCatequesisLabel = (index) => {
   return \`Catequesis \${index - 3}\`;
 };
 
-export const numeroCatequesisCatequistas = 28;
+export const numeroCatequesisCatequistas = 31;
 
 export const getCatequesisLabelCatequistas = (index) => {
   if (index === 0) return 'Reunion 0 (5/2/2026)';
   if (index === 1) return 'Reunion Comisiones / Formación';
   if (index === 2) return 'Formación Etica y Moral';
-  if (index === 14) return 'Retiro Familia';
-  if (index === 23) return 'Retiro Padrinos';
-  if (index === 27) return 'Ensayo Confirma';
-  if (index < 14) return \`Catequesis \${index - 2}\`;
-  if (index < 23) return \`Catequesis \${index - 3}\`;
-  if (index < 27) return \`Catequesis \${index - 4}\`;
-  return \`Catequesis \${index - 5}\`;
+  if (index === 11) return 'Taller de Padrinos';
+  if (index === 12) return 'Exposicion Catequesis #8';
+  if (index === 13) return 'Catequesis 8';
+  if (index === 17) return 'Retiro Familia';
+  if (index === 26) return 'Retiro Padrinos';
+  if (index === 30) return 'Ensayo Confirma';
+  if (index < 11) return \`Catequesis ${index - 3}\`;
+  if (index < 12) return \`Catequesis ${index - 3}\`;
+  if (index < 13) return \`Catequesis ${index - 3}\`;
+  if (index < 17) return \`Catequesis ${index - 4}\`;
+  if (index < 26) return \`Catequesis ${index - 5}\`;
+  if (index < 30) return \`Catequesis ${index - 6}\`;
+  return \`Catequesis ${index - 8}\`;
 };
 `
     
