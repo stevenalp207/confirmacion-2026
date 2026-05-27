@@ -13,12 +13,12 @@ const GLOBAL_UNLOCK_KEY = 'GLOBAL';
 const getPdfEstadoLabel = (estado) => {
   switch (estado) {
     case 'presente':
-      return '✓ Presente';
+      return 'P';
     case 'justificado':
-      return '✓ Justificado';
+      return 'J';
     case 'ausente':
     default:
-      return '✗ Ausente';
+      return 'A';
   }
 };
 
@@ -412,15 +412,16 @@ function AttendanceModule({ onBack, user }) {
       margin: { left: marginLeftEvento, right: marginLeftEvento },
       didParseCell: function(data) {
         if (data.section === 'body' && data.column.index === 1) {
-          const estado = data.cell.raw;
-          if (typeof estado === 'string') {
-            if (estado.includes('Presente')) {
-              applyPdfEstadoStyle(data.cell, 'presente');
-            } else if (estado.includes('Justificado')) {
-              applyPdfEstadoStyle(data.cell, 'justificado');
-            } else {
-              applyPdfEstadoStyle(data.cell, 'ausente');
-            }
+          const raw = data.cell.raw;
+          let estadoStr = (typeof raw === 'string' ? raw : String(raw || '')).replace(/&/g, '').replace(/'/g, '').trim();
+          data.cell.text = [estadoStr];
+          const estadoLower = estadoStr.toLowerCase();
+          if (/^p\b|presente/.test(estadoLower)) {
+            applyPdfEstadoStyle(data.cell, 'presente');
+          } else if (/^j\b|justif/.test(estadoLower)) {
+            applyPdfEstadoStyle(data.cell, 'justificado');
+          } else {
+            applyPdfEstadoStyle(data.cell, 'ausente');
           }
         }
       }
@@ -503,15 +504,16 @@ function AttendanceModule({ onBack, user }) {
         margin: { left: 14, right: 14 },
         didParseCell: function(data) {
           if (data.section === 'body' && data.column.index > 0) {
-            const estado = data.cell.raw;
-            if (typeof estado === 'string') {
-              if (estado.includes('Presente')) {
-                applyPdfEstadoStyle(data.cell, 'presente');
-              } else if (estado.includes('Justificado')) {
-                applyPdfEstadoStyle(data.cell, 'justificado');
-              } else {
-                applyPdfEstadoStyle(data.cell, 'ausente');
-              }
+            const raw = data.cell.raw;
+            let estadoStr = (typeof raw === 'string' ? raw : String(raw || '')).replace(/&/g, '').replace(/'/g, '').trim();
+            data.cell.text = [estadoStr];
+            const estadoLower = estadoStr.toLowerCase();
+            if (/^p\b|presente/.test(estadoLower)) {
+              applyPdfEstadoStyle(data.cell, 'presente');
+            } else if (/^j\b|justif/.test(estadoLower)) {
+              applyPdfEstadoStyle(data.cell, 'justificado');
+            } else {
+              applyPdfEstadoStyle(data.cell, 'ausente');
             }
           }
         }
