@@ -295,7 +295,7 @@ export const tiposDocumentos = [
 // Número total de catequesis para Confirmación 2026 - CATEQUIZANDOS
 // 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 25 sesiones
 // Función para obtener el label de cada catequesis - CATEQUIZANDOS
-// Índice 11: Retiro Familia (después de Catequesis 10)
+// Índice 10: Retiro Familia (después de Catequesis 8)
 // Índice 20: Retiro Padrinos (después de Catequesis 18)
 // Índice 24: Ensayo Confirma (después de Catequesis 21)
 export const numeroCatequesis = 26;
@@ -303,7 +303,7 @@ export const numeroCatequesis = 26;
 export const getCatequesisLabel = (index) => {
   if (index === 8) {
     return 'Taller de Padrinos';
-  } else if (index === 12) {
+  } else if (index === 10) {
     return 'Retiro Familia';
   } else if (index === 21) {
     return 'Retiro Padrinos';
@@ -311,7 +311,7 @@ export const getCatequesisLabel = (index) => {
     return 'Ensayo Confirma';
   } else if (index < 8) {
     return `Catequesis ${index}`;
-  } else if (index < 12) {
+  } else if (index < 10) {
     return `Catequesis ${index - 1}`;
   } else if (index < 21) {
     return `Catequesis ${index - 2}`;
@@ -328,7 +328,7 @@ export const getCatequesisLabel = (index) => {
 // + 22 catequesis + Retiro Familia + Retiro Padrinos + Ensayo Confirma = 29 sesiones
 // Función para obtener el label de cada sesión - CATEQUISTAS
 // Índice 0: Reunion 0 (5/2/2026) - exclusiva de catequistas
-// Índice 15: Retiro Familia (después de Catequesis 11)
+// Índice 14: Retiro Familia (después de Catequesis 8)
 // Índice 26: Retiro Padrinos (después de Catequesis 19)
 // Índice 30: Ensayo Confirma (después de Catequesis 22)
 export const numeroCatequesisCatequistas = 31;
@@ -346,7 +346,7 @@ export const getCatequesisLabelCatequistas = (index) => {
     return 'Exposicion Catequesis #8';
   } else if (index === 13) {
     return 'Catequesis 8';
-  } else if (index === 17) {
+  } else if (index === 14) {
     return 'Retiro Familia';
   } else if (index === 26) {
     return 'Retiro Padrinos';
@@ -358,7 +358,7 @@ export const getCatequesisLabelCatequistas = (index) => {
     return `Catequesis ${index - 3}`;
   } else if (index < 13) {
     return `Catequesis ${index - 3}`;
-  } else if (index < 17) {
+  } else if (index < 14) {
     return `Catequesis ${index - 5}`;
   } else if (index < 26) {
     return `Catequesis ${index - 6}`;
