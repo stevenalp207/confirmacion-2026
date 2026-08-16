@@ -77,17 +77,19 @@ export const gruposData = {
     estudiantes: {
       '1': { id: 84346244, nombre: 'Mariana de los Ángeles Rodríguez Pérez', genero: 'Femenino', correoInstitucional: '2017444@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
       '2': { id: 77715785, nombre: 'José Pablo Flores Rojas', genero: 'Masculino', correoInstitucional: '2023216@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
+      '3': { id: 84598910, nombre: 'Rebeca de los Angeles Artavia Quirós', genero: 'Femenino', correoInstitucional: '2018460@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
       '4': { id: 71463515, nombre: 'Isaac Corrales Guzmán', genero: 'Masculino', correoInstitucional: '2023046@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
       '5': { id: 84805934, nombre: 'André Manzanares Leon', genero: 'Masculino', correoInstitucional: '2024231@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
-      '6': { id: 84576788, nombre: 'Laura Marcela Forbes Segura', genero: 'Femenino', correoInstitucional: '2023058@est.cedesdonco.ed.cr', especialidad: 'Diseño Gráfico' },
+      '6': { id: 84576788, nombre: 'Laura Marcela Forbes Segura', genero: 'Femenino', correoInstitucional: '2023058@est.cedesdonbosco.ed.cr', especialidad: 'Diseño Gráfico' },
       '7': { id: 84770972, nombre: 'Gabriel Steven Montero Jiménez', genero: 'Masculino', correoInstitucional: '2017434@est.cedesdonbosco.ed.cr', especialidad: 'Dibujo y Modelado' },
       '8': { id: 71052950, nombre: 'Isaac Sibaja Alvarenga', genero: 'Masculino', correoInstitucional: '2017452@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
       '9': { id: 72504910, nombre: 'Sebastián Montero Palacios', genero: 'Masculino', correoInstitucional: '2023091@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
       '10': { id: 70958973, nombre: 'Jimena Maria Segura Estrada', genero: 'Femenino', correoInstitucional: '2017449@est.cedesdonbosco.ed.cr', especialidad: 'Desarrollo Web' },
+      '11': { id: 71708153, nombre: 'Diego Cardoza Mendoza', genero: 'Masculino', correoInstitucional: '2026178@est.cedesdonbosco.ed.cr', especialidad: 'Electromecánica' },
       '12': { id: 61151506, nombre: 'Daniel Alejando Alfaro Brenes', genero: 'Masculino', correoInstitucional: '2017461@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
       '13': { id: 85427220, nombre: 'Stephanie Lucía Anchía Fuentes', genero: 'Femenino', correoInstitucional: '2023012@est.cedesdonbosco.ed.cr', especialidad: 'Ciberseguridad' },
-      '15': { id: 87403040, nombre: 'Valerie Obando Valverde', genero: 'Femenino', correoInstitucional: '2017439@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
-      '16': { id: 89734414, nombre: 'Mariangel Sandoval Torres', genero: 'Femenino', correoInstitucional: '2017448@est.cedesdonbosco.ed.cr', especialidad: 'N/A' },
+      '14': { id: 87403040, nombre: 'Valerie Obando Valverde', genero: 'Femenino', correoInstitucional: '2017439@est.cedesdonbosco.ed.cr', especialidad: 'Mécanica' },
+      '15': { id: 89734414, nombre: 'Mariangel Sandoval Torres', genero: 'Femenino', correoInstitucional: '2017448@est.cedesdonbosco.ed.cr', especialidad: 'N/A' },
     }
   },
   'Entendimiento': {
