@@ -16,7 +16,7 @@ const MODULE_ACCESS = {
   pagos: ['admin', 'financiero', 'grupo'],
   gastos: FINANCIAL_ROLES,
   ingresos: FINANCIAL_ROLES,
-  'materiales-retiro': FINANCIAL_ROLES,
+  'materiales-retiro': ['admin', 'logistica', 'retiro'],
   catequistas: ['admin', 'logistica', 'grupo'],
   estudiantes: ['admin', 'logistica', 'grupo'],
   boletas: ['admin'],

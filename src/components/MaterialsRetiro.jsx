@@ -394,7 +394,7 @@ function MaterialesRetiro({ user }) {
                   value={formData.ubicacion_guardado}
                   onChange={(event) => setFormData((current) => ({ ...current, ubicacion_guardado: event.target.value }))}
                   className="input-field"
-                  placeholder="Ej: Bodega del salón"
+                  placeholder="Ej: Caja Negra"
                   required
                 />
               </Field>
@@ -433,20 +433,20 @@ function MaterialesRetiro({ user }) {
             </div>
             <span className="text-sm text-gray-500">{filteredMateriales.length} de {materiales.length} registros</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
-            <label className="relative block">
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+            <label className="relative block flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full h-11 pl-9 pr-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                 placeholder="Buscar por material, placa, procedencia o ubicación"
               />
             </label>
             <select
               value={filterBlock}
               onChange={(event) => setFilterBlock(event.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="h-11 sm:w-48 px-3 py-0 leading-5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               aria-label="Filtrar por bloque"
             >
               <option value="">Todos los bloques</option>

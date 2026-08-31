@@ -14,7 +14,7 @@ function MaterialsRetiroModule({ onBack, user }) {
           </div>
           <h1 className="text-2xl font-bold text-gray-800">Acceso restringido</h1>
           <p className="text-gray-600 text-sm sm:text-base">
-            Este módulo está disponible solo para usuarios con rol administrador o financiero.
+            Este módulo está disponible solo para usuarios administradores, de logística o de retiro.
           </p>
           <button
             onClick={onBack}

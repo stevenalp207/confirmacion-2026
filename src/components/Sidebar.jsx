@@ -104,7 +104,7 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Materiales Retiro',
       icon: Package,
       color: 'amber',
-      roles: ['admin', 'financiero']
+      roles: ['admin', 'logistica', 'retiro']
     },
     // === HERRAMIENTAS ADMIN ===
     {
