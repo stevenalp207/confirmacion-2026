@@ -10,6 +10,7 @@ import OfflineIndicator from './components/OfflineIndicator';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 import SkeletonLoader from './components/SkeletonLoader';
+import MaterialsRetiroModule from './pages/MaterialsRetiroModule';
 import { getAllowedModules } from './utils/permissions';
 
 const getModuleFromHash = () => {
@@ -22,8 +23,6 @@ const getModuleFromHash = () => {
 // Lazy load all modules for better performance
 const AttendanceModule = lazy(() => import('./pages/AttendanceModule'));
 const DocumentsModule = lazy(() => import('./pages/DocumentsModule'));
-const SabanasModule = lazy(() => import('./pages/SabanasModule'));
-const CartasModule = lazy(() => import('./pages/CartasModule'));
 const PagosModule = lazy(() => import('./pages/PagosModule'));
 const CatequistasModule = lazy(() => import('./pages/CatequistasModule'));
 const StudentsModule = lazy(() => import('./pages/StudentsModule'));
@@ -231,11 +230,10 @@ function AppContent() {
             <Suspense fallback={<ModuleLoader />}>
               {currentModule === 'asistencia' && <AttendanceModule onBack={handleBack} user={user} />}
               {currentModule === 'documentos' && <DocumentsModule onBack={handleBack} user={user} />}
-              {currentModule === 'sabanas' && <SabanasModule onBack={handleBack} user={user} />}
-              {currentModule === 'cartas' && <CartasModule onBack={handleBack} user={user} />}
               {currentModule === 'pagos' && <PagosModule onBack={handleBack} user={user} />}
               {currentModule === 'gastos' && <GastosModule onBack={handleBack} user={user} />}
               {currentModule === 'ingresos' && <IngresosModule onBack={handleBack} user={user} />}
+              {currentModule === 'materiales-retiro' && <MaterialsRetiroModule onBack={handleBack} user={user} />}
               {currentModule === 'catequistas' && <CatequistasModule onBack={handleBack} user={user} />}
               {currentModule === 'estudiantes' && <StudentsModule onBack={handleBack} user={user} />}
               {currentModule === 'boletas' && <BoletasModule onBack={handleBack} user={user} />}

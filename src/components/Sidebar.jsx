@@ -3,10 +3,9 @@ import {
   Users, 
   FileText, 
   GraduationCap, 
-  BedDouble, 
-  Mail, 
   DollarSign,
   Wallet,
+  Package,
   FileCheck,
   Calendar,
   Shuffle,
@@ -71,20 +70,6 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       color: 'blue',
       roles: ['admin', 'logistica', 'Ciencia', 'Piedad', 'Fortaleza', 'Consejo', 'Entendimiento', 'Sabiduría', 'Temor de Dios']
     },
-    {
-      id: 'cartas',
-      name: 'Cartas',
-      icon: Mail,
-      color: 'purple',
-      roles: ['admin', 'logistica']
-    },
-    {
-      id: 'sabanas',
-      name: 'Sábanas',
-      icon: BedDouble,
-      color: 'orange',
-      roles: ['admin', 'logistica']
-    },
     // === FINANZAS ===
     {
       id: 'dashboard-financiero',
@@ -112,6 +97,13 @@ function Sidebar({ currentModule, onSelectModule, user, isCollapsed, onToggleCol
       name: 'Gastos',
       icon: FileText,
       color: 'rose',
+      roles: ['admin', 'financiero']
+    },
+    {
+      id: 'materiales-retiro',
+      name: 'Materiales Retiro',
+      icon: Package,
+      color: 'amber',
       roles: ['admin', 'financiero']
     },
     // === HERRAMIENTAS ADMIN ===

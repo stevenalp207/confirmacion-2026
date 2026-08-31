@@ -32,7 +32,8 @@ function DocumentsModule({ onBack, user }) {
   }
 
   // Filtrar grupos según el rol del usuario
-  const gruposDisponibles = canAccess('sabanas', user)
+  const canSelectAnyGroup = canAccess('asignacion-grupos', user);
+  const gruposDisponibles = canSelectAnyGroup
     ? grupos 
     : [user?.rol];
 
@@ -43,7 +44,7 @@ function DocumentsModule({ onBack, user }) {
       if (state?.group && gruposDisponibles.includes(state.group)) {
         setCurrentGroup(state.group);
       } else if (state?.module === 'documentos' && !state?.group) {
-        const defaultGroup = !canAccess('sabanas', user) ? user?.rol : '';
+        const defaultGroup = !canSelectAnyGroup ? user?.rol : '';
         setCurrentGroup(defaultGroup);
       }
     };
@@ -63,7 +64,7 @@ function DocumentsModule({ onBack, user }) {
 
   // Cargar automáticamente el grupo si el usuario no es admin ni logística
   useEffect(() => {
-    if (user && !canAccess('sabanas', user) && !currentGroup) {
+    if (user && !canSelectAnyGroup && !currentGroup) {
       const defaultGroup = user.rol;
       setCurrentGroup(defaultGroup);
       
@@ -76,7 +77,7 @@ function DocumentsModule({ onBack, user }) {
         );
       }
     }
-  }, [user, currentGroup]);
+  }, [user, currentGroup, canSelectAnyGroup]);
 
   useEffect(() => {
     if (currentGroup) {

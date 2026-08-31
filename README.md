@@ -10,9 +10,8 @@ Sistema web (SPA) desarrollado con React, Tailwind CSS y Supabase para gestionar
   - **Asistencia**: Registro con 3 estados (presente/ausente/justificado)
   - **Catequistas**: Control de asistencia de catequistas (solo admin/logistica)
   - **Documentos**: Control de entrega de documentos
-  - **Sábanas**: Registro de entrega de sábanas (solo admin/logistica)
-  - **Cartas**: Registro de entrega de cartas (solo admin/logistica)
   - **Pagos**: Control de pagos del retiro ₡50.000 por estudiante (solo admin/logistica)
+  - **Materiales Retiro**: Inventario, procedencia, bloques de uso y control de salida/regreso
 - **Diseño Mobile-First** con Tailwind CSS
 - **Base de datos en tiempo real** con Supabase PostgreSQL
 
@@ -23,9 +22,8 @@ Sistema web (SPA) desarrollado con React, Tailwind CSS y Supabase para gestionar
 - **usuarios**: Usuarios con roles (admin, logistica, nombres de grupos)
 - **asistencias**: Asistencia de estudiantes con estados (presente/ausente/justificado)
 - **documentos_entregados**: Control de entrega de documentos por estudiante
-- **sabanas_entregadas**: Control de entrega de sábanas
-- **cartas_entregadas**: Control de entrega de cartas
 - **pagos_retiro**: Pagos del retiro (₡50.000 por estudiante)
+- **materiales_retiro**: Inventario de materiales para el retiro
 - **asistencia_catequistas**: Asistencia de los 41 catequistas
 
 ## 🔧 Configuración
