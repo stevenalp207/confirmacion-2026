@@ -8,6 +8,7 @@ import ConfirmationModal from './ConfirmationModal';
 const PROCEDENCIAS = ['Equipo Pastoral', 'Oratorio', 'Confirma', 'Otros'];
 const CONDICIONES = ['Excelente', 'Buen estado', 'Regular', 'Requiere reparación'];
 const BLOQUES = ['Bloque 1', 'Bloque 2', 'Bloque 3', 'Bloque 4', 'Bloque 5'];
+const OPCIONES_BLOQUE = ['Uso general', ...BLOQUES];
 
 const createInitialForm = (user) => ({
   detalle: '',
@@ -15,10 +16,15 @@ const createInitialForm = (user) => ({
   cantidad: '1',
   condicion: 'Buen estado',
   procedencia: 'Equipo Pastoral',
-  bloque: 'Bloque 1',
+  bloques: ['Bloque 1'],
   ubicacion_guardado: '',
   registrado_por: user?.usuario || ''
 });
+
+const getBloques = (material) => {
+  if (Array.isArray(material.bloques) && material.bloques.length > 0) return material.bloques;
+  return material.bloque ? [material.bloque] : [];
+};
 
 function MaterialesRetiro({ user }) {
   const [materiales, setMateriales] = useState([]);
@@ -38,7 +44,6 @@ function MaterialesRetiro({ user }) {
       const { data, error } = await supabase
         .from('materiales_retiro')
         .select('*')
-        .order('bloque', { ascending: true })
         .order('detalle', { ascending: true });
 
       if (error) throw error;
@@ -68,12 +73,12 @@ function MaterialesRetiro({ user }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!formData.detalle.trim() || !formData.ubicacion_guardado.trim() || Number(formData.cantidad) < 1) {
+    if (!formData.detalle.trim() || !formData.ubicacion_guardado.trim() || Number(formData.cantidad) < 1 || formData.bloques.length === 0) {
       setModal({
         isOpen: true,
         type: 'error',
         title: 'Campos incompletos',
-        message: 'Completa el detalle, la cantidad y el lugar donde se guarda el material.'
+        message: 'Completa el detalle, la cantidad, al menos un bloque y el lugar donde se guarda el material.'
       });
       return;
     }
@@ -125,12 +130,27 @@ function MaterialesRetiro({ user }) {
       cantidad: String(material.cantidad || 1),
       condicion: material.condicion || 'Buen estado',
       procedencia: material.procedencia || 'Equipo Pastoral',
-      bloque: material.bloque || 'Bloque 1',
+      bloques: getBloques(material).length > 0 ? getBloques(material) : ['Uso general'],
       ubicacion_guardado: material.ubicacion_guardado || '',
       registrado_por: material.registrado_por || user?.usuario || ''
     });
     setEditingId(material.id);
     setShowForm(true);
+  };
+
+  const toggleBloque = (option) => {
+    setFormData((current) => {
+      if (option === 'Uso general') {
+        return { ...current, bloques: ['Uso general'] };
+      }
+
+      const currentBlocks = current.bloques.filter((block) => block !== 'Uso general');
+      const bloques = currentBlocks.includes(option)
+        ? currentBlocks.filter((block) => block !== option)
+        : [...currentBlocks, option];
+
+      return { ...current, bloques };
+    });
   };
 
   const handleMovementToggle = async (material, field, checked) => {
@@ -210,13 +230,14 @@ function MaterialesRetiro({ user }) {
   const filteredMateriales = useMemo(() => {
     const normalizedSearch = search.trim().toLocaleLowerCase('es-CR');
     return materiales.filter((material) => {
-      const matchesBlock = !filterBlock || material.bloque === filterBlock;
+      const matchesBlock = !filterBlock || getBloques(material).includes(filterBlock);
       const searchable = [
         material.detalle,
         material.placa,
         material.procedencia,
         material.ubicacion_guardado,
-        material.condicion
+        material.condicion,
+        ...getBloques(material)
       ].filter(Boolean).join(' ').toLocaleLowerCase('es-CR');
       return matchesBlock && (!normalizedSearch || searchable.includes(normalizedSearch));
     });
@@ -246,7 +267,7 @@ function MaterialesRetiro({ user }) {
     );
 
     autoTable(doc, {
-      head: [['#', 'Detalle', 'Placa', 'Cant.', 'Condición', 'Procedencia', 'Bloque', 'Guardado en', 'Check-out', 'Check-in']],
+      head: [['#', 'Detalle', 'Placa', 'Cant.', 'Condición', 'Procedencia', 'Bloques', 'Guardado en', 'Check-out', 'Check-in']],
       body: filteredMateriales.map((material, index) => [
         index + 1,
         material.detalle,
@@ -254,7 +275,7 @@ function MaterialesRetiro({ user }) {
         material.cantidad,
         material.condicion,
         material.procedencia,
-        material.bloque,
+        getBloques(material).join(', '),
         material.ubicacion_guardado,
         material.check_out ? 'Sí' : 'No',
         material.check_in ? 'Sí' : 'No'
@@ -380,14 +401,20 @@ function MaterialesRetiro({ user }) {
                   {PROCEDENCIAS.map((origin) => <option key={origin}>{origin}</option>)}
                 </select>
               </Field>
-              <Field label="Bloque donde se usa *">
-                <select
-                  value={formData.bloque}
-                  onChange={(event) => setFormData((current) => ({ ...current, bloque: event.target.value }))}
-                  className="input-field"
-                >
-                  {BLOQUES.map((block) => <option key={block}>{block}</option>)}
-                </select>
+              <Field label="Bloques donde se usa *">
+                <div className="grid grid-cols-2 gap-2 rounded-lg border border-gray-200 p-3">
+                  {OPCIONES_BLOQUE.map((option) => (
+                    <label key={option} className="flex items-center gap-2 text-sm font-normal text-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.bloques.includes(option)}
+                        onChange={() => toggleBloque(option)}
+                        className="!w-4 !h-4 !min-w-4 !min-h-4"
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
               </Field>
               <Field label="Dónde se guardará *">
                 <input
@@ -450,7 +477,7 @@ function MaterialesRetiro({ user }) {
               aria-label="Filtrar por bloque"
             >
               <option value="">Todos los bloques</option>
-              {BLOQUES.map((block) => <option key={block}>{block}</option>)}
+              {OPCIONES_BLOQUE.map((block) => <option key={block}>{block}</option>)}
             </select>
           </div>
         </div>
@@ -471,7 +498,7 @@ function MaterialesRetiro({ user }) {
                   <Header>Cant.</Header>
                   <Header>Condición</Header>
                   <Header>Procedencia</Header>
-                  <Header>Bloque</Header>
+                  <Header>Bloques</Header>
                   <Header>Guardado en</Header>
                   <Header centered>Check-out</Header>
                   <Header centered>Check-in</Header>
@@ -486,7 +513,7 @@ function MaterialesRetiro({ user }) {
                     <td className="px-4 py-3 text-center font-semibold">{material.cantidad}</td>
                     <td className="px-4 py-3 text-gray-700">{material.condicion}</td>
                     <td className="px-4 py-3 text-gray-700">{material.procedencia}</td>
-                    <td className="px-4 py-3 text-gray-700 whitespace-nowrap">{material.bloque}</td>
+                    <td className="px-4 py-3 text-gray-700">{getBloques(material).join(', ') || '—'}</td>
                     <td className="px-4 py-3 text-gray-700">{material.ubicacion_guardado}</td>
                     <td className="px-4 py-3 text-center">
                       <MovementCheckbox
